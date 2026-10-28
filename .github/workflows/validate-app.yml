@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, feat/phong-thuy-p0-p5-upgrade]
+    branches: [main, 'feat/**']
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -26,8 +26,23 @@ jobs:
           for (const id of required) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
           }
-          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText']) {
+          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate']) {
             if (!js.includes(token)) throw new Error('Missing feature: ' + token);
           }
           console.log('Required sections and feature entry points present');
+          const vm = require('vm');
+          const context = { document: { addEventListener() {} }, localStorage: { getItem(){return null}, setItem(){} }, console, Math, Date, Number, String, Object, Array, JSON, location: { href: 'test' }, navigator: {} };
+          vm.createContext(context);
+          vm.runInContext(js + '\\n;globalThis.__lunar = convertSolarToLunar; globalThis.__cung = calcCung;', context);
+          for (const [solar, expected] of [
+            [[10,2,2024],[1,1,2024]], [[29,1,2025],[1,1,2025]], [[17,2,2026],[1,1,2026]]
+          ]) {
+            const actual = context.__lunar(...solar,7);
+            if (!actual || actual.day!==expected[0] || actual.month!==expected[1] || actual.year!==expected[2]) throw new Error('Lunar reference date failed: '+solar.join('-')+' -> '+JSON.stringify(actual));
+          }
+          for (const year of [1990,2000,2001,2026]) for (const gender of ['nam','nu']) {
+            const result=context.__cung(year,gender); if(!result||!result.name||!result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
+          }
+          console.log('Lunar reference dates and Ba Trach representative years passed');
+
           NODE
