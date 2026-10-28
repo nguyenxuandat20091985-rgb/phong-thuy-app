@@ -1,93 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#1565C0" />
-  <meta name="description" content="Ứng dụng Phong Thủy - Tính cung mệnh, hướng nhà, ngũ hành theo tuổi" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <title>Phong Thủy App</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123f35"><meta name="description" content="Phong Thủy Việt — công cụ tra cứu Bát Trạch, Ngũ hành và bố trí không gian sống.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css">
+<title>Phong Thủy Việt</title>
 </head>
 <body>
-  <!-- Màn hình nhập mật khẩu -->
-  <div id="passwordScreen" class="password-screen">
-    <div class="password-box">
-      <h2>🔒 Phong Thủy App</h2>
-      <p>Nhập mật khẩu để tiếp tục</p>
-      <input type="password" id="passwordInput" placeholder="Mật khẩu" autocomplete="off" />
-      <button id="unlockBtn">Mở khóa</button>
-      <p id="passwordError" class="error" style="display:none;">Sai mật khẩu, thử lại</p>
-    </div>
-  </div>
-
-  <div class="app" id="mainApp" style="display:none;">
-    <header>
-      <h1>🏠 Phong Thủy</h1>
-      <p class="subtitle">Tính cung mệnh & hướng tốt theo tuổi</p>
-    </header>
-
-    <!-- Nút cài app -->
-    <div id="installBanner" class="install-banner">
-      <button id="installBtn" class="install-btn">📲 Cài đặt App về máy</button>
-    </div>
-
-    <main>
-      <section class="card input-card">
-        <label for="birthYear">Năm sinh (dương lịch)</label>
-        <input type="number" id="birthYear" placeholder="Ví dụ: 1990" min="1920" max="2030" />
-        
-        <label for="gender">Giới tính</label>
-        <select id="gender">
-          <option value="nam">Nam</option>
-          <option value="nu">Nữ</option>
-        </select>
-
-        <button id="calcBtn">Xem kết quả</button>
-      </section>
-
-      <section id="result" class="card result-card" style="display: none;">
-        <h2>Kết quả của bạn</h2>
-        
-        <div class="info-row">
-          <span class="label">Cung mệnh:</span>
-          <span id="cungMenh" class="value"></span>
-        </div>
-        <div class="info-row">
-          <span class="label">Ngũ hành:</span>
-          <span id="nguHanh" class="value"></span>
-        </div>
-        <div class="info-row">
-          <span class="label">Trạch:</span>
-          <span id="trach" class="value"></span>
-        </div>
-
-        <h3>Hướng tốt (nên dùng)</h3>
-        <div id="huongTot" class="directions good"></div>
-
-        <h3>Hướng xấu (nên tránh)</h3>
-        <div id="huongXau" class="directions bad"></div>
-
-        <div class="tips">
-          <h3>💡 Gợi ý</h3>
-          <ul id="tipsList"></ul>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <p>© Nguyễn Xuân Đạt • Phong Thủy App</p>
-    </footer>
-  </div>
-
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-  </script>
-</body>
-</html>
+<div class="app-shell">
+<header class="topbar"><a class="brand" href="#" aria-label="Phong Thủy Việt trang chủ"><span class="brand-mark">☯</span><span><strong>Phong Thủy Việt</strong><small>Sống hài hòa cùng không gian</small></span></a><button id="themeToggle" class="icon-button" aria-label="Đổi giao diện" title="Đổi giao diện">◐</button></header>
+<section class="hero"><div class="hero-copy"><span class="eyebrow">CÔNG CỤ PHONG THỦY CÁ NHÂN</span><h1>Hiểu không gian.<br><em>Sống cân bằng.</em></h1><p>Tra cứu theo phương pháp truyền thống, trình bày rõ ràng và dễ áp dụng.</p><a href="#tools" class="primary-link">Khám phá công cụ <span>↓</span></a></div><div class="hero-symbol" aria-hidden="true"><div class="compass-ring"><span>☯</span><i>N</i><b>E</b><small>S</small><strong>W</strong></div></div></section>
+<div class="notice"><span>ⓘ</span><p>Phong thủy là hệ thống quan niệm truyền thống, không phải dự đoán khoa học. Kết quả mang tính tham khảo; hãy ưu tiên an toàn, công năng và lời khuyên chuyên môn.</p></div>
+<nav class="tabs" id="tools" aria-label="Công cụ"><button class="tab active" data-tab="personal">✦ Cá nhân</button><button class="tab" data-tab="home">⌂ Nhà ở</button><button class="tab" data-tab="calendar">◷ Ngày tháng</button><button class="tab" data-tab="library">▤ Kiến thức</button></nav>
+<main>
+<section class="panel active" id="panel-personal">
+<div class="section-heading"><div><span class="eyebrow">01 / HỒ SƠ CÁ NHÂN</span><h2>Tra cứu Bát Trạch</h2><p>Nhập năm sinh và giới tính theo cách tính Bát Trạch phổ biến.</p></div></div>
+<div class="card form-card"><form id="profileForm"><div class="form-grid"><label>Năm sinh dương lịch<input id="birthYear" type="number" inputmode="numeric" min="1900" max="2099" placeholder="Ví dụ 1990" required></label><label>Giới tính dùng trong phép tính<select id="gender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label></div><div class="form-actions"><button class="primary-button" type="submit">Xem bản đồ cá nhân <span>→</span></button><button class="secondary-button" id="saveProfile" type="button">Lưu hồ sơ</button></div><p class="field-hint">Lưu hồ sơ chỉ trên thiết bị này, không gửi lên máy chủ.</p></form></div>
+<div id="personalResult" class="results" aria-live="polite"><div class="empty-state"><span>✧</span><h3>Bản đồ của bạn sẽ hiện ở đây</h3><p>Kết quả gồm cung phi, nhóm trạch và bốn hướng tốt / bốn hướng cần cân nhắc.</p></div></div>
+<div class="section-heading compact"><div><span class="eyebrow">LỐI TẮT</span><h2>Tiếp tục khám phá</h2></div></div><div class="quick-grid"><button class="quick-card" data-go="home"><span>⌂</span><strong>Bố trí nhà ở</strong><small>Phòng ngủ, bếp, bàn làm việc</small></button><button class="quick-card" data-go="calendar"><span>◷</span><strong>Ngày tháng</strong><small>Ghi chú và lưu ngày quan trọng</small></button><button class="quick-card" data-go="library"><span>▤</span><strong>Thư viện</strong><small>Giải thích thuật ngữ cơ bản</small></button></div>
+</section>
+<section class="panel" id="panel-home">
+<div class="section-heading"><div><span class="eyebrow">02 / KHÔNG GIAN SỐNG</span><h2>Gợi ý bố trí nhà ở</h2><p>Chọn khu vực để xem danh sách kiểm tra thực tế.</p></div></div>
+<div class="card"><label for="roomType">Khu vực cần xem</label><select id="roomType"><option value="bedroom">Phòng ngủ</option><option value="desk">Bàn làm việc</option><option value="kitchen">Nhà bếp</option><option value="entrance">Cửa chính / lối vào</option><option value="altar">Bàn thờ</option></select><div id="roomGuidance" class="guidance"></div></div>
+<div class="card"><h3>La bàn phương hướng</h3><p class="muted">Nhập số độ đọc được từ la bàn thiết bị hoặc la bàn cầm tay để quy đổi phương hướng gần đúng.</p><div class="form-grid"><label>Góc phương vị (0–359°)<input type="number" id="bearing" min="0" max="359" placeholder="Ví dụ 135"></label><div class="bearing-result" id="bearingResult">Chưa có số đo</div></div><button class="secondary-button" id="convertBearing" type="button">Quy đổi hướng</button><p class="field-hint">Cảm biến điện thoại có thể sai lệch do kim loại, nam châm hoặc hiệu chuẩn.</p></div>
+<div class="card"><h3>Ghi chú ngôi nhà</h3><label for="houseNotes">Mô tả hướng cửa, vị trí phòng hoặc điều cần cải thiện</label><textarea id="houseNotes" rows="4" placeholder="Ghi chú riêng trên thiết bị…"></textarea><button class="secondary-button" id="saveHouseNotes" type="button">Lưu ghi chú</button><p id="houseSaved" class="field-hint" aria-live="polite"></p></div>
+</section>
+<section class="panel" id="panel-calendar">
+<div class="section-heading"><div><span class="eyebrow">03 / LỊCH VÀ KẾ HOẠCH</span><h2>Ngày quan trọng của bạn</h2><p>Lưu lịch hẹn, ngày dự định và ghi chú cá nhân.</p></div></div>
+<div class="card"><form id="eventForm"><div class="form-grid"><label>Tên sự kiện<input id="eventTitle" maxlength="80" placeholder="Ví dụ: chuyển nhà" required></label><label>Ngày dương lịch<input id="eventDate" type="date" required></label></div><label>Ghi chú (không bắt buộc)<textarea id="eventNote" rows="2" maxlength="300" placeholder="Điều cần chuẩn bị…"></textarea></label><button class="primary-button" type="submit">Thêm vào danh sách <span>＋</span></button></form></div>
+<div class="card"><div class="list-heading"><h3>Danh sách đã lưu</h3><button id="clearEvents" class="text-button" type="button">Xóa tất cả</button></div><div id="eventList" class="event-list"></div></div>
+<div class="notice subtle"><span>!</span><p>Chức năng lịch này chưa tự tính ngày âm, tiết khí hay giờ hoàng đạo. Không dùng danh sách sự kiện như xác nhận ngày tốt/xấu.</p></div>
+</section>
+<section class="panel" id="panel-library">
+<div class="section-heading"><div><span class="eyebrow">04 / THƯ VIỆN</span><h2>Kiến thức nền tảng</h2><p>Thuật ngữ phổ biến và cách hiểu thận trọng.</p></div></div>
+<div class="library-list">
+<details class="card" open><summary>Bát Trạch và cung phi</summary><p>Bát Trạch phân nhóm cung phi thành Đông Tứ Trạch và Tây Tứ Trạch, sau đó đối chiếu tám phương với các tên gọi như Sinh Khí, Thiên Y, Diên Niên, Phục Vị. Các trường phái và cách xác định năm sinh có thể khác nhau.</p></details>
+<details class="card"><summary>Ngũ hành</summary><p>Kim, Mộc, Thủy, Hỏa, Thổ là hệ phân loại trong triết học phương Đông. Ngũ hành của cung phi không đồng nghĩa với nạp âm năm sinh; ứng dụng này hiển thị riêng cung phi và hành của cung để tránh nhầm lẫn.</p></details>
+<details class="card"><summary>Đo hướng nhà</summary><p>Đo nhiều lần tại vị trí thoáng, tránh sát loa, nam châm, khung thép hoặc thiết bị điện. Phân biệt hướng mặt cửa, hướng mặt nhà và hướng nhìn khi ngồi; đây không phải lúc nào cũng là một hướng.</p></details>
+<details class="card"><summary>Ưu tiên thực tế</summary><p>Ánh sáng, thông gió, chống trượt, lối thoát hiểm, kết cấu an toàn và nhu cầu của người sử dụng nên được ưu tiên. Không thay đổi kết cấu hoặc quyết định tài chính lớn chỉ dựa vào một kết quả phong thủy.</p></details>
+<details class="card"><summary>Về lịch âm và ngày tốt</summary><p>Lịch âm Việt Nam phụ thuộc múi giờ và quy tắc lịch pháp. Ứng dụng hiện chưa tích hợp bộ tính lịch âm đã kiểm chứng nên không tự suy đoán ngày âm hoặc giờ hoàng đạo.</p></details>
+</div>
+<div class="card"><h3>Chia sẻ ứng dụng</h3><p class="muted">Gửi đường dẫn ứng dụng cho người thân.</p><button class="primary-button" id="shareApp" type="button">Chia sẻ / sao chép liên kết <span>↗</span></button><p id="shareStatus" class="field-hint" aria-live="polite"></p></div>
+</section>
+</main>
+<footer><div class="footer-brand">☯ Phong Thủy Việt</div><p>Thiết kế để tham khảo · Dữ liệu cá nhân lưu trên thiết bị</p><p>© Nguyễn Xuân Đạt</p></footer>
+</div>
+<script src="app.js"></script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}</script>
+</body></html>
