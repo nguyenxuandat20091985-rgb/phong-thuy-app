@@ -1,9 +1,10 @@
-const CACHE_NAME = 'phong-thuy-v13-lunar-calendar';
+const CACHE_NAME = 'phong-thuy-v14-local-backup';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './backup.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'

@@ -29,8 +29,8 @@
 <section class="panel" id="panel-calendar">
 <div class="section-heading"><div><span class="eyebrow">03 / LỊCH VÀ KẾ HOẠCH</span><h2>Ngày quan trọng của bạn</h2><p>Lưu lịch hẹn, ngày dự định và ghi chú cá nhân.</p></div></div>
 <div class="card"><h3>Đổi ngày dương sang âm lịch Việt Nam</h3><p class="muted">Tính theo múi giờ Việt Nam (UTC+7), hỗ trợ năm 1900–2099.</p><div class="form-grid"><label>Ngày dương lịch<input id="lunarDateInput" type="date" value="2026-10-28"></label><div id="lunarDateResult" class="bearing-result" aria-live="polite">Chọn ngày để xem kết quả</div></div><button class="secondary-button" id="convertLunarDate" type="button">Tra ngày âm lịch</button><p class="field-hint">Ngày âm dùng để đối chiếu lịch; ứng dụng chưa xác nhận ngày tốt/xấu, giờ hoàng đạo hoặc lịch tiết khí.</p></div><div class="card"><form id="eventForm"><div class="form-grid"><label>Tên sự kiện<input id="eventTitle" maxlength="80" placeholder="Ví dụ: chuyển nhà" required></label><label>Ngày dương lịch<input id="eventDate" type="date" required></label></div><label>Ghi chú (không bắt buộc)<textarea id="eventNote" rows="2" maxlength="300" placeholder="Điều cần chuẩn bị…"></textarea></label><button class="primary-button" type="submit">Thêm vào danh sách <span>＋</span></button></form></div>
-<div class="card"><div class="list-heading"><h3>Danh sách đã lưu</h3><button id="clearEvents" class="text-button" type="button">Xóa tất cả</button></div><div id="eventList" class="event-list"></div></div>
-<div class="notice subtle"><span>!</span><p>Chức năng lịch này chưa tự tính ngày âm, tiết khí hay giờ hoàng đạo. Không dùng danh sách sự kiện như xác nhận ngày tốt/xấu.</p></div>
+<div class="card"><div class="list-heading"><h3>Danh sách đã lưu</h3><button id="clearEvents" class="text-button" type="button">Xóa tất cả</button></div><div id="eventList" class="event-list"></div></div><div class="card"><h3>Sao lưu và khôi phục</h3><p class="muted">Xuất hồ sơ, ghi chú nhà ở, sự kiện và giao diện thành một tệp JSON để chuyển sang thiết bị khác. Dữ liệu chỉ nằm trên thiết bị cho đến khi anh tự xuất tệp.</p><div class="form-actions"><button id="exportBackup" class="secondary-button" type="button">Tải bản sao lưu</button><button id="importBackupButton" class="secondary-button" type="button">Khôi phục từ tệp</button><input id="importBackupFile" type="file" accept="application/json,.json" hidden></div><p id="backupStatus" class="field-hint" aria-live="polite"></p></div>
+<div class="notice subtle"><span>!</span><p>Ứng dụng đã có công cụ đổi ngày dương sang âm lịch Việt Nam (UTC+7). Chưa có dữ liệu đã thẩm định để xác nhận ngày tốt/xấu, giờ hoàng đạo hoặc tiết khí.</p></div>
 </section>
 <section class="panel" id="panel-library">
 <div class="section-heading"><div><span class="eyebrow">04 / THƯ VIỆN</span><h2>Kiến thức nền tảng</h2><p>Thuật ngữ phổ biến và cách hiểu thận trọng.</p></div></div>
@@ -46,5 +46,5 @@
 </main>
 <footer><div class="footer-brand">☯ Phong Thủy Việt</div><p>Thiết kế để tham khảo · Dữ liệu cá nhân lưu trên thiết bị</p><p>© Nguyễn Xuân Đạt</p></footer>
 </div>
-<script src="app.js"></script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}</script>
+<script src="app.js"></script><script src="backup.js"></script><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}</script>
 </body></html>
