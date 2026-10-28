@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: node --check app.js && node --check backup.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Check required app sections
@@ -26,9 +26,10 @@ jobs:
           for (const id of required) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
           }
-          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate']) {
+          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit']) {
             if (!js.includes(token)) throw new Error('Missing feature: ' + token);
           }
+          if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');
           console.log('Required sections and feature entry points present');
           const vm = require('vm');
           const context = { document: { addEventListener() {} }, localStorage: { getItem(){return null}, setItem(){} }, console, Math, Date, Number, String, Object, Array, JSON, location: { href: 'test' }, navigator: {} };
