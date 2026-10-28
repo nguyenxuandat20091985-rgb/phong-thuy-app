@@ -85,7 +85,8 @@ function renderLunarDate(){
  if(!r){$('lunarDateResult').textContent='Chỉ hỗ trợ ngày hợp lệ trong giai đoạn 1900–2099';return;}
  $('lunarDateResult').innerHTML='<strong>'+r.day+'/'+r.month+'/'+r.year+(r.leap?' (tháng nhuận)':'')+'</strong><small>Âm lịch Việt Nam · UTC+7</small>';
 }
-\nfunction digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
+
+function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
 function calcCung(year,gender){
   // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
   const lastTwo=year%100;
