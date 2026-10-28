@@ -34,13 +34,21 @@ jobs:
             const input = '1793195557000.png';
             if (!fs.existsSync(input)) throw new Error('Source logo not found: ' + input);
             const meta = await sharp(input).metadata();
-            const side = Math.min(meta.width, meta.height);
-            const left = Math.max(0, Math.round((meta.width - side) / 2));
-            const top = Math.max(0, Math.round((meta.height - side) / 2));
-            const logo = sharp(input).extract({ left, top, width: side, height: side });
+            console.log('Original logo dimensions:', meta.width + 'x' + meta.height);
+            // Trim the white page around the actual logo first. The old centered square crop
+            // kept too much white space, making the icon appear tiny on Samsung One UI.
+            const tight = await sharp(input)
+              .trim({ background: { r: 255, g: 255, b: 255 }, threshold: 18 })
+              .png()
+              .toBuffer({ resolveWithObject: true });
+            console.log('Trimmed logo dimensions:', tight.info.width + 'x' + tight.info.height);
+            const side = Math.min(tight.info.width, tight.info.height);
+            const left = Math.max(0, Math.round((tight.info.width - side) / 2));
+            const top = Math.max(0, Math.round((tight.info.height - side) / 2));
+            const logo = sharp(tight.data).extract({ left, top, width: side, height: side });
             await Promise.all([
-              logo.clone().resize(192, 192, { fit: 'cover' }).png().toFile('icon-192.png'),
-              logo.clone().resize(512, 512, { fit: 'cover' }).png().toFile('icon-512.png')
+              logo.clone().resize(192, 192, { fit: 'cover', position: 'centre' }).png().toFile('icon-192.png'),
+              logo.clone().resize(512, 512, { fit: 'cover', position: 'centre' }).png().toFile('icon-512.png')
             ]);
             for (const [file, expected] of [['icon-192.png', 192], ['icon-512.png', 512]]) {
               const result = await sharp(file).metadata();
