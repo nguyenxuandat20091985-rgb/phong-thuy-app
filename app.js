@@ -262,6 +262,42 @@ document.addEventListener('DOMContentLoaded',()=>{
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
  $('startCompass').addEventListener('click',startLiveCompass);
+ const dragDial=$('liveCompassDial');
+ let dragState=null;
+ const pointerAngle=(event)=>{const rect=dragDial.getBoundingClientRect();return Math.atan2(event.clientY-(rect.top+rect.height/2),event.clientX-(rect.left+rect.width/2))*180/Math.PI;};
+ dragDial.addEventListener('pointerdown',event=>{
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  const shown=compassLastHeading===null?0:normalizeDegrees(compassLastHeading+(Number($('compassOffset').value)||0));
+  dragState={pointerId:event.pointerId,startAngle:pointerAngle(event),startHeading:shown};
+  dragDial.setPointerCapture(event.pointerId);
+  dragDial.classList.add('is-dragging');
+  event.preventDefault();
+ });
+ dragDial.addEventListener('pointermove',event=>{
+  if(!dragState||event.pointerId!==dragState.pointerId)return;
+  let delta=pointerAngle(event)-dragState.startAngle;
+  if(delta>180)delta-=360;if(delta < -180)delta+=360;
+  const desired=normalizeDegrees(dragState.startHeading-delta);
+  const offset=Number($('compassOffset').value)||0;
+  compassLastHeading=normalizeDegrees(desired-offset);
+  renderCompassHeading(compassLastHeading);
+  $('compassStatus').textContent='Đang xoay thử thủ công; số độ này không phải số đo cảm biến.';
+  $('compassSource']='manual';
+ });
+ const endDialDrag=event=>{if(dragState&&event.pointerId===dragState.pointerId){dragState=null;dragDial.classList.remove('is-dragging');}};
+ dragDial.addEventListener('pointerup',endDialDrag);
+ dragDial.addEventListener('pointercancel',endDialDrag);
+ dragDial.addEventListener('lostpointercapture',()=>{dragState=null;dragDial.classList.remove('is-dragging');});
+ dragDial.addEventListener('keydown',event=>{
+  if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
+  event.preventDefault();
+  const offset=Number($('compassOffset').value)||0;
+  const shown=compassLastHeading===null?0:normalizeDegrees(compassLastHeading+offset);
+  compassLastHeading=normalizeDegrees(shown+(event.key==='ArrowRight'?5:-5)-offset);
+  renderCompassHeading(compassLastHeading);
+  $('compassStatus').textContent='Đang xoay thử thủ công bằng bàn phím; không phải số đo cảm biến.';
+ });
+
  $('stopCompass').addEventListener('click',stopLiveCompass);
  $('magneticDeclination').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
  $('compassOffset').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
