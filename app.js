@@ -132,7 +132,8 @@ function runHomeAudit(){
  const list=selected.sort((a,b)=>priority.indexOf(a)-priority.indexOf(b)).map((key,i)=>'<li><strong>'+(i+1)+'. '+HOME_AUDIT[key].title+'</strong><p>'+HOME_AUDIT[key].detail+'</p></li>').join('');
  out.innerHTML='<p><strong>Đã ghi nhận '+selected.length+' nhóm vấn đề.</strong> Nên xử lý theo thứ tự ưu tiên dưới đây:</p><ol>'+list+'</ol><p class="field-hint">Đây là gợi ý thực hành dựa trên các lựa chọn của anh, không phải đánh giá kết cấu hay kết luận phong thủy tuyệt đối.</p>';
 }
-\nfunction renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
+
+function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
 function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
 function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
 function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
