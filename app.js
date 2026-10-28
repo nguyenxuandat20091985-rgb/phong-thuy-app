@@ -129,7 +129,8 @@ function renderSolarTerms(){
  if(!items){out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
  out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+'</span></li>').join('')+'</ol>';
 }
-\nfunction digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
+
+function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
 function calcCung(year,gender){
   // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
   const lastTwo=year%100;
