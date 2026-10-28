@@ -32,3 +32,30 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .yin-yang{position:absolute;left:50%;top:50%;width:45%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:linear-gradient(90deg,#202a26 0 50%,#fffaf0 50%);border:2px solid #b38a3d;box-shadow:0 2px 8px #0003;animation:taichi-turn 24s linear infinite}.yin-yang:before,.yin-yang:after{content:"";position:absolute;left:25%;width:50%;height:50%;border-radius:50%}.yin-yang:before{top:0;background:#202a26}.yin-yang:after{bottom:0;background:#fffaf0}.yang-dot,.yin-dot{position:absolute;z-index:2;left:50%;width:13%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%)}.yang-dot{top:18%;background:#fffaf0}.yin-dot{bottom:18%;background:#202a26}@keyframes taichi-turn{to{rotate:360deg}}
 .feng-fixed-needle{position:absolute;z-index:5;left:50%;top:2%;height:20%;width:0;transform:translateX(-50%);border-left:2px solid #b52427;filter:drop-shadow(0 1px 1px #fff)}.feng-fixed-needle span{position:absolute;left:-8px;top:0;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:19px solid #d32629}.feng-center-pin{position:absolute;z-index:6;left:50%;top:50%;width:10px;height:10px;border:2px solid #f9e6b9;background:#bd2429;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 1px 5px #0006}.compass-drag-hint{text-align:center;max-width:420px;margin:0 auto 12px}
 @media(max-width:380px){.feng-compass{--dial-size:88vw;border-width:3px}.feng-bagua{inset:14%}.feng-inner{inset:31%}.degree-label{font-size:9px}}@media(prefers-reduced-motion:reduce){.yin-yang{animation:none}}
+
+
+/* Premium compass refinement v22: upright labels, compact layout, low-cost motion */
+.compass-card{padding:clamp(14px,3.5vw,22px);overflow:hidden}
+.compass-card>h3{text-align:center;margin-bottom:5px}
+.compass-intro{text-align:center;margin:0 auto 8px;max-width:34rem}
+.compass-readout-top{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;margin:0 auto 8px}
+.compass-readout-top strong{font-size:clamp(30px,8vw,42px);line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.compass-readout-top span{font-size:clamp(15px,4vw,19px);font-weight:800}
+.compass-readout-top small{max-width:32rem;font-size:11px;line-height:1.35;min-height:1.3em}
+.feng-compass-wrap{padding:4px 0 8px}
+.feng-compass{--dial-size:min(88vw,390px);will-change:transform;transform:rotate(0deg);contain:layout paint;backface-visibility:hidden}
+.bagua-label,.degree-label,.feng-direction{will-change:transform;backface-visibility:hidden}
+.bagua-label{transform:translate(-50%,-50%) rotate(var(--label-counter-rotation,0deg));text-align:center;white-space:nowrap;gap:2px;line-height:1}
+.bagua-label small{font-size:clamp(8px,2vw,10px);line-height:1.1}
+.degree-label{transform:translate(-50%,-50%) rotate(var(--label-counter-rotation,0deg))}
+.feng-direction{transform:translate(-50%,-50%) rotate(var(--label-counter-rotation,0deg))}
+.fd-n{top:9%;left:50%}.fd-e{top:50%;left:91%;right:auto}.fd-s{top:91%;bottom:auto;left:50%}.fd-w{top:50%;left:9%;right:auto}
+.compass-drag-hint{font-size:11px;margin:0 auto 8px}
+.compass-actions{justify-content:center;gap:8px;margin-top:6px}
+.compass-actions button{min-height:42px;padding:10px 18px}
+.compass-advanced{margin-top:10px;border-top:1px solid var(--border,#ddd);padding-top:10px}
+.compass-advanced summary{cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:var(--muted,#65736c);padding:6px}
+.compass-advanced[open]>*:not(summary){margin-top:12px}
+.compass-settings{margin-top:10px}
+@media(max-width:380px){.feng-compass{--dial-size:min(88vw,340px)}.feng-bagua{inset:14%}.feng-inner{inset:31%}.bagua-label small{font-size:8px}.degree-label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.feng-compass{transition:none}.yin-yang{animation:none}}
