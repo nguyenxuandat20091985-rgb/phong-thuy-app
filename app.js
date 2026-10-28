@@ -1,201 +1,75 @@
-// ===== Mật khẩu bảo vệ =====
-const CORRECT_PASSWORD = 'phongthuy2026';
-
-function checkPassword() {
-  const input = document.getElementById('passwordInput');
-  const error = document.getElementById('passwordError');
-  const entered = input.value.trim();
-
-  if (entered === CORRECT_PASSWORD) {
-    localStorage.setItem('phongthuy_unlocked', 'true');
-    document.getElementById('passwordScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-  } else {
-    error.style.display = 'block';
-    input.value = '';
-    input.focus();
-  }
-}
-
-function initAuth() {
-  const unlocked = localStorage.getItem('phongthuy_unlocked');
-  if (unlocked === 'true') {
-    document.getElementById('passwordScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-  } else {
-    document.getElementById('passwordScreen').style.display = 'flex';
-    document.getElementById('mainApp').style.display = 'none';
-  }
-
-  document.getElementById('unlockBtn').addEventListener('click', checkPassword);
-  document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') checkPassword();
-  });
-}
-
-document.addEventListener('DOMContentLoaded', initAuth);
-
-// ===== Cài đặt App (PWA Install) =====
-let deferredPrompt = null;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-window.addEventListener('appinstalled', () => {
-  deferredPrompt = null;
-  const banner = document.getElementById('installBanner');
-  if (banner) banner.style.display = 'none';
-  localStorage.setItem('phongthuy_installed', 'true');
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Nếu đã cài rồi thì ẩn nút
-  if (localStorage.getItem('phongthuy_installed') === 'true') {
-    const banner = document.getElementById('installBanner');
-    if (banner) banner.style.display = 'none';
-  }
-
-  const installBtn = document.getElementById('installBtn');
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          deferredPrompt = null;
-          document.getElementById('installBanner').style.display = 'none';
-          localStorage.setItem('phongthuy_installed', 'true');
-        }
-      } else {
-        // Hướng dẫn thủ công rồi ẩn nút
-        alert('Để cài app vào máy:\n\n1. Bấm menu ba chấm ⋮ (góc trên bên phải)\n2. Chọn "Thêm vào Màn hình chính" hoặc "Cài đặt ứng dụng"\n3. Bấm Thêm / Cài đặt');
-        document.getElementById('installBanner').style.display = 'none';
-        localStorage.setItem('phongthuy_installed', 'true');
-      }
-    });
-  }
-});
-
-// ===== Dữ liệu Phong Thủy =====
+/* Phong Thủy Việt — P0–P5 upgrade. No external dependencies. */
+'use strict';
+const $ = (id) => document.getElementById(id);
+const STORE = { profile:'pt_profile_v2', house:'pt_house_notes_v2', events:'pt_events_v2', theme:'pt_theme_v2' };
 const CUNG = {
-  1: { name: 'Khảm', hanh: 'Thủy', trach: 'Đông Tứ Trạch' },
-  2: { name: 'Khôn', hanh: 'Thổ', trach: 'Tây Tứ Trạch' },
-  3: { name: 'Chấn', hanh: 'Mộc', trach: 'Đông Tứ Trạch' },
-  4: { name: 'Tốn', hanh: 'Mộc', trach: 'Đông Tứ Trạch' },
-  6: { name: 'Càn', hanh: 'Kim', trach: 'Tây Tứ Trạch' },
-  7: { name: 'Đoài', hanh: 'Kim', trach: 'Tây Tứ Trạch' },
-  8: { name: 'Cấn', hanh: 'Thổ', trach: 'Tây Tứ Trạch' },
-  9: { name: 'Ly', hanh: 'Hỏa', trach: 'Đông Tứ Trạch' }
+  1:{name:'Khảm',hanh:'Thủy',group:'Đông Tứ Trạch'},
+  2:{name:'Khôn',hanh:'Thổ',group:'Tây Tứ Trạch'},
+  3:{name:'Chấn',hanh:'Mộc',group:'Đông Tứ Trạch'},
+  4:{name:'Tốn',hanh:'Mộc',group:'Đông Tứ Trạch'},
+  6:{name:'Càn',hanh:'Kim',group:'Tây Tứ Trạch'},
+  7:{name:'Đoài',hanh:'Kim',group:'Tây Tứ Trạch'},
+  8:{name:'Cấn',hanh:'Thổ',group:'Tây Tứ Trạch'},
+  9:{name:'Ly',hanh:'Hỏa',group:'Đông Tứ Trạch'}
 };
-
-const HUONG = {
-  'Khảm': {
-    tot: { 'Sinh Khí': 'Đông Nam', 'Thiên Y': 'Đông', 'Diên Niên': 'Nam', 'Phục Vị': 'Bắc' },
-    xau: { 'Tuyệt Mệnh': 'Tây Nam', 'Ngũ Quỷ': 'Đông Bắc', 'Lục Sát': 'Tây', 'Họa Hại': 'Tây Bắc' }
-  },
-  'Chấn': {
-    tot: { 'Sinh Khí': 'Nam', 'Thiên Y': 'Bắc', 'Diên Niên': 'Đông Nam', 'Phục Vị': 'Đông' },
-    xau: { 'Tuyệt Mệnh': 'Tây', 'Ngũ Quỷ': 'Tây Bắc', 'Lục Sát': 'Tây Nam', 'Họa Hại': 'Đông Bắc' }
-  },
-  'Tốn': {
-    tot: { 'Sinh Khí': 'Bắc', 'Thiên Y': 'Nam', 'Diên Niên': 'Đông', 'Phục Vị': 'Đông Nam' },
-    xau: { 'Tuyệt Mệnh': 'Đông Bắc', 'Ngũ Quỷ': 'Tây', 'Lục Sát': 'Tây Bắc', 'Họa Hại': 'Tây Nam' }
-  },
-  'Ly': {
-    tot: { 'Sinh Khí': 'Đông', 'Thiên Y': 'Đông Nam', 'Diên Niên': 'Bắc', 'Phục Vị': 'Nam' },
-    xau: { 'Tuyệt Mệnh': 'Tây Bắc', 'Ngũ Quỷ': 'Tây Nam', 'Lục Sát': 'Đông Bắc', 'Họa Hại': 'Tây' }
-  },
-  'Càn': {
-    tot: { 'Sinh Khí': 'Tây', 'Thiên Y': 'Đông Bắc', 'Diên Niên': 'Tây Nam', 'Phục Vị': 'Tây Bắc' },
-    xau: { 'Tuyệt Mệnh': 'Nam', 'Ngũ Quỷ': 'Đông', 'Lục Sát': 'Bắc', 'Họa Hại': 'Đông Nam' }
-  },
-  'Khôn': {
-    tot: { 'Sinh Khí': 'Đông Bắc', 'Thiên Y': 'Tây', 'Diên Niên': 'Tây Bắc', 'Phục Vị': 'Tây Nam' },
-    xau: { 'Tuyệt Mệnh': 'Đông', 'Ngũ Quỷ': 'Nam', 'Lục Sát': 'Đông Nam', 'Họa Hại': 'Bắc' }
-  },
-  'Cấn': {
-    tot: { 'Sinh Khí': 'Tây Nam', 'Thiên Y': 'Tây Bắc', 'Diên Niên': 'Tây', 'Phục Vị': 'Đông Bắc' },
-    xau: { 'Tuyệt Mệnh': 'Đông Nam', 'Ngũ Quỷ': 'Bắc', 'Lục Sát': 'Đông', 'Họa Hại': 'Nam' }
-  },
-  'Đoài': {
-    tot: { 'Sinh Khí': 'Tây Bắc', 'Thiên Y': 'Tây Nam', 'Diên Niên': 'Đông Bắc', 'Phục Vị': 'Tây' },
-    xau: { 'Tuyệt Mệnh': 'Bắc', 'Ngũ Quỷ': 'Đông Nam', 'Lục Sát': 'Nam', 'Họa Hại': 'Đông' }
-  }
+const DIRECTIONS = {
+ Khảm:{good:[['Sinh Khí','Đông Nam'],['Thiên Y','Đông'],['Diên Niên','Nam'],['Phục Vị','Bắc']],bad:[['Tuyệt Mệnh','Tây Nam'],['Ngũ Quỷ','Đông Bắc'],['Lục Sát','Tây'],['Họa Hại','Tây Bắc']]},
+ Chấn:{good:[['Sinh Khí','Nam'],['Thiên Y','Bắc'],['Diên Niên','Đông Nam'],['Phục Vị','Đông']],bad:[['Tuyệt Mệnh','Tây'],['Ngũ Quỷ','Tây Bắc'],['Lục Sát','Tây Nam'],['Họa Hại','Đông Bắc']]},
+ Tốn:{good:[['Sinh Khí','Bắc'],['Thiên Y','Nam'],['Diên Niên','Đông'],['Phục Vị','Đông Nam']],bad:[['Tuyệt Mệnh','Đông Bắc'],['Ngũ Quỷ','Tây'],['Lục Sát','Tây Bắc'],['Họa Hại','Tây Nam']]},
+ Ly:{good:[['Sinh Khí','Đông'],['Thiên Y','Đông Nam'],['Diên Niên','Bắc'],['Phục Vị','Nam']],bad:[['Tuyệt Mệnh','Tây Bắc'],['Ngũ Quỷ','Tây Nam'],['Lục Sát','Đông Bắc'],['Họa Hại','Tây']]},
+ Càn:{good:[['Sinh Khí','Tây'],['Thiên Y','Đông Bắc'],['Diên Niên','Tây Nam'],['Phục Vị','Tây Bắc']],bad:[['Tuyệt Mệnh','Nam'],['Ngũ Quỷ','Đông'],['Lục Sát','Bắc'],['Họa Hại','Đông Nam']]},
+ Khôn:{good:[['Sinh Khí','Đông Bắc'],['Thiên Y','Tây'],['Diên Niên','Tây Bắc'],['Phục Vị','Tây Nam']],bad:[['Tuyệt Mệnh','Đông'],['Ngũ Quỷ','Nam'],['Lục Sát','Đông Nam'],['Họa Hại','Bắc']]},
+ Cấn:{good:[['Sinh Khí','Tây Nam'],['Thiên Y','Tây Bắc'],['Diên Niên','Tây'],['Phục Vị','Đông Bắc']],bad:[['Tuyệt Mệnh','Đông Nam'],['Ngũ Quỷ','Bắc'],['Lục Sát','Đông'],['Họa Hại','Nam']]},
+ Đoài:{good:[['Sinh Khí','Tây Bắc'],['Thiên Y','Tây Nam'],['Diên Niên','Đông Bắc'],['Phục Vị','Tây']],bad:[['Tuyệt Mệnh','Bắc'],['Ngũ Quỷ','Đông Nam'],['Lục Sát','Nam'],['Họa Hại','Đông']]}
 };
-
-function tinhCungMenh(namSinh, gioiTinh) {
-  let so = namSinh % 100;
-  so = Math.floor(so / 10) + (so % 10);
-  if (so > 9) so = Math.floor(so / 10) + (so % 10);
-
-  let cungSo;
-  if (gioiTinh === 'nam') {
-    cungSo = 11 - so;
-    if (cungSo === 5) cungSo = 2;
-    if (cungSo > 9) cungSo -= 9;
-  } else {
-    cungSo = so + 4;
-    if (cungSo > 9) cungSo -= 9;
-    if (cungSo === 5) cungSo = 8;
-  }
-
-  return CUNG[cungSo] || CUNG[1];
+function safeGet(key,fallback){try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw);}catch{return fallback;}}
+function safeSet(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true;}catch{alert('Không lưu được dữ liệu. Hãy kiểm tra dung lượng lưu trữ của trình duyệt.');return false;}}
+function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
+function calcCung(year,gender){
+  // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
+  const sum=digitSum(year);
+  let number;
+  if(year>=2000){number=gender==='nam'?9-(sum%9):(sum+6)%9||9;}
+  else {number=gender==='nam'?11-(sum%9):(sum+4)%9||9;}
+  number=((number-1)%9+9)%9+1;
+  if(number===5) number=gender==='nam'?2:8;
+  return CUNG[number]||null;
 }
-
-function hienThiKetQua() {
-  const year = parseInt(document.getElementById('birthYear').value);
-  const gender = document.getElementById('gender').value;
-
-  if (!year || year < 1920 || year > 2030) {
-    alert('Vui lòng nhập năm sinh hợp lệ (1920 - 2030)');
-    return;
-  }
-
-  const cung = tinhCungMenh(year, gender);
-  const huong = HUONG[cung.name];
-
-  document.getElementById('cungMenh').textContent = cung.name;
-  document.getElementById('nguHanh').textContent = cung.hanh;
-  document.getElementById('trach').textContent = cung.trach;
-
-  const totDiv = document.getElementById('huongTot');
-  totDiv.innerHTML = '';
-  for (const [ten, huongTen] of Object.entries(huong.tot)) {
-    const span = document.createElement('span');
-    span.textContent = `${ten}: ${huongTen}`;
-    totDiv.appendChild(span);
-  }
-
-  const xauDiv = document.getElementById('huongXau');
-  xauDiv.innerHTML = '';
-  for (const [ten, huongTen] of Object.entries(huong.xau)) {
-    const span = document.createElement('span');
-    span.textContent = `${ten}: ${huongTen}`;
-    xauDiv.appendChild(span);
-  }
-
-  const tips = [
-    `Hướng nhà / cửa chính tốt nhất: <strong>${huong.tot['Sinh Khí']}</strong> (Sinh Khí)`,
-    `Hướng giường ngủ tốt: ưu tiên ${huong.tot['Thiên Y']} hoặc ${huong.tot['Diên Niên']}`,
-    `Bàn làm việc nên ngồi hướng ${huong.tot['Sinh Khí']} hoặc ${huong.tot['Thiên Y']}`,
-    `Tránh hướng ${huong.xau['Tuyệt Mệnh']} (Tuyệt Mệnh) cho cửa chính và giường ngủ`,
-    `Ngũ hành bản mệnh của bạn là <strong>${cung.hanh}</strong> → nên dùng màu sắc, vật liệu tương sinh`
-  ];
-
-  document.getElementById('tipsList').innerHTML = tips.map(t => `<li>${t}</li>`).join('');
-  document.getElementById('result').style.display = 'block';
-  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+function renderPairs(items,kind){return items.map(([name,dir])=>'<div class="direction-item '+kind+'"><span>'+name+'</span><strong>'+dir+'</strong></div>').join('');}
+function showProfile(year,gender){
+ const c=calcCung(year,gender);if(!c)return;
+ const d=DIRECTIONS[c.name];
+ $('personalResult').innerHTML='<div class="profile-summary card"><div class="profile-orb">'+c.name+'</div><div><span class="eyebrow">KẾT QUẢ BÁT TRẠCH</span><h3>Cung '+c.name+'</h3><p>'+c.group+' · Hành cung: '+c.hanh+'</p><small>Năm sinh: '+year+' · '+(gender==='nam'?'Nam':'Nữ')+'</small></div></div><div class="card"><div class="list-heading"><h3>Hướng tốt theo bảng tra</h3><span class="pill positive">4 hướng</span></div><div class="direction-grid">'+renderPairs(d.good,'good')+'</div></div><div class="card"><div class="list-heading"><h3>Hướng cần cân nhắc</h3><span class="pill caution">4 hướng</span></div><div class="direction-grid">'+renderPairs(d.bad,'bad')+'</div></div><div class="notice subtle"><span>ⓘ</span><p>Kết quả sử dụng cách tính cung phi Bát Trạch phổ biến theo năm dương lịch và giới tính đã chọn. Nếu sinh gần Tết âm lịch, cần xác minh năm quy đổi theo trường phái bạn theo. “Hành cung” không phải nạp âm năm sinh.</p></div><button class="secondary-button" id="shareResult" type="button">Chia sẻ kết quả</button>';
+ $('shareResult').addEventListener('click',()=>shareText('Kết quả Bát Trạch: năm '+year+', cung '+c.name+', '+c.group+'. Hướng tốt: '+d.good.map(x=>x[0]+' '+x[1]).join(', ')+'. Tham khảo tại '+location.href));
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const calcBtn = document.getElementById('calcBtn');
-  const birthYear = document.getElementById('birthYear');
-  if (calcBtn) calcBtn.addEventListener('click', hienThiKetQua);
-  if (birthYear) {
-    birthYear.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') hienThiKetQua();
-    });
-  }
+const ROOM={
+ bedroom:['Phòng ngủ',['Ưu tiên lối đi thông thoáng và lối thoát dễ tiếp cận.','Đặt giường vững chắc, tránh chắn cửa hoặc cửa sổ cần mở.','Giảm ánh sáng xanh và tiếng ồn khi ngủ; ưu tiên thông gió.','Hướng giường theo Bát Trạch chỉ là một tiêu chí tham khảo.']],
+ desk:['Bàn làm việc',['Đặt ghế chắc chắn, có ánh sáng đủ và hạn chế phản chiếu màn hình.','Nếu thuận tiện, chọn vị trí nhìn được lối vào mà không cản lối đi.','Đặt màn hình ngang tầm mắt, giữ khoảng trống thao tác.','Không hy sinh công thái học chỉ để khớp một hướng phong thủy.']],
+ kitchen:['Nhà bếp',['Bảo đảm thông gió và khoảng cách an toàn quanh bếp nóng.','Không đặt vật dễ cháy sát nguồn nhiệt; kiểm tra thiết bị gas/điện.','Giữ lối đi khô, sáng và không bị cản trở.','Các quy tắc “tọa/hướng” khác nhau theo trường phái; kiểm tra hiện trạng trước.']],
+ entrance:['Cửa chính / lối vào',['Giữ lối vào sáng, khô, dễ đi lại và không bị chắn.','Dùng thảm chống trượt và bảo đảm cửa mở không va vào người.','Không để đồ che lối thoát hiểm hoặc tủ điện.','Hướng cửa cần đo đúng và phân biệt với hướng mặt nhà.']],
+ altar:['Bàn thờ',['Chọn vị trí ổn định, trang nghiêm và ít bị va chạm.','Bảo đảm thông gió, phòng cháy; tránh gần vật liệu dễ cháy.','Bố trí an toàn cho trẻ nhỏ và người cao tuổi.','Tập tục khác nhau theo gia đình, vùng miền và tín ngưỡng.']]
+};
+function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
+function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
+function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
+function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function shareText(text){if(navigator.share){try{await navigator.share({title:'Phong Thủy Việt',text});return;}catch(e){if(e.name==='AbortError')return;}}try{await navigator.clipboard.writeText(text);alert('Đã sao chép nội dung để chia sẻ.');}catch{prompt('Sao chép nội dung này:',text);}}
+function goTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));window.scrollTo({top:0,behavior:'smooth'});}
+document.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.tab)));
+ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.go)));
+ $('profileForm').addEventListener('submit',e=>{e.preventDefault();const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Vui lòng nhập năm từ 1900 đến 2099.');return;}showProfile(year,$('gender').value);});
+ $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
+ const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
+ $('roomType').addEventListener('change',renderRoom);renderRoom();
+ const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
+ $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
+ $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}$('bearingResult').innerHTML='<strong>'+bearingName(n)+' <span>· '+n+'°</span></strong><small>Quy đổi 8 phương, độ chính xác phụ thuộc thiết bị.</small>';});
+ $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
+ $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
+ $('clearEvents').addEventListener('click',()=>{if(confirm('Xóa toàn bộ sự kiện đã lưu trên thiết bị này?')){safeSet(STORE.events,[]);renderEvents();}});renderEvents();
+ $('themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem(STORE.theme,dark?'dark':'light');}catch{}});
+ const theme=safeGet(STORE.theme,'light');document.documentElement.dataset.theme=theme;
+ $('shareApp').addEventListener('click',async()=>{await shareText(location.href);$('shareStatus').textContent='Nếu hộp chia sẻ không mở, liên kết đã được sao chép hoặc hiển thị để sao chép.';});
 });
