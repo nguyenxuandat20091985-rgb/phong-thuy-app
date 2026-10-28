@@ -86,7 +86,50 @@ function renderLunarDate(){
  $('lunarDateResult').innerHTML='<strong>'+r.day+'/'+r.month+'/'+r.year+(r.leap?' (tháng nhuận)':'')+'</strong><small>Âm lịch Việt Nam · UTC+7</small>';
 }
 
-function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
+
+const SOLAR_TERMS=[
+ ['Lập xuân',315],['Vũ thủy',330],['Kinh trập',345],['Xuân phân',0],
+ ['Thanh minh',15],['Cốc vũ',30],['Lập hạ',45],['Tiểu mãn',60],
+ ['Mang chủng',75],['Hạ chí',90],['Tiểu thử',105],['Đại thử',120],
+ ['Lập thu',135],['Xử thử',150],['Bạch lộ',165],['Thu phân',180],
+ ['Hàn lộ',195],['Sương giáng',210],['Lập đông',225],['Tiểu tuyết',240],
+ ['Đại tuyết',255],['Đông chí',270],['Tiểu hàn',285],['Đại hàn',300]
+];
+function solarLongitudeDegrees(jd){
+ const T=(jd-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
+ const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+ const L0=280.46645+36000.76983*T+0.0003032*T2;
+ let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+ DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
+ let L=(L0+DL)%360;return (L+360)%360;
+}
+function calculateSolarTerms(year){
+ if(!Number.isInteger(year)||year<1900||year>2099)return null;
+ const start=jdFromDate(1,1,year),end=jdFromDate(1,1,year+1),found=[];
+ for(let day=start;day<end;day++){
+  const prev=solarLongitudeDegrees(day),curr=solarLongitudeDegrees(day+1);
+  const delta=(curr-prev+360)%360;
+  for(const [name,target] of SOLAR_TERMS){
+   const progress=(target-prev+360)%360;
+   if(progress>delta+0.00001)continue;
+   let lo=day,hi=day+1;
+   for(let i=0;i<28;i++){
+    const mid=(lo+hi)/2,passed=(solarLongitudeDegrees(mid)-prev+360)%360;
+    if(passed<progress)lo=mid;else hi=mid;
+   }
+   const localDate=new Date(((lo+hi)/2-2440587.5)*86400000+7*3600000);
+   found.push({name,date:localDate});
+  }
+ }
+ found.sort((a,b)=>a.date-b.date);
+ return found.length===24?found:null;
+}
+function renderSolarTerms(){
+ const year=Number($('solarTermsYear').value),items=calculateSolarTerms(year),out=$('solarTermsResult');
+ if(!items){out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
+ out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+'</span></li>').join('')+'</ol>';
+}
+\nfunction digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
 function calcCung(year,gender){
   // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
   const lastTwo=year%100;
@@ -147,7 +190,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
  const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
  $('roomType').addEventListener('change',renderRoom);renderRoom();$('runHomeAudit').addEventListener('click',runHomeAudit);
- $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();
+ $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
  $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}$('bearingResult').innerHTML='<strong>'+bearingName(n)+' <span>· '+n+'°</span></strong><small>Quy đổi 8 phương, độ chính xác phụ thuộc thiết bị.</small>';});
