@@ -113,7 +113,26 @@ const ROOM={
  entrance:['Cửa chính / lối vào',['Giữ lối vào sáng, khô, dễ đi lại và không bị chắn.','Dùng thảm chống trượt và bảo đảm cửa mở không va vào người.','Không để đồ che lối thoát hiểm hoặc tủ điện.','Hướng cửa cần đo đúng và phân biệt với hướng mặt nhà.']],
  altar:['Bàn thờ',['Chọn vị trí ổn định, trang nghiêm và ít bị va chạm.','Bảo đảm thông gió, phòng cháy; tránh gần vật liệu dễ cháy.','Bố trí an toàn cho trẻ nhỏ và người cao tuổi.','Tập tục khác nhau theo gia đình, vùng miền và tín ngưỡng.']]
 };
-function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
+
+const HOME_AUDIT = {
+ exit:{title:'Thông thoáng lối đi và lối thoát hiểm',detail:'Dọn vật cản ở cửa, hành lang và lối ra trước tiên; không khóa hoặc che lối thoát.'},
+ fire:{title:'Giảm nguy cơ cháy và điện',detail:'Tách vật dễ cháy khỏi bếp, kiểm tra dây/ổ điện hỏng và giữ thiết bị nấu trong tầm quan sát.'},
+ slip:{title:'Xử lý nguy cơ trượt, vấp',detail:'Lau khô sàn, cố định thảm/dây điện và bổ sung chống trượt tại khu vực ẩm.'},
+ air:{title:'Cải thiện thông gió',detail:'Mở cửa khi điều kiện bên ngoài phù hợp, dùng quạt hút ở bếp/phòng tắm và xử lý nguồn ẩm/mùi.'},
+ light:{title:'Bổ sung ánh sáng',detail:'Ưu tiên ánh sáng ban ngày; bổ sung đèn đủ sáng ở cầu thang, lối đi và khu làm việc.'},
+ sleep:{title:'Giảm tiếng ồn và ánh sáng khu ngủ',detail:'Dùng rèm phù hợp, đặt nguồn ồn xa giường và tạo lịch nghỉ ổn định.'},
+ clutter:{title:'Giảm đồ đạc gây cản trở',detail:'Chia đồ theo nhóm, giữ mặt bàn/lối đi thông thoáng và cất đồ vệ sinh dễ tiếp cận.'},
+ privacy:{title:'Tăng sự riêng tư',detail:'Cân nhắc rèm/vách nhẹ hoặc đổi góc nhìn; không làm hẹp lối đi hay cản cửa thoát hiểm.'}
+};
+function runHomeAudit(){
+ const selected=Array.from(document.querySelectorAll('#homeAuditOptions input:checked')).map(el=>el.value);
+ const out=$('homeAuditResult');
+ if(!selected.length){out.innerHTML='<p>Chưa chọn vấn đề nào. Đánh dấu những điểm anh muốn cải thiện rồi phân tích lại.</p>';return;}
+ const priority=['exit','fire','slip','air','light','sleep','clutter','privacy'];
+ const list=selected.sort((a,b)=>priority.indexOf(a)-priority.indexOf(b)).map((key,i)=>'<li><strong>'+(i+1)+'. '+HOME_AUDIT[key].title+'</strong><p>'+HOME_AUDIT[key].detail+'</p></li>').join('');
+ out.innerHTML='<p><strong>Đã ghi nhận '+selected.length+' nhóm vấn đề.</strong> Nên xử lý theo thứ tự ưu tiên dưới đây:</p><ol>'+list+'</ol><p class="field-hint">Đây là gợi ý thực hành dựa trên các lựa chọn của anh, không phải đánh giá kết cấu hay kết luận phong thủy tuyệt đối.</p>';
+}
+\nfunction renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
 function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
 function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
 function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
@@ -126,7 +145,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('profileForm').addEventListener('submit',e=>{e.preventDefault();const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Vui lòng nhập năm từ 1900 đến 2099.');return;}showProfile(year,$('gender').value);});
  $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
  const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
- $('roomType').addEventListener('change',renderRoom);renderRoom();
+ $('roomType').addEventListener('change',renderRoom);renderRoom();$('runHomeAudit').addEventListener('click',runHomeAudit);
  $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
