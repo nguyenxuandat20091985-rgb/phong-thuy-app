@@ -1,11 +1,11 @@
 {
   "name": "Phong Thủy App",
   "short_name": "PhongThủy",
-  "description": "Tính cung mệnh, hướng nhà, ngũ hành theo tuổi",
+  "description": "Tính cung mệnh, hướng nhà, ngũ hành theo tuổi - Nguyễn Xuân Đạt",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#FDF6E3",
-  "theme_color": "#8B4513",
+  "background_color": "#E3F2FD",
+  "theme_color": "#1565C0",
   "orientation": "portrait",
   "lang": "vi",
   "icons": [
