@@ -195,9 +195,10 @@ function renderCompassHeading(raw){
   const magnetic=normalizeDegrees(heading+offset);
   $('compassHeading').textContent=magnetic.toFixed(0)+'°';
   $('compassDirection').textContent=compassDirection(magnetic);
-  $('liveCompassDial').style.transform='rotate('+(-magnetic)+'deg)';
+ 
   const counter=magnetic+'deg';
-  document.querySelectorAll('.bagua-label,.degree-label,.feng-direction').forEach(label=>label.style.setProperty('--label-counter-rotation',counter));
+  document.querySelectorAll('.feng-ring-ticks,.feng-ring-degree,.feng-bagua').forEach(ring=>ring.style.transform='rotate('+(-magnetic)+'deg)');
+  document.querySelectorAll('.bagua-label,.degree-label').forEach(label=>label.style.setProperty('--label-counter-rotation',counter));
   if(lastRenderedHeading===null||Math.abs(((magnetic-lastRenderedHeading+540)%360)-180)>=0.5){
    lastRenderedHeading=magnetic;
    const declinationText=$('magneticDeclination').value.trim();
