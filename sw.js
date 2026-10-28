@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v4';
+const CACHE_NAME = 'phong-thuy-v5-icon';
 const ASSETS = [
   './',
   './index.html',
