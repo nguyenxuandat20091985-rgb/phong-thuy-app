@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v10-icons';
+const CACHE_NAME = 'phong-thuy-v11-maskable-icons';
 const ASSETS = [
   './',
   './index.html',
