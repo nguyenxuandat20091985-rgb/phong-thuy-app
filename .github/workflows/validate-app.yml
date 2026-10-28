@@ -1,0 +1,33 @@
+name: Validate Phong Thuy App
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feat/phong-thuy-p0-p5-upgrade]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: node --check app.js
+      - name: Validate manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
+      - name: Check required app sections
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const js = fs.readFileSync('app.js', 'utf8');
+          const required = ['panel-personal','panel-home','panel-calendar','panel-library'];
+          for (const id of required) {
+            if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
+          }
+          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText']) {
+            if (!js.includes(token)) throw new Error('Missing feature: ' + token);
+          }
+          console.log('Required sections and feature entry points present');
+          NODE
