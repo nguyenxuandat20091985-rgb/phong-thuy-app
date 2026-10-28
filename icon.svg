@@ -1,4 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="96" fill="#1565C0"/>
-  <text x="256" y="300" font-size="220" text-anchor="middle" fill="white" font-family="Arial, sans-serif">🏠</text>
+  <!-- Nền tròn bo góc -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D47A1"/>
+      <stop offset="50%" style="stop-color:#1565C0"/>
+      <stop offset="100%" style="stop-color:#1E88E5"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD54F"/>
+      <stop offset="100%" style="stop-color:#FFC107"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFECB3"/>
+      <stop offset="100%" style="stop-color:#FFC107"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Nền -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+
+  <!-- Vòng tròn trang trí ngoài -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="url(#gold)" stroke-width="8" opacity="0.9"/>
+  <circle cx="256" cy="256" r="185" fill="none" stroke="#FFD54F" stroke-width="2" opacity="0.5"/>
+
+  <!-- Ngôi nhà -->
+  <!-- Mái nhà -->
+  <polygon points="256,110 130,230 382,230" fill="url(#roof)"/>
+  <polygon points="256,125 155,225 357,225" fill="#FFECB3" opacity="0.4"/>
+
+  <!-- Thân nhà -->
+  <rect x="160" y="230" width="192" height="150" rx="8" fill="#FFFFFF"/>
+  
+  <!-- Cửa -->
+  <rect x="220" y="280" width="72" height="100" rx="6" fill="url(#bg)"/>
+  <circle cx="278" cy="330" r="6" fill="#FFD54F"/>
+
+  <!-- Cửa sổ trái -->
+  <rect x="175" y="255" width="40" height="40" rx="4" fill="#BBDEFB"/>
+  <line x1="195" y1="255" x2="195" y2="295" stroke="#1565C0" stroke-width="3"/>
+  <line x1="175" y1="275" x2="215" y2="275" stroke="#1565C0" stroke-width="3"/>
+
+  <!-- Cửa sổ phải -->
+  <rect x="297" y="255" width="40" height="40" rx="4" fill="#BBDEFB"/>
+  <line x1="317" y1="255" x2="317" y2="295" stroke="#1565C0" stroke-width="3"/>
+  <line x1="297" y1="275" x2="337" y2="275" stroke="#1565C0" stroke-width="3"/>
+
+  <!-- Ống khói -->
+  <rect x="310" y="155" width="28" height="55" rx="4" fill="#0D47A1"/>
+
+  <!-- Điểm nhấn vàng dưới -->
+  <circle cx="256" cy="420" r="12" fill="url(#gold)"/>
+  <circle cx="220" cy="420" r="6" fill="#FFD54F" opacity="0.7"/>
+  <circle cx="292" cy="420" r="6" fill="#FFD54F" opacity="0.7"/>
 </svg>
