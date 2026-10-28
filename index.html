@@ -13,7 +13,18 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
+  <!-- Màn hình nhập mật khẩu -->
+  <div id="passwordScreen" class="password-screen">
+    <div class="password-box">
+      <h2>🔒 Phong Thủy App</h2>
+      <p>Nhập mật khẩu để tiếp tục</p>
+      <input type="password" id="passwordInput" placeholder="Mật khẩu" autocomplete="off" />
+      <button id="unlockBtn">Mở khóa</button>
+      <p id="passwordError" class="error" style="display:none;">Sai mật khẩu, thử lại</p>
+    </div>
+  </div>
+
+  <div class="app" id="mainApp" style="display:none;">
     <header>
       <h1>🏠 Phong Thủy</h1>
       <p class="subtitle">Tính cung mệnh & hướng tốt theo tuổi</p>
