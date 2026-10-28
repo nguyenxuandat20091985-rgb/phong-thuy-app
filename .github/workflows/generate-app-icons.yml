@@ -1,0 +1,62 @@
+name: Generate correctly sized app icons
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/generate-app-icons.yml"
+      - "1793195557000.png"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install sharp
+        run: npm install --no-save sharp
+      - name: Generate 192 and 512 pixel icons from the supplied logo
+        run: |
+          node <<'NODE'
+          const sharp = require('sharp');
+          const fs = require('fs');
+          (async () => {
+            const input = '1793195557000.png';
+            if (!fs.existsSync(input)) throw new Error('Source logo not found: ' + input);
+            const meta = await sharp(input).metadata();
+            const side = Math.min(meta.width, meta.height);
+            const left = Math.max(0, Math.round((meta.width - side) / 2));
+            const top = Math.max(0, Math.round((meta.height - side) / 2));
+            const logo = sharp(input).extract({ left, top, width: side, height: side });
+            await Promise.all([
+              logo.clone().resize(192, 192, { fit: 'cover' }).png().toFile('icon-192.png'),
+              logo.clone().resize(512, 512, { fit: 'cover' }).png().toFile('icon-512.png')
+            ]);
+            for (const [file, expected] of [['icon-192.png', 192], ['icon-512.png', 512]]) {
+              const result = await sharp(file).metadata();
+              if (result.width !== expected || result.height !== expected) throw new Error('Unexpected dimensions for ' + file);
+              console.log(file + ': ' + result.width + 'x' + result.height);
+            }
+          })().catch(err => { console.error(err); process.exit(1); });
+          NODE
+      - name: Commit generated icons
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add icon-192.png icon-512.png
+          if git diff --cached --quiet; then
+            echo "Icons are already up to date."
+            exit 0
+          fi
+          git commit -m "Generate correctly sized Phong Thuy app icons"
+          git push
