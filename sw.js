@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v12-p0-p5';
+const CACHE_NAME = 'phong-thuy-v13-lunar-calendar';
 const ASSETS = [
   './',
   './index.html',
