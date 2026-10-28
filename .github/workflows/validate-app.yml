@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check backup.js
+        run: node --check app.js && node --check backup.js && node --check sw.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Check required app sections
@@ -26,7 +26,7 @@ jobs:
           for (const id of required) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
           }
-          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit','calculateSolarTerms','renderSolarTerms']) {
+          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit','calculateSolarTerms','renderSolarTerms','startLiveCompass','handleCompassEvent','compassDirection','normalizeDegrees']) {
             if (!js.includes(token)) throw new Error('Missing feature: ' + token);
           }
           if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');
@@ -48,6 +48,14 @@ jobs:
           if (!terms || terms.length !== 24) throw new Error('Solar term count invalid');
           const lichXuan = terms.find(x => x.name === 'Lập xuân');
           if (!lichXuan || lichXuan.date.getUTCMonth() !== 1 || lichXuan.date.getUTCDate() < 3 || lichXuan.date.getUTCDate() > 5) throw new Error('Lập xuân reference date outside expected range');
-          console.log('Lunar, Ba Trach, home audit and solar term checks passed');
+          for (const [deg, expected] of [[0,'Bắc'],[90,'Đông'],[180,'Nam'],[270,'Tây'],[359,'Bắc']]) {
+  const actual=context.compassDirection(deg);
+  if(actual!==expected) throw new Error('Compass direction mapping failed: '+deg+' -> '+actual);
+}
+for (const [value, expected] of [[360,0],[-1,359],[721,1]]) {
+  if(context.normalizeDegrees(value)!==expected) throw new Error('Compass normalization failed: '+value);
+}
+if (!html.includes('id="startCompass"') || !html.includes('id="liveCompassDial"') || !html.includes('id="magneticDeclination"')) throw new Error('Live compass UI missing');
+console.log('Lunar, Ba Trach, solar terms, live compass mapping and normalization checks passed');
 
           NODE

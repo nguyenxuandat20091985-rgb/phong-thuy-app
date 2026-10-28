@@ -179,6 +179,73 @@ function runHomeAudit(){
 
 function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
 function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
+const COMPASS_DIRECTIONS=['Bắc','Bắc Đông Bắc','Đông Bắc','Đông Đông Bắc','Đông','Đông Đông Nam','Đông Nam','Nam Đông Nam','Nam','Nam Tây Nam','Tây Nam','Tây Tây Nam','Tây','Tây Tây Bắc','Tây Bắc','Bắc Tây Bắc'];
+let compassListening=false,compassLastHeading=null,compassSensorHandler=null,compassSource='';
+function normalizeDegrees(value){return ((value%360)+360)%360;}
+function compassDirection(degrees){return COMPASS_DIRECTIONS[Math.round(normalizeDegrees(degrees)/22.5)%16];}
+function renderCompassHeading(raw){
+ const offset=Number($('compassOffset').value)||0;
+ const magnetic=normalizeDegrees(raw+offset);
+ const declinationText=$('magneticDeclination').value.trim();
+ $('compassHeading').textContent=magnetic.toFixed(0)+'°';
+ $('compassDirection').textContent=compassDirection(magnetic);
+ $('liveCompassDial').style.transform='rotate('+(-magnetic)+'deg)';
+ if(declinationText===''){
+  $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
+ }else{
+  const declination=Number(declinationText);
+  if(!Number.isFinite(declination)||declination < -30||declination>30){
+   $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
+  }else{
+   const truth=normalizeDegrees(magnetic+declination);
+   $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
+  }
+ }
+}
+function handleCompassEvent(event){
+ let heading=null;
+ if(Number.isFinite(event.webkitCompassHeading)){heading=event.webkitCompassHeading;compassSource='Cảm biến la bàn của thiết bị';}
+ else if(event.absolute===true&&Number.isFinite(event.alpha)){heading=360-event.alpha;compassSource='Cảm biến hướng tuyệt đối';}
+ else if(Number.isFinite(event.alpha)){
+  heading=360-event.alpha;
+  compassSource='Dữ liệu hướng chưa xác nhận Bắc tuyệt đối';
+ }
+ if(heading===null)return;
+ const screenAngle=(screen.orientation&&Number.isFinite(screen.orientation.angle))?screen.orientation.angle:(Number.isFinite(window.orientation)?window.orientation:0);
+ if(!Number.isFinite(event.webkitCompassHeading))heading+=screenAngle;
+ compassLastHeading=normalizeDegrees(heading);
+ renderCompassHeading(compassLastHeading);
+ $('compassStatus').textContent=(event.absolute===true||Number.isFinite(event.webkitCompassHeading))
+  ?compassSource+'. Tránh vật kim loại và kiểm tra bằng la bàn chuẩn.'
+  :compassSource+'; hướng có thể sai vì không có tham chiếu Bắc tuyệt đối.';
+}
+async function startLiveCompass(){
+ if(!window.isSecureContext){$('compassStatus').textContent='La bàn cảm biến cần trang HTTPS hoặc ngữ cảnh bảo mật.';return;}
+ if(!('DeviceOrientationEvent' in window)){$('compassStatus').textContent='Trình duyệt này không hỗ trợ cảm biến hướng. Hãy nhập số đo thủ công.';return;}
+ try{
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+   let permission;
+   try{permission=await DeviceOrientationEvent.requestPermission(true);}
+   catch{permission=await DeviceOrientationEvent.requestPermission();}
+   if(permission!=='granted'){$('compassStatus').textContent='Chưa được cấp quyền cảm biến. Hãy cho phép trong trình duyệt rồi thử lại.';return;}
+  }
+  if(compassListening)return;
+  compassSensorHandler=handleCompassEvent;
+  window.addEventListener('deviceorientation',compassSensorHandler,true);
+  window.addEventListener('deviceorientationabsolute',compassSensorHandler,true);
+  compassListening=true;
+  $('startCompass').disabled=true;$('stopCompass').disabled=false;
+  $('compassStatus').textContent='Đang chờ dữ liệu cảm biến… Nếu chưa có số đo, hãy kiểm tra quyền cảm biến và thử mở bằng Chrome/Safari.';
+  window.setTimeout(()=>{if(compassListening&&compassLastHeading===null)$('compassStatus').textContent='Chưa nhận được dữ liệu cảm biến. Trình duyệt/thiết bị có thể không hỗ trợ; nhập số đo thủ công bên dưới.';},3500);
+ }catch(error){$('compassStatus').textContent='Không bật được cảm biến: '+(error&&error.message?error.message:'hãy kiểm tra quyền trình duyệt.');}
+}
+function stopLiveCompass(){
+ if(compassSensorHandler){window.removeEventListener('deviceorientation',compassSensorHandler,true);window.removeEventListener('deviceorientationabsolute',compassSensorHandler,true);}
+ compassListening=false;compassSensorHandler=null;
+ $('startCompass').disabled=false;$('stopCompass').disabled=true;
+ $('compassStatus').textContent='Đã tắt cảm biến. Số đo cuối cùng chỉ để tham khảo.';
+}
+
 function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
 function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -194,7 +261,12 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
- $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}$('bearingResult').innerHTML='<strong>'+bearingName(n)+' <span>· '+n+'°</span></strong><small>Quy đổi 8 phương, độ chính xác phụ thuộc thiết bị.</small>';});
+ $('startCompass').addEventListener('click',startLiveCompass);
+ $('stopCompass').addEventListener('click',stopLiveCompass);
+ $('magneticDeclination').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
+ $('compassOffset').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
+ $('calibrateCompass').addEventListener('click',()=>{if(confirm('Đặt hiệu chỉnh về 0°? Việc này không thay thế hiệu chuẩn cảm biến theo hướng dẫn của điện thoại.')){$('compassOffset').value='0';if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);$('compassStatus').textContent='Đã đặt lại hiệu chỉnh thủ công. Xoay điện thoại theo hình số 8 nếu nhà sản xuất khuyến nghị.';}});
+ $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}const dir=compassDirection(n);$('bearingResult').innerHTML='<strong>'+dir+' · '+n.toFixed(1)+'°</strong><small>Quy đổi 16 phương; độ chính xác tùy thiết bị và cách đo.</small>';});
  $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
  $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
  $('clearEvents').addEventListener('click',()=>{if(confirm('Xóa toàn bộ sự kiện đã lưu trên thiết bị này?')){safeSet(STORE.events,[]);renderEvents();}});renderEvents();
