@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v20-premium-compass';
+const CACHE_NAME = 'phong-thuy-v21-compass-entry';
 const ASSETS = [
   './',
   './index.html',
