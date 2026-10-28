@@ -7,7 +7,6 @@ function checkPassword() {
   const entered = input.value.trim();
 
   if (entered === CORRECT_PASSWORD) {
-    // Lưu trạng thái đã mở khóa (để lần sau không phải nhập lại trên cùng thiết bị)
     localStorage.setItem('phongthuy_unlocked', 'true');
     document.getElementById('passwordScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
@@ -18,7 +17,6 @@ function checkPassword() {
   }
 }
 
-// Kiểm tra đã mở khóa trước đó chưa
 function initAuth() {
   const unlocked = localStorage.getItem('phongthuy_unlocked');
   if (unlocked === 'true') {
@@ -29,15 +27,48 @@ function initAuth() {
     document.getElementById('mainApp').style.display = 'none';
   }
 
-  // Sự kiện
   document.getElementById('unlockBtn').addEventListener('click', checkPassword);
   document.getElementById('passwordInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') checkPassword();
   });
 }
 
-// Chạy khi trang load
 document.addEventListener('DOMContentLoaded', initAuth);
+
+// ===== Cài đặt App (PWA Install) =====
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.style.display = 'block';
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.style.display = 'none';
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          deferredPrompt = null;
+          document.getElementById('installBanner').style.display = 'none';
+        }
+      } else {
+        // Fallback: hướng dẫn thủ công
+        alert('Để cài app:\n\n1. Bấm menu ba chấm ⋮ góc trên bên phải\n2. Chọn "Thêm vào Màn hình chính" hoặc "Cài đặt ứng dụng"');
+      }
+    });
+  }
+});
 
 // ===== Dữ liệu Phong Thủy =====
 const CUNG = {
@@ -51,125 +82,41 @@ const CUNG = {
   9: { name: 'Ly', hanh: 'Hỏa', trach: 'Đông Tứ Trạch' }
 };
 
-// Hướng tốt / xấu theo cung
 const HUONG = {
-  // Đông Tứ Trạch
   'Khảm': {
-    tot: {
-      'Sinh Khí': 'Đông Nam',
-      'Thiên Y': 'Đông',
-      'Diên Niên': 'Nam',
-      'Phục Vị': 'Bắc'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Tây Nam',
-      'Ngũ Quỷ': 'Đông Bắc',
-      'Lục Sát': 'Tây',
-      'Họa Hại': 'Tây Bắc'
-    }
+    tot: { 'Sinh Khí': 'Đông Nam', 'Thiên Y': 'Đông', 'Diên Niên': 'Nam', 'Phục Vị': 'Bắc' },
+    xau: { 'Tuyệt Mệnh': 'Tây Nam', 'Ngũ Quỷ': 'Đông Bắc', 'Lục Sát': 'Tây', 'Họa Hại': 'Tây Bắc' }
   },
   'Chấn': {
-    tot: {
-      'Sinh Khí': 'Nam',
-      'Thiên Y': 'Bắc',
-      'Diên Niên': 'Đông Nam',
-      'Phục Vị': 'Đông'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Tây',
-      'Ngũ Quỷ': 'Tây Bắc',
-      'Lục Sát': 'Tây Nam',
-      'Họa Hại': 'Đông Bắc'
-    }
+    tot: { 'Sinh Khí': 'Nam', 'Thiên Y': 'Bắc', 'Diên Niên': 'Đông Nam', 'Phục Vị': 'Đông' },
+    xau: { 'Tuyệt Mệnh': 'Tây', 'Ngũ Quỷ': 'Tây Bắc', 'Lục Sát': 'Tây Nam', 'Họa Hại': 'Đông Bắc' }
   },
   'Tốn': {
-    tot: {
-      'Sinh Khí': 'Bắc',
-      'Thiên Y': 'Nam',
-      'Diên Niên': 'Đông',
-      'Phục Vị': 'Đông Nam'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Đông Bắc',
-      'Ngũ Quỷ': 'Tây',
-      'Lục Sát': 'Tây Bắc',
-      'Họa Hại': 'Tây Nam'
-    }
+    tot: { 'Sinh Khí': 'Bắc', 'Thiên Y': 'Nam', 'Diên Niên': 'Đông', 'Phục Vị': 'Đông Nam' },
+    xau: { 'Tuyệt Mệnh': 'Đông Bắc', 'Ngũ Quỷ': 'Tây', 'Lục Sát': 'Tây Bắc', 'Họa Hại': 'Tây Nam' }
   },
   'Ly': {
-    tot: {
-      'Sinh Khí': 'Đông',
-      'Thiên Y': 'Đông Nam',
-      'Diên Niên': 'Bắc',
-      'Phục Vị': 'Nam'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Tây Bắc',
-      'Ngũ Quỷ': 'Tây Nam',
-      'Lục Sát': 'Đông Bắc',
-      'Họa Hại': 'Tây'
-    }
+    tot: { 'Sinh Khí': 'Đông', 'Thiên Y': 'Đông Nam', 'Diên Niên': 'Bắc', 'Phục Vị': 'Nam' },
+    xau: { 'Tuyệt Mệnh': 'Tây Bắc', 'Ngũ Quỷ': 'Tây Nam', 'Lục Sát': 'Đông Bắc', 'Họa Hại': 'Tây' }
   },
-  // Tây Tứ Trạch
   'Càn': {
-    tot: {
-      'Sinh Khí': 'Tây',
-      'Thiên Y': 'Đông Bắc',
-      'Diên Niên': 'Tây Nam',
-      'Phục Vị': 'Tây Bắc'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Nam',
-      'Ngũ Quỷ': 'Đông',
-      'Lục Sát': 'Bắc',
-      'Họa Hại': 'Đông Nam'
-    }
+    tot: { 'Sinh Khí': 'Tây', 'Thiên Y': 'Đông Bắc', 'Diên Niên': 'Tây Nam', 'Phục Vị': 'Tây Bắc' },
+    xau: { 'Tuyệt Mệnh': 'Nam', 'Ngũ Quỷ': 'Đông', 'Lục Sát': 'Bắc', 'Họa Hại': 'Đông Nam' }
   },
   'Khôn': {
-    tot: {
-      'Sinh Khí': 'Đông Bắc',
-      'Thiên Y': 'Tây',
-      'Diên Niên': 'Tây Bắc',
-      'Phục Vị': 'Tây Nam'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Đông',
-      'Ngũ Quỷ': 'Nam',
-      'Lục Sát': 'Đông Nam',
-      'Họa Hại': 'Bắc'
-    }
+    tot: { 'Sinh Khí': 'Đông Bắc', 'Thiên Y': 'Tây', 'Diên Niên': 'Tây Bắc', 'Phục Vị': 'Tây Nam' },
+    xau: { 'Tuyệt Mệnh': 'Đông', 'Ngũ Quỷ': 'Nam', 'Lục Sát': 'Đông Nam', 'Họa Hại': 'Bắc' }
   },
   'Cấn': {
-    tot: {
-      'Sinh Khí': 'Tây Nam',
-      'Thiên Y': 'Tây Bắc',
-      'Diên Niên': 'Tây',
-      'Phục Vị': 'Đông Bắc'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Đông Nam',
-      'Ngũ Quỷ': 'Bắc',
-      'Lục Sát': 'Đông',
-      'Họa Hại': 'Nam'
-    }
+    tot: { 'Sinh Khí': 'Tây Nam', 'Thiên Y': 'Tây Bắc', 'Diên Niên': 'Tây', 'Phục Vị': 'Đông Bắc' },
+    xau: { 'Tuyệt Mệnh': 'Đông Nam', 'Ngũ Quỷ': 'Bắc', 'Lục Sát': 'Đông', 'Họa Hại': 'Nam' }
   },
   'Đoài': {
-    tot: {
-      'Sinh Khí': 'Tây Bắc',
-      'Thiên Y': 'Tây Nam',
-      'Diên Niên': 'Đông Bắc',
-      'Phục Vị': 'Tây'
-    },
-    xau: {
-      'Tuyệt Mệnh': 'Bắc',
-      'Ngũ Quỷ': 'Đông Nam',
-      'Lục Sát': 'Nam',
-      'Họa Hại': 'Đông'
-    }
+    tot: { 'Sinh Khí': 'Tây Bắc', 'Thiên Y': 'Tây Nam', 'Diên Niên': 'Đông Bắc', 'Phục Vị': 'Tây' },
+    xau: { 'Tuyệt Mệnh': 'Bắc', 'Ngũ Quỷ': 'Đông Nam', 'Lục Sát': 'Nam', 'Họa Hại': 'Đông' }
   }
 };
 
-// ===== Hàm tính toán =====
 function tinhCungMenh(namSinh, gioiTinh) {
   let so = namSinh % 100;
   so = Math.floor(so / 10) + (so % 10);
@@ -229,14 +176,11 @@ function hienThiKetQua() {
     `Ngũ hành bản mệnh của bạn là <strong>${cung.hanh}</strong> → nên dùng màu sắc, vật liệu tương sinh`
   ];
 
-  const tipsList = document.getElementById('tipsList');
-  tipsList.innerHTML = tips.map(t => `<li>${t}</li>`).join('');
-
+  document.getElementById('tipsList').innerHTML = tips.map(t => `<li>${t}</li>`).join('');
   document.getElementById('result').style.display = 'block';
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Event tính toán
 document.addEventListener('DOMContentLoaded', () => {
   const calcBtn = document.getElementById('calcBtn');
   const birthYear = document.getElementById('birthYear');
