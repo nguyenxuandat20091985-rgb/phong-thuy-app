@@ -24,7 +24,68 @@ const DIRECTIONS = {
 };
 function safeGet(key,fallback){try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw);}catch{return fallback;}}
 function safeSet(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true;}catch{alert('Không lưu được dữ liệu. Hãy kiểm tra dung lượng lưu trữ của trình duyệt.');return false;}}
-function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
+/* Vietnamese lunar calendar conversion using new moons and solar longitude, UTC+7. */
+function jdFromDate(dd,mm,yy){
+ const a=Math.floor((14-mm)/12),y=yy+4800-a,m=mm+12*a-3;
+ let jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+ if(jd<2299161) jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-32083;
+ return jd;
+}
+function newMoon(k){
+ const T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180;
+ let jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
+ jd+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+ const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
+ const Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
+ const F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
+ let C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr);
+ C-=0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)+0.0004*Math.sin(3*Mp*dr);
+ C+=0.0104*Math.sin(2*F*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr);
+ C+=0.0004*Math.sin((2*F+M)*dr)-0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mp)*dr)+0.0010*Math.sin((2*F-Mp)*dr)+0.0005*Math.sin((2*Mp+M)*dr);
+ const deltaT=T < -11 ? 0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3 : -0.000278+0.000265*T+0.000262*T2;
+ return jd+C-deltaT;
+}
+function getNewMoonDay(k,tz){return Math.floor(newMoon(k)+0.5+tz/24);}
+function sunLongitude(jdn){
+ const T=(jdn-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
+ const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+ const L0=280.46645+36000.76983*T+0.0003032*T2;
+ let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+ DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
+ let L=(L0+DL)*dr;L-=Math.PI*2*Math.floor(L/(Math.PI*2));
+ return Math.floor(L/Math.PI*6);
+}
+function getSunLongitude(dayNumber,tz){return sunLongitude(dayNumber-0.5-tz/24);}
+function getLunarMonth11(yy,tz){
+ const off=jdFromDate(31,12,yy)-2415021,k=Math.floor(off/29.530588853);
+ let nm=getNewMoonDay(k,tz);if(getSunLongitude(nm,tz)>=9)nm=getNewMoonDay(k-1,tz);return nm;
+}
+function getLeapMonthOffset(a11,tz){
+ const k=Math.floor(0.5+(a11-2415021.076998695)/29.530588853);
+ let last=0,i=1,arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);
+ do{last=arc;i++;arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);}while(arc!==last&&i<14);
+ return i-1;
+}
+function convertSolarToLunar(dd,mm,yy,tz=7){
+ if(!Number.isInteger(dd)||!Number.isInteger(mm)||!Number.isInteger(yy)||yy<1900||yy>2099||mm<1||mm>12||dd<1||dd>31)return null;
+ const dayNumber=jdFromDate(dd,mm,yy),k=Math.floor((dayNumber-2415021.076998695)/29.530588853);
+ let monthStart=getNewMoonDay(k+1,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k,tz);
+ let a11=getLunarMonth11(yy,tz),b11=a11,lunarYear;
+ if(a11>=monthStart){lunarYear=yy;a11=getLunarMonth11(yy-1,tz);}else{lunarYear=yy+1;b11=getLunarMonth11(yy+1,tz);}
+ const lunarDay=dayNumber-monthStart+1,diff=Math.floor((monthStart-a11)/29);
+ let lunarLeap=0,lunarMonth=diff+11;
+ if(b11-a11>365){const leapDiff=getLeapMonthOffset(a11,tz);if(diff>=leapDiff){lunarMonth=diff+10;if(diff===leapDiff)lunarLeap=1;}}
+ if(lunarMonth>12)lunarMonth-=12;
+ if(lunarMonth>=11&&diff<4)lunarYear--;
+ return {day:lunarDay,month:lunarMonth,year:lunarYear,leap:lunarLeap};
+}
+function renderLunarDate(){
+ const value=$('lunarDateInput').value;if(!value){$('lunarDateResult').textContent='Hãy chọn ngày dương lịch';return;}
+ const [y,m,d]=value.split('-').map(Number),r=convertSolarToLunar(d,m,y,7);
+ if(!r){$('lunarDateResult').textContent='Chỉ hỗ trợ ngày hợp lệ trong giai đoạn 1900–2099';return;}
+ $('lunarDateResult').innerHTML='<strong>'+r.day+'/'+r.month+'/'+r.year+(r.leap?' (tháng nhuận)':'')+'</strong><small>Âm lịch Việt Nam · UTC+7</small>';
+}
+\nfunction digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
 function calcCung(year,gender){
   // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
   const lastTwo=year%100;
@@ -64,7 +125,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('profileForm').addEventListener('submit',e=>{e.preventDefault();const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Vui lòng nhập năm từ 1900 đến 2099.');return;}showProfile(year,$('gender').value);});
  $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
  const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
- $('roomType').addEventListener('change',renderRoom);renderRoom();
+ $('roomType').addEventListener('change',renderRoom);renderRoom();\n $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
  $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}$('bearingResult').innerHTML='<strong>'+bearingName(n)+' <span>· '+n+'°</span></strong><small>Quy đổi 8 phương, độ chính xác phụ thuộc thiết bị.</small>';});
