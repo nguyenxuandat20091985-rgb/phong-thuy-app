@@ -265,7 +265,19 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('stopCompass').addEventListener('click',stopLiveCompass);
  $('magneticDeclination').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
  $('compassOffset').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
- $('calibrateCompass').addEventListener('click',()=>{if(confirm('Đặt hiệu chỉnh về 0°? Việc này không thay thế hiệu chuẩn cảm biến theo hướng dẫn của điện thoại.')){$('compassOffset').value='0';if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);$('compassStatus').textContent='Đã đặt lại hiệu chỉnh thủ công. Xoay điện thoại theo hình số 8 nếu nhà sản xuất khuyến nghị.';}});
+ $('calibrateCompass').addEventListener('click',()=>{
+  if(compassLastHeading===null){$('compassStatus').textContent='Bật la bàn trước, đặt cạnh một la bàn chuẩn rồi mới hiệu chuẩn.';return;}
+  const input=prompt('Nhập góc từ tính đang chỉ trên la bàn chuẩn (0–359°). Đặt hai thiết bị cạnh nhau và cùng hướng:',String(Math.round(normalizeDegrees(compassLastHeading+(Number($('compassOffset').value)||0)))));
+  if(input===null)return;
+  const known=Number(input);
+  if(input.trim()===''||!Number.isFinite(known)||known<0||known>=360){$('compassStatus').textContent='Góc tham chiếu không hợp lệ; nhập từ 0 đến dưới 360°.';return;}
+  let offset=normalizeDegrees(known-compassLastHeading);
+  if(offset>180)offset-=360;
+  $('compassOffset').value=String(Math.round(offset*10)/10);
+  renderCompassHeading(compassLastHeading);
+  $('compassStatus').textContent='Đã áp dụng hiệu chỉnh '+$('compassOffset').value+'°. Chỉ hiệu chỉnh khi la bàn chuẩn và điện thoại ở cùng vị trí/hướng; sai số cảm biến vẫn có thể tồn tại.';
+ });
+ $('resetCompassCalibration').addEventListener('click',()=>{if(confirm('Đặt độ lệch hiệu chỉnh thiết bị về 0°?')){$('compassOffset').value='0';if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);$('compassStatus').textContent='Đã đặt hiệu chỉnh thiết bị về 0°.';}});
  $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}const dir=compassDirection(n);$('bearingResult').innerHTML='<strong>'+dir+' · '+n.toFixed(1)+'°</strong><small>Quy đổi 16 phương; độ chính xác tùy thiết bị và cách đo.</small>';});
  $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
  $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
