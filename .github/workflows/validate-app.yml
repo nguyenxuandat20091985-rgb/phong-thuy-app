@@ -55,7 +55,7 @@ jobs:
 for (const [value, expected] of [[360,0],[-1,359],[721,1]]) {
   if(context.normalizeDegrees(value)!==expected) throw new Error('Compass normalization failed: '+value);
 }
-if (!html.includes('id="startCompass"') || !html.includes('id="liveCompassDial"') || !html.includes('id="magneticDeclination"')) throw new Error('Live compass UI missing');
+if (!html.includes('id="startCompass"') || !html.includes('id="liveCompassDial"') || !html.includes('id="magneticDeclination"') || !html.includes('id="resetCompassCalibration"')) throw new Error('Live compass UI missing');
 console.log('Lunar, Ba Trach, solar terms, live compass mapping and normalization checks passed');
 
           NODE
