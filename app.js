@@ -127,7 +127,7 @@ function calculateSolarTerms(year){
 function renderSolarTerms(){
  const year=Number($('solarTermsYear').value),items=calculateSolarTerms(year),out=$('solarTermsResult');
  if(!items){out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
- out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+'</span></li>').join('')+'</ol>';
+ out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+' · '+item.date.toISOString().slice(11,16)+'</span></li>').join('')+'</ol>';
 }
 
 function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
