@@ -282,7 +282,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   compassLastHeading=normalizeDegrees(desired-offset);
   renderCompassHeading(compassLastHeading);
   $('compassStatus').textContent='Đang xoay thử thủ công; số độ này không phải số đo cảm biến.';
-  $('compassSource']='manual';
  });
  const endDialDrag=event=>{if(dragState&&event.pointerId===dragState.pointerId){dragState=null;dragDial.classList.remove('is-dragging');}};
  dragDial.addEventListener('pointerup',endDialDrag);
