@@ -1,11 +1,11 @@
-const CACHE_NAME = 'phong-thuy-v6-bagua';
+const CACHE_NAME = 'phong-thuy-v7-bagua';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './manifest.json',
-  './1793192696866.png'
+  './1793195557000.png'
 ];
 
 self.addEventListener('install', (event) => {
