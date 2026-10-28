@@ -183,24 +183,37 @@ const COMPASS_DIRECTIONS=['Bắc','Bắc Đông Bắc','Đông Bắc','Đông Đ
 let compassListening=false,compassLastHeading=null,compassSensorHandler=null,compassSource='';
 function normalizeDegrees(value){return ((value%360)+360)%360;}
 function compassDirection(degrees){return COMPASS_DIRECTIONS[Math.round(normalizeDegrees(degrees)/22.5)%16];}
+let compassRenderFrame=0,compassPendingHeading=null,lastRenderedHeading=null;
 function renderCompassHeading(raw){
- const offset=Number($('compassOffset').value)||0;
- const magnetic=normalizeDegrees(raw+offset);
- const declinationText=$('magneticDeclination').value.trim();
- $('compassHeading').textContent=magnetic.toFixed(0)+'°';
- $('compassDirection').textContent=compassDirection(magnetic);
- $('liveCompassDial').style.transform='rotate('+(-magnetic)+'deg)';
- if(declinationText===''){
-  $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
- }else{
-  const declination=Number(declinationText);
-  if(!Number.isFinite(declination)||declination < -30||declination>30){
-   $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
-  }else{
-   const truth=normalizeDegrees(magnetic+declination);
-   $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
+ compassPendingHeading=raw;
+ if(compassRenderFrame)return;
+ compassRenderFrame=requestAnimationFrame(()=>{
+  compassRenderFrame=0;
+  if(compassPendingHeading===null)return;
+  const heading=compassPendingHeading;compassPendingHeading=null;
+  const offset=Number($('compassOffset').value)||0;
+  const magnetic=normalizeDegrees(heading+offset);
+  $('compassHeading').textContent=magnetic.toFixed(0)+'°';
+  $('compassDirection').textContent=compassDirection(magnetic);
+  $('liveCompassDial').style.transform='rotate('+(-magnetic)+'deg)';
+  const counter=magnetic+'deg';
+  document.querySelectorAll('.bagua-label,.degree-label,.feng-direction').forEach(label=>label.style.setProperty('--label-counter-rotation',counter));
+  if(lastRenderedHeading===null||Math.abs(((magnetic-lastRenderedHeading+540)%360)-180)>=0.5){
+   lastRenderedHeading=magnetic;
+   const declinationText=$('magneticDeclination').value.trim();
+   if(declinationText===''){
+    $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
+   }else{
+    const declination=Number(declinationText);
+    if(!Number.isFinite(declination)||declination < -30||declination>30){
+     $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
+    }else{
+     const truth=normalizeDegrees(magnetic+declination);
+     $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
+    }
+   }
   }
- }
+ });
 }
 function handleCompassEvent(event){
  let heading=null;
@@ -215,9 +228,7 @@ function handleCompassEvent(event){
  if(!Number.isFinite(event.webkitCompassHeading))heading+=screenAngle;
  compassLastHeading=normalizeDegrees(heading);
  renderCompassHeading(compassLastHeading);
- $('compassStatus').textContent=(event.absolute===true||Number.isFinite(event.webkitCompassHeading))
-  ?compassSource+'. Tránh vật kim loại và kiểm tra bằng la bàn chuẩn.'
-  :compassSource+'; hướng có thể sai vì không có tham chiếu Bắc tuyệt đối.';
+ if(!$('compassStatus').dataset.sensorReady){$('compassStatus').textContent=(event.absolute===true||Number.isFinite(event.webkitCompassHeading))?'Đang đo trực tiếp từ cảm biến. Tránh vật kim loại và nam châm.':'Đang đo; cảm biến này có thể không xác định chính xác hướng Bắc.';$('compassStatus').dataset.sensorReady='1';}
 }
 async function startLiveCompass(){
  if(!window.isSecureContext){$('compassStatus').textContent='La bàn cảm biến cần trang HTTPS hoặc ngữ cảnh bảo mật.';return;}
@@ -234,15 +245,15 @@ async function startLiveCompass(){
   window.addEventListener('deviceorientation',compassSensorHandler,true);
   window.addEventListener('deviceorientationabsolute',compassSensorHandler,true);
   compassListening=true;
-  $('startCompass').disabled=true;$('stopCompass').disabled=false;
-  $('compassStatus').textContent='Đang chờ dữ liệu cảm biến… Nếu chưa có số đo, hãy kiểm tra quyền cảm biến và thử mở bằng Chrome/Safari.';
+  $('startCompass').disabled=true;$('startCompass').textContent='Đang đo…';$('stopCompass').hidden=false;$('stopCompass').disabled=false;
+  $('compassStatus').dataset.sensorReady='';$('compassStatus').textContent='Đang chờ dữ liệu cảm biến…';
   window.setTimeout(()=>{if(compassListening&&compassLastHeading===null)$('compassStatus').textContent='Chưa nhận được dữ liệu cảm biến. Trình duyệt/thiết bị có thể không hỗ trợ; nhập số đo thủ công bên dưới.';},3500);
  }catch(error){$('compassStatus').textContent='Không bật được cảm biến: '+(error&&error.message?error.message:'hãy kiểm tra quyền trình duyệt.');}
 }
 function stopLiveCompass(){
  if(compassSensorHandler){window.removeEventListener('deviceorientation',compassSensorHandler,true);window.removeEventListener('deviceorientationabsolute',compassSensorHandler,true);}
- compassListening=false;compassSensorHandler=null;
- $('startCompass').disabled=false;$('stopCompass').disabled=true;
+ compassListening=false;compassSensorHandler=null;$('compassStatus').dataset.sensorReady='';
+ $('startCompass').disabled=false;$('startCompass').textContent='Bật la bàn';$('stopCompass').hidden=true;$('stopCompass').disabled=true;
  $('compassStatus').textContent='Đã tắt cảm biến. Số đo cuối cùng chỉ để tham khảo.';
 }
 
