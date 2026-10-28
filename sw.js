@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v19-remove-notice';
+const CACHE_NAME = 'phong-thuy-v20-premium-compass';
 const ASSETS = [
   './',
   './index.html',
