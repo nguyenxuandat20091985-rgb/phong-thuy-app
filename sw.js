@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v14-local-backup';
+const CACHE_NAME = 'phong-thuy-v15-solar-terms';
 const ASSETS = [
   './',
   './index.html',

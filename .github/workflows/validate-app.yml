@@ -26,7 +26,7 @@ jobs:
           for (const id of required) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
           }
-          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit']) {
+          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit','calculateSolarTerms','renderSolarTerms']) {
             if (!js.includes(token)) throw new Error('Missing feature: ' + token);
           }
           if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');
@@ -34,7 +34,7 @@ jobs:
           const vm = require('vm');
           const context = { document: { addEventListener() {} }, localStorage: { getItem(){return null}, setItem(){} }, console, Math, Date, Number, String, Object, Array, JSON, location: { href: 'test' }, navigator: {} };
           vm.createContext(context);
-          vm.runInContext(js + ';globalThis.__lunar = convertSolarToLunar; globalThis.__cung = calcCung;', context);
+          vm.runInContext(js + ';globalThis.__lunar = convertSolarToLunar; globalThis.__cung = calcCung; globalThis.__terms = calculateSolarTerms;', context);
           for (const [solar, expected] of [
             [[10,2,2024],[1,1,2024]], [[29,1,2025],[1,1,2025]], [[17,2,2026],[1,1,2026]]
           ]) {
@@ -44,6 +44,10 @@ jobs:
           for (const year of [1990,2000,2001,2026]) for (const gender of ['nam','nu']) {
             const result=context.__cung(year,gender); if(!result||!result.name||!result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
           }
-          console.log('Lunar reference dates and Ba Trach representative years passed');
+          const terms = context.__terms(2026);
+          if (!terms || terms.length !== 24) throw new Error('Solar term count invalid');
+          const lichXuan = terms.find(x => x.name === 'Lập xuân');
+          if (!lichXuan || lichXuan.date.getUTCMonth() !== 1 || lichXuan.date.getUTCDate() < 3 || lichXuan.date.getUTCDate() > 5) throw new Error('Lập xuân reference date outside expected range');
+          console.log('Lunar, Ba Trach, home audit and solar term checks passed');
 
           NODE
