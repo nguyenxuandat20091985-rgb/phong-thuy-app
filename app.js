@@ -1,3 +1,44 @@
+// ===== Mật khẩu bảo vệ =====
+const CORRECT_PASSWORD = 'phongthuy2026';
+
+function checkPassword() {
+  const input = document.getElementById('passwordInput');
+  const error = document.getElementById('passwordError');
+  const entered = input.value.trim();
+
+  if (entered === CORRECT_PASSWORD) {
+    // Lưu trạng thái đã mở khóa (để lần sau không phải nhập lại trên cùng thiết bị)
+    localStorage.setItem('phongthuy_unlocked', 'true');
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+  } else {
+    error.style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
+// Kiểm tra đã mở khóa trước đó chưa
+function initAuth() {
+  const unlocked = localStorage.getItem('phongthuy_unlocked');
+  if (unlocked === 'true') {
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+  } else {
+    document.getElementById('passwordScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+  }
+
+  // Sự kiện
+  document.getElementById('unlockBtn').addEventListener('click', checkPassword);
+  document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkPassword();
+  });
+}
+
+// Chạy khi trang load
+document.addEventListener('DOMContentLoaded', initAuth);
+
 // ===== Dữ liệu Phong Thủy =====
 const CUNG = {
   1: { name: 'Khảm', hanh: 'Thủy', trach: 'Đông Tứ Trạch' },
@@ -130,7 +171,6 @@ const HUONG = {
 
 // ===== Hàm tính toán =====
 function tinhCungMenh(namSinh, gioiTinh) {
-  // Công thức phổ biến: lấy 2 số cuối năm sinh, cộng lại đến khi còn 1 chữ số, rồi dùng bảng
   let so = namSinh % 100;
   so = Math.floor(so / 10) + (so % 10);
   if (so > 9) so = Math.floor(so / 10) + (so % 10);
@@ -138,15 +178,14 @@ function tinhCungMenh(namSinh, gioiTinh) {
   let cungSo;
   if (gioiTinh === 'nam') {
     cungSo = 11 - so;
-    if (cungSo === 5) cungSo = 2; // Nam cung 5 → Khôn
+    if (cungSo === 5) cungSo = 2;
     if (cungSo > 9) cungSo -= 9;
   } else {
     cungSo = so + 4;
     if (cungSo > 9) cungSo -= 9;
-    if (cungSo === 5) cungSo = 8; // Nữ cung 5 → Cấn
+    if (cungSo === 5) cungSo = 8;
   }
 
-  // Xử lý trường hợp đặc biệt năm 2000 trở đi đôi khi có biến thể, nhưng công thức trên vẫn dùng phổ biến
   return CUNG[cungSo] || CUNG[1];
 }
 
@@ -162,12 +201,10 @@ function hienThiKetQua() {
   const cung = tinhCungMenh(year, gender);
   const huong = HUONG[cung.name];
 
-  // Hiển thị
   document.getElementById('cungMenh').textContent = cung.name;
   document.getElementById('nguHanh').textContent = cung.hanh;
   document.getElementById('trach').textContent = cung.trach;
 
-  // Hướng tốt
   const totDiv = document.getElementById('huongTot');
   totDiv.innerHTML = '';
   for (const [ten, huongTen] of Object.entries(huong.tot)) {
@@ -176,7 +213,6 @@ function hienThiKetQua() {
     totDiv.appendChild(span);
   }
 
-  // Hướng xấu
   const xauDiv = document.getElementById('huongXau');
   xauDiv.innerHTML = '';
   for (const [ten, huongTen] of Object.entries(huong.xau)) {
@@ -185,7 +221,6 @@ function hienThiKetQua() {
     xauDiv.appendChild(span);
   }
 
-  // Gợi ý
   const tips = [
     `Hướng nhà / cửa chính tốt nhất: <strong>${huong.tot['Sinh Khí']}</strong> (Sinh Khí)`,
     `Hướng giường ngủ tốt: ưu tiên ${huong.tot['Thiên Y']} hoặc ${huong.tot['Diên Niên']}`,
@@ -201,8 +236,14 @@ function hienThiKetQua() {
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Event
-document.getElementById('calcBtn').addEventListener('click', hienThiKetQua);
-document.getElementById('birthYear').addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') hienThiKetQua();
+// Event tính toán
+document.addEventListener('DOMContentLoaded', () => {
+  const calcBtn = document.getElementById('calcBtn');
+  const birthYear = document.getElementById('birthYear');
+  if (calcBtn) calcBtn.addEventListener('click', hienThiKetQua);
+  if (birthYear) {
+    birthYear.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') hienThiKetQua();
+    });
+  }
 });
