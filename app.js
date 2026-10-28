@@ -41,17 +41,22 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  const banner = document.getElementById('installBanner');
-  if (banner) banner.style.display = 'block';
 });
 
 window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
   const banner = document.getElementById('installBanner');
   if (banner) banner.style.display = 'none';
+  localStorage.setItem('phongthuy_installed', 'true');
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Nếu đã cài rồi thì ẩn nút
+  if (localStorage.getItem('phongthuy_installed') === 'true') {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.style.display = 'none';
+  }
+
   const installBtn = document.getElementById('installBtn');
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
@@ -61,10 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (outcome === 'accepted') {
           deferredPrompt = null;
           document.getElementById('installBanner').style.display = 'none';
+          localStorage.setItem('phongthuy_installed', 'true');
         }
       } else {
-        // Fallback: hướng dẫn thủ công
-        alert('Để cài app:\n\n1. Bấm menu ba chấm ⋮ góc trên bên phải\n2. Chọn "Thêm vào Màn hình chính" hoặc "Cài đặt ứng dụng"');
+        // Hướng dẫn thủ công rồi ẩn nút
+        alert('Để cài app vào máy:\n\n1. Bấm menu ba chấm ⋮ (góc trên bên phải)\n2. Chọn "Thêm vào Màn hình chính" hoặc "Cài đặt ứng dụng"\n3. Bấm Thêm / Cài đặt');
+        document.getElementById('installBanner').style.display = 'none';
+        localStorage.setItem('phongthuy_installed', 'true');
       }
     });
   }
