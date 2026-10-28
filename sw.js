@@ -1,10 +1,11 @@
-const CACHE_NAME = 'phong-thuy-v3';
+const CACHE_NAME = 'phong-thuy-v4';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
-  './manifest.json'
+  './manifest.json',
+  './icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
