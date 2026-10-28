@@ -27,11 +27,13 @@ function safeSet(key,value){try{localStorage.setItem(key,JSON.stringify(value));
 function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
 function calcCung(year,gender){
   // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
-  const sum=digitSum(year);
+  const lastTwo=year%100;
+  const sum=digitSum(lastTwo);
   let number;
-  if(year>=2000){number=gender==='nam'?9-(sum%9):(sum+6)%9||9;}
-  else {number=gender==='nam'?11-(sum%9):(sum+4)%9||9;}
-  number=((number-1)%9+9)%9+1;
+  if(year>=2000){number=gender==='nam'?9-sum:6+sum;}
+  else {number=gender==='nam'?10-sum:5+sum;}
+  while(number>9) number=digitSum(number);
+  while(number<1) number+=9;
   if(number===5) number=gender==='nam'?2:8;
   return CUNG[number]||null;
 }
@@ -69,7 +71,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
  $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
  $('clearEvents').addEventListener('click',()=>{if(confirm('Xóa toàn bộ sự kiện đã lưu trên thiết bị này?')){safeSet(STORE.events,[]);renderEvents();}});renderEvents();
- $('themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem(STORE.theme,dark?'dark':'light');}catch{}});
+ $('themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';safeSet(STORE.theme,dark?'dark':'light');});
  const theme=safeGet(STORE.theme,'light');document.documentElement.dataset.theme=theme;
  $('shareApp').addEventListener('click',async()=>{await shareText(location.href);$('shareStatus').textContent='Nếu hộp chia sẻ không mở, liên kết đã được sao chép hoặc hiển thị để sao chép.';});
 });
