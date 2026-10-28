@@ -44,6 +44,10 @@ jobs:
           for (const year of [1990,2000,2001,2026]) for (const gender of ['nam','nu']) {
             const result=context.__cung(year,gender); if(!result||!result.name||!result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
           }
-          const terms = context.__terms(2026);\n          if (!terms || terms.length !== 24) throw new Error('Solar term count invalid');\n          const lichXuan = terms.find(x => x.name === 'Lập xuân');\n          if (!lichXuan || lichXuan.date.getUTCMonth() !== 1 || lichXuan.date.getUTCDate() < 3 || lichXuan.date.getUTCDate() > 5) throw new Error('Lập xuân reference date outside expected range');\n          console.log('Lunar, Ba Trach, home audit and solar term checks passed');
+          const terms = context.__terms(2026);
+          if (!terms || terms.length !== 24) throw new Error('Solar term count invalid');
+          const lichXuan = terms.find(x => x.name === 'Lập xuân');
+          if (!lichXuan || lichXuan.date.getUTCMonth() !== 1 || lichXuan.date.getUTCDate() < 3 || lichXuan.date.getUTCDate() > 5) throw new Error('Lập xuân reference date outside expected range');
+          console.log('Lunar, Ba Trach, home audit and solar term checks passed');
 
           NODE
