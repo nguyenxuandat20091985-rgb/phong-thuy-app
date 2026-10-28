@@ -29,7 +29,8 @@ jobs:
           for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit']) {
             if (!js.includes(token)) throw new Error('Missing feature: ' + token);
           }
-          if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');\n          console.log('Required sections and feature entry points present');
+          if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');
+          console.log('Required sections and feature entry points present');
           const vm = require('vm');
           const context = { document: { addEventListener() {} }, localStorage: { getItem(){return null}, setItem(){} }, console, Math, Date, Number, String, Object, Array, JSON, location: { href: 'test' }, navigator: {} };
           vm.createContext(context);
