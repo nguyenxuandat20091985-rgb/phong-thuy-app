@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#8B4513" />
+  <meta name="description" content="Ứng dụng Phong Thủy - Tính cung mệnh, hướng nhà, ngũ hành theo tuổi" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Phong Thủy App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>🏠 Phong Thủy</h1>
+      <p class="subtitle">Tính cung mệnh & hướng tốt theo tuổi</p>
+    </header>
+
+    <main>
+      <section class="card input-card">
+        <label for="birthYear">Năm sinh (dương lịch)</label>
+        <input type="number" id="birthYear" placeholder="Ví dụ: 1990" min="1920" max="2030" />
+        
+        <label for="gender">Giới tính</label>
+        <select id="gender">
+          <option value="nam">Nam</option>
+          <option value="nu">Nữ</option>
+        </select>
+
+        <button id="calcBtn">Xem kết quả</button>
+      </section>
+
+      <section id="result" class="card result-card" style="display: none;">
+        <h2>Kết quả của bạn</h2>
+        
+        <div class="info-row">
+          <span class="label">Cung mệnh:</span>
+          <span id="cungMenh" class="value"></span>
+        </div>
+        <div class="info-row">
+          <span class="label">Ngũ hành:</span>
+          <span id="nguHanh" class="value"></span>
+        </div>
+        <div class="info-row">
+          <span class="label">Trạch:</span>
+          <span id="trach" class="value"></span>
+        </div>
+
+        <h3>Hướng tốt (nên dùng)</h3>
+        <div id="huongTot" class="directions good"></div>
+
+        <h3>Hướng xấu (nên tránh)</h3>
+        <div id="huongXau" class="directions bad"></div>
+
+        <div class="tips">
+          <h3>💡 Gợi ý</h3>
+          <ul id="tipsList"></ul>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Phong Thủy App • Dùng tham khảo</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
