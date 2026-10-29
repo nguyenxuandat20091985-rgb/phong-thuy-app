@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v28-green-restore-polish';
+const CACHE_NAME = 'phong-thuy-v29-exact-green-restore';
 const ASSETS = [
   './',
   './index.html',
