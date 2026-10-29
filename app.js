@@ -290,6 +290,32 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
  const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
  document.querySelectorAll('.home-guide-tab').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.guide;document.querySelectorAll('.home-guide-tab').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('[data-guide-panel]').forEach(panel=>{const active=panel.dataset.guidePanel===name;panel.hidden=!active;panel.classList.toggle('active',active);});}));
+ 
+ $('houseAgeForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const raw=$('houseBirthDate').value,gender=$('houseBirthGender').value,facing=$('houseMeasuredFacing').value;
+  if(!raw){$('houseAgeResult').innerHTML='<p>Hãy nhập ngày sinh dương lịch hợp lệ.</p>';return;}
+  const [year,month,day]=raw.split('-').map(Number);
+  const date=new Date(Date.UTC(year,month-1,day));
+  if(!Number.isInteger(year)||year<1900||year>2099||date.getUTCFullYear()!==year||date.getUTCMonth()!==month-1||date.getUTCDate()!==day){$('houseAgeResult').innerHTML='<p>Ngày sinh không hợp lệ hoặc nằm ngoài giai đoạn 1900–2099.</p>';return;}
+  const c=calcCung(year,gender);
+  if(!c){$('houseAgeResult').innerHTML='<p>Chưa thể tính cung phi với dữ liệu này.</p>';return;}
+  const d=DIRECTIONS[c.name];
+  const facingGood=facing?d.good.some(item=>item[1]===facing):null;
+  const facingBad=facing?d.bad.some(item=>item[1]===facing):null;
+  const tips=[
+   ['Giường ngủ','Nếu bố trí thuận tiện, có thể cân nhắc đầu giường theo một trong bốn hướng tốt: '+d.good.map(x=>x[1]).join(', ')+'. Ưu tiên tường chắc, lối đi an toàn và chất lượng giấc ngủ.'],
+   ['Bàn làm việc / học tập','Có thể thử quay vị trí ngồi về một hướng tốt trong bảng tra: '+d.good.map(x=>x[1]).join(', ')+'. Vẫn ưu tiên ánh sáng, công thái học và tầm nhìn phù hợp.'],
+   ['Bếp và cửa chính','Không thể kết luận vị trí bếp hoặc cần sửa cửa chỉ từ ngày sinh. Cần xem mặt bằng thực tế, hướng đo và quy ước trường phái trước khi thay đổi lớn.']
+  ];
+  let compare='';
+  if(facingGood)compare='<div class="age-facing-check positive"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Hướng này nằm trong nhóm hướng tốt của cung '+c.name+' theo bảng Bát Trạch đang dùng.</p></div>';
+  else if(facingBad)compare='<div class="age-facing-check caution"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Hướng này nằm trong nhóm hướng cần cân nhắc của cung '+c.name+' theo bảng tra. Không cần sửa chữa vội; hãy kiểm tra cách đo, cách xác định năm sinh và mặt bằng thực tế.</p></div>';
+  else if(facing)compare='<div class="age-facing-check"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Không xác định được hướng này trong bảng tra; hãy kiểm tra lại hướng đã chọn.</p></div>';
+  $('houseAgeResult').innerHTML='<div class="profile-summary"><div class="profile-orb">'+c.name+'</div><div><span class="eyebrow">KẾT QUẢ BÁT TRẠCH THAM KHẢO</span><h3>Cung '+c.name+'</h3><p>'+c.group+' · Hành cung '+c.hanh+'</p><small>Ngày sinh: '+day+'/'+month+'/'+year+' · '+(gender==='nam'?'Nam':'Nữ')+'</small></div></div>'+compare+'<div class="age-result-section"><h4>4 hướng tốt theo bảng tra</h4><div class="direction-grid">'+renderPairs(d.good,'good')+'</div></div><div class="age-result-section"><h4>4 hướng cần cân nhắc</h4><div class="direction-grid">'+renderPairs(d.bad,'bad')+'</div></div><div class="age-result-section"><h4>Gợi ý bố trí theo không gian</h4><ul class="age-placement-list">'+tips.map(t=>'<li><strong>'+t[0]+'</strong><p>'+t[1]+'</p></li>').join('')+'</ul></div>';
+ });
+ $('clearHouseAgeForm').addEventListener('click',()=>{$('houseAgeForm').reset();$('houseAgeResult').innerHTML='<p class="empty-state small">Nhập thông tin để xem cung phi, nhóm trạch, hướng hợp theo bảng tra và gợi ý bố trí phòng.</p>';});
+
  $('goPersonalGuide').addEventListener('click',()=>{goTab('personal');window.setTimeout(()=>$('profileForm').scrollIntoView({behavior:'smooth',block:'center'}),80);});
  $('roomType').addEventListener('change',renderRoom);renderRoom();$('runHomeAudit').addEventListener('click',runHomeAudit);
  $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
