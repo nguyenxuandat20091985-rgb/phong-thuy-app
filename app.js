@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  
  const birthDateInput=$('houseBirthDate');
  birthDateInput.addEventListener('input',()=>{
-  const digits=birthDateInput.value.replace(/\\D/g,'').slice(0,8);
+  const digits=birthDateInput.value.replace(/\D/g,'').slice(0,8);
   let formatted=digits;
   if(digits.length>4)formatted=digits.slice(0,2)+'/'+digits.slice(2,4)+'/'+digits.slice(4);
   else if(digits.length>2)formatted=digits.slice(0,2)+'/'+digits.slice(2);
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('houseAgeForm').addEventListener('submit',e=>{
   e.preventDefault();
   const birthText=$('houseBirthDate').value.trim(),parts=birthText.split('/'),day=Number(parts[0]),month=Number(parts[1]),year=Number(parts[2]),gender=$('houseBirthGender').value,facing=$('houseMeasuredFacing').value;
-  if(!/^\\d{2}\\/\\d{2}\\/\\d{4}$/.test(birthText)){ $('houseAgeResult').innerHTML='<p>Anh nhập ngày sinh theo mẫu 00/00/0000 nhé.</p>';return;}
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(birthText)){ $('houseAgeResult').innerHTML='<p>Anh nhập ngày sinh theo mẫu 00/00/0000 nhé.</p>';return;}
   const date=new Date(Date.UTC(year,month-1,day));
   if(!Number.isInteger(year)||year<1900||year>2099||date.getUTCFullYear()!==year||date.getUTCMonth()!==month-1||date.getUTCDate()!==day){$('houseAgeResult').innerHTML='<p>Ngày sinh không hợp lệ hoặc nằm ngoài giai đoạn 1900–2099.</p>';return;}
   const c=calcCung(year,gender);
