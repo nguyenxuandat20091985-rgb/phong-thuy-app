@@ -298,6 +298,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  const houseProfile=safeGet(STORE.houseProfile,{});
  if(houseProfile&&typeof houseProfile==='object'){
   if($('houseFacing'))$('houseFacing').value=houseProfile.facing||'';
+  if($('houseBearing'))$('houseBearing').value=Number.isFinite(houseProfile.bearing)?houseProfile.bearing:'';
   if($('houseType'))$('houseType').value=houseProfile.type||'';
   if($('houseFloors'))$('houseFloors').value=houseProfile.floors||'';
   if($('housePosition'))$('housePosition').value=houseProfile.position||'';
@@ -306,13 +307,18 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('saveHouseProfile').addEventListener('click',()=>{
   const floorsRaw=$('houseFloors').value.trim(),floors=floorsRaw===''?null:Number(floorsRaw);
   if(floors!==null&&(!Number.isInteger(floors)||floors<1||floors>100)){ $('houseProfileStatus').textContent='Số tầng phải là số nguyên từ 1 đến 100.';return; }
-  const data={facing:$('houseFacing').value,type:$('houseType').value,floors,position:$('housePosition').value,notes:$('houseLayoutNotes').value.trim().slice(0,1200),updatedAt:new Date().toISOString()};
+  const bearingRaw=$('houseBearing').value.trim();
+  const bearing=bearingRaw===''?null:Number(bearingRaw);
+  if(bearing!==null&&(!Number.isFinite(bearing)||bearing<0||bearing>=360)){ $('houseProfileStatus').textContent='Góc la bàn phải từ 0° đến dưới 360°.';return; }
+  const facing=$('houseFacing').value||(bearing!==null?bearingName(bearing):'');
+  const data={facing,bearing,type:$('houseType').value,floors,position:$('housePosition').value,notes:$('houseLayoutNotes').value.trim().slice(0,1200),updatedAt:new Date().toISOString()};
   if(safeSet(STORE.houseProfile,data))$('houseProfileStatus').textContent='Đã lưu hồ sơ ngôi nhà trên thiết bị này.';
  });
+ $('houseBearing').addEventListener('input',()=>{const raw=$('houseBearing').value.trim(),n=Number(raw);if(raw!==''&&Number.isFinite(n)&&n>=0&&n<360){$('houseFacing').value=bearingName(n);$('houseProfileStatus').textContent='Góc đo tương ứng hướng '+bearingName(n)+'. Hãy xác nhận số đo trước khi lưu.';}});
  $('clearHouseProfile').addEventListener('click',()=>{
   if(!confirm('Xóa hồ sơ mặt bằng và hướng nhà đã lưu trên thiết bị này?'))return;
   try{localStorage.removeItem(STORE.houseProfile);}catch{}
-  ['houseFacing','houseType','houseFloors','housePosition','houseLayoutNotes'].forEach(id=>$(id).value='');
+  ['houseFacing','houseBearing','houseType','houseFloors','housePosition','houseLayoutNotes'].forEach(id=>$(id).value='');
   $('houseProfileStatus').textContent='Đã xóa hồ sơ ngôi nhà.';
  });
  $('startCompass').addEventListener('click',startLiveCompass);
