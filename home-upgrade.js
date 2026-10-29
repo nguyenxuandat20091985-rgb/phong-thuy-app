@@ -1,4 +1,4 @@
-/* Nâng cấp Nhà ở + hero live compass 2026-10-29 */
+/* Nâng cấp Nhà ở + hero La Kinh 2026-10-29 */
 (function(){
 'use strict';
 const $ = (id) => document.getElementById(id);
@@ -44,7 +44,6 @@ function initLayoutDetails(){
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeRoomDetail(); });
 }
 
-/* Hero live mini-compass */
 const HERO_DIRS=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
 function heroDirName(deg){return HERO_DIRS[Math.round((((deg%360)+360)%360)/45)%8];}
 function normalizeDeg(v){return ((v%360)+360)%360;}
@@ -53,7 +52,7 @@ let heroListening=false,heroHandler=null,heroRaf=0,heroPending=null;
 function renderHero(raw){
   heroPending=raw;
   if(heroRaf) return;
-  heroRaf=requestAnimationFrame(()=>{
+  heroRaf=requestAnimationFrame(function(){
     heroRaf=0;
     if(heroPending===null) return;
     const h=normalizeDeg(heroPending); heroPending=null;
@@ -61,7 +60,12 @@ function renderHero(raw){
     if(d) d.textContent=Math.round(h)+'°';
     if(dir) dir.textContent=heroDirName(h);
     if(st) st.textContent='Hướng từ tính · tham khảo';
-    if(needle) needle.style.transform='rotate('+h+'deg)';
+    if(needle){
+      if(needle.tagName && needle.tagName.toLowerCase()==='g')
+        needle.setAttribute('transform','rotate('+h+' 200 200)');
+      else
+        needle.style.transform='rotate('+h+'deg)';
+    }
   });
 }
 function stopHeroCompass(){
