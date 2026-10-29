@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v32-phase1-date-fix';
+const CACHE_NAME = 'phong-thuy-v33-home-guides-compass-responsive';
 const ASSETS = [
   './',
   './index.html',
