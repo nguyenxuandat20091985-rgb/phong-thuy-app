@@ -23,8 +23,8 @@ jobs:
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
           const requiredIds = [
-            'panel-compass','panel-personal','panel-calendar','panel-home','panel-library',
-            'fengCompass','compass-svg','btn-calibrate','btn-lock','btn-save-dir',
+            'panel-personal','panel-calendar','panel-home','panel-library',
+            'liveCompassDial','calibrateCompass','resetCompassCalibration','startCompass','stopCompass',
             'profileForm','birthYear','gender','personalResult',
             'lunarDateInput','convertLunarDate','lunarDateResult',
             'solarTermsYear','showSolarTerms','solarTermsResult',
@@ -33,7 +33,7 @@ jobs:
           for (const id of requiredIds) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing current UI element: ' + id);
           }
-          const requiredFunctions = ['calcCung','convertSolarToLunar','renderLunarDate','calculateSolarTerms','renderSolarTerms','startCompass','handleOrientation','normalizeDegrees','runHomeAudit'];
+          const requiredFunctions = ['calcCung','convertSolarToLunar','renderLunarDate','calculateSolarTerms','renderSolarTerms','startCompass','normalizeDegrees','runHomeAudit'];
           for (const name of requiredFunctions) {
             if (!js.includes(name)) throw new Error('Missing feature entry point: ' + name);
           }
