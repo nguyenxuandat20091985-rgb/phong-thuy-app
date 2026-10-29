@@ -14,15 +14,11 @@
 <section class="hero hero-compass-only">
 <div class="hero-symbol">
   <div class="hero-live-compass hero-lakinh" id="heroCompass">
-    <div class="hero-lakinh-wrap">
-      <img class="hero-lakinh-svg" id="heroCompassDialImg" src="./hero-lakinh.svg" alt="La Kinh phong thủy" width="400" height="400"/>
-      <svg class="hero-needle-overlay" viewBox="0 0 400 400" aria-hidden="true">
-        <g id="heroCompassNeedle" transform="rotate(0 200 200)">
-          <polygon points="200,48 210,200 200,188 190,200" fill="#c62828"/>
-          <polygon points="200,352 210,200 200,212 190,200" fill="#455a64"/>
-          <circle cx="200" cy="200" r="7" fill="#c79c4d" stroke="#333" stroke-width="1.2"/>
-        </g>
-      </svg>
+    <div class="hero-lakinh-stage">
+      <div class="hero-fixed-pointer" aria-hidden="true"><span></span></div>
+      <div class="hero-lakinh-rotator" id="heroCompassDial">
+        <img class="hero-lakinh-img" src="./hero-lakinh.svg" alt="La Kinh phong thủy" width="400" height="400" draggable="false"/>
+      </div>
     </div>
     <div class="hero-compass-readout">
       <strong id="heroCompassDeg">--°</strong>
