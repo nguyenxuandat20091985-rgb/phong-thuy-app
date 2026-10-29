@@ -36,6 +36,8 @@ jobs:
         run: node tests/huyen-khong.test.js
       - name: Run sát khí remedy unit tests
         run: node tests/hoa-giai-sat-khi.test.js
+      - name: Run backup and security/SEO tests
+        run: node tests/backup.test.js && node tests/security-seo.test.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Validate current UI and core calculations

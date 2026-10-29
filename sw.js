@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v47-sha-remedies';
+const CACHE_NAME = 'phong-thuy-v48-backup-seo-security';
 const ASSETS = [
   './',
   './index.html',
