@@ -13,7 +13,33 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check backup.js && node --check sw.js
+        run: node --check app.js && node --check backup.js && node --check sw.js && node --check bat-trach.js && node --check ngay-xay-dung.js && node --check huyen-khong.js && node --check hoa-giai-sat-khi.js && node --check ngay-lam-nha.js
+      - name: Check advanced house tool JavaScript syntax
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('phong-thuy-nha-nang-cao.html', 'utf8');
+          const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
+          if (!scripts.length) throw new Error('Advanced house tool has no inline JavaScript');
+          fs.writeFileSync('/tmp/advanced-house.js', scripts[scripts.length - 1][1]);
+          for (const id of ['birth','gender','built','facing','bearing','annualStars','palaceGrid','landAudit','roomTips','saveEvent','buildDatePlanner','plannerBirthLunarYear','plannerActivity','plannerWindow','generateBuildDates']) {
+            if (!html.includes('id="' + id + '"')) throw new Error('Missing advanced house feature: ' + id);
+          }
+          console.log('Advanced house UI entry points found');
+          NODE
+          node --check /tmp/advanced-house.js
+      - name: Run Bát Trạch unit tests
+        run: node tests/bat-trach.test.js
+      - name: Run build-date planner tests
+        run: node tests/ngay-lam-nha.test.js
+      - name: Run Kim Lâu, Hoang Ốc, Tam Tai unit tests
+        run: node tests/ngay-xay-dung.test.js
+      - name: Run Huyền Không Phi Tinh unit tests
+        run: node tests/huyen-khong.test.js
+      - name: Run sát khí remedy unit tests
+        run: node tests/hoa-giai-sat-khi.test.js
+      - name: Run backup and security/SEO tests
+        run: node tests/backup.test.js && node tests/security-seo.test.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Validate current UI and core calculations
