@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v37-age-direction-form';
+const CACHE_NAME = 'phong-thuy-v38-birth-date-selects';
 const ASSETS = [
   './',
   './index.html',
