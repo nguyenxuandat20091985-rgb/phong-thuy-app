@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v41-ddmmyyyy-keyboard';
+const CACHE_NAME = 'phong-thuy-v42-auto-birth-profile';
 const ASSETS = [
   './',
   './index.html',
