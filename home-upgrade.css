@@ -1,0 +1,32 @@
+/* Nâng cấp Nhà ở 2026-10-29 */
+.layout-hint{margin:0 0 12px;font-size:.9rem}
+.home-diagram.interactive{display:flex;flex-direction:column;align-items:stretch;text-align:left;border:0;background:#fff;cursor:pointer;padding:12px;border-radius:16px;box-shadow:0 2px 12px rgba(18,63,53,.08);transition:transform .15s,box-shadow .15s;width:100%;font:inherit;color:inherit}
+.home-diagram.interactive:active{transform:scale(.98)}
+.home-diagram.interactive:hover,.home-diagram.interactive:focus-visible{box-shadow:0 6px 20px rgba(18,63,53,.16);outline:2px solid #2e7d32;outline-offset:2px}
+.home-diagram.interactive svg{width:100%;height:auto;border-radius:10px;margin-bottom:8px}
+.home-diagram.interactive strong{font-size:1.05rem;color:#123f35}
+.home-diagram.interactive p{margin:4px 0 8px;font-size:.88rem;color:#4a6359}
+.diagram-cta{font-size:.85rem;font-weight:600;color:#2e7d32}
+.room-modal{position:fixed;inset:0;z-index:10000;display:flex;align-items:flex-end;justify-content:center}
+.room-modal[hidden]{display:none!important}
+.room-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.room-modal-sheet{position:relative;z-index:1;background:#fff;border-radius:20px 20px 0 0;max-height:88vh;overflow:auto;width:100%;max-width:520px;padding:20px 18px 32px;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.room-modal-close{position:absolute;top:10px;right:12px;border:0;background:#eef2ef;width:36px;height:36px;border-radius:50%;font-size:1.4rem;line-height:1;cursor:pointer;color:#123f35}
+.room-modal-sheet h3{margin:0 36px 8px 0;color:#123f35;font-size:1.25rem}
+.room-modal-sheet .room-modal-lead{color:#4a6359;margin:0 0 14px;font-size:.95rem}
+.room-check-grid{display:grid;gap:12px;margin:12px 0}
+.room-check-block{background:#f4f7f5;border-radius:12px;padding:12px 14px}
+.room-check-block h4{margin:0 0 8px;font-size:.95rem;color:#1b5e20}
+.room-check-block.avoid h4{color:#b71c1c}
+.room-check-block ul{margin:0;padding-left:18px}
+.room-check-block li{margin-bottom:6px;font-size:.9rem;line-height:1.4}
+.room-modal-note{font-size:.82rem;color:#666;margin-top:12px}
+.protect-checklist{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.protect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #d7e3dc;border-radius:12px;padding:12px;cursor:pointer}
+.protect-item input{margin-top:4px;width:18px;height:18px;accent-color:#2e7d32;flex-shrink:0}
+.protect-item strong{display:block;color:#123f35;font-size:.95rem}
+.protect-item small{display:block;color:#5a6f66;font-size:.85rem;margin-top:2px;line-height:1.35}
+.protect-item:has(input:checked){background:#e8f5e9;border-color:#a5d6a7}
+.protect-progress{margin:10px 0;padding:10px 14px;border-radius:10px;background:#e8f5e9;color:#1b5e20;font-weight:600;text-align:center}
+.home-diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.home-diagram-grid{grid-template-columns:1fr}}
