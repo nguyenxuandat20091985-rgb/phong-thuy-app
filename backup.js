@@ -2,26 +2,59 @@
   'use strict';
   const keys = ['pt_profile_v2', 'pt_house_notes_v2', 'pt_events_v2', 'pt_theme_v2'];
   const byId = (id) => document.getElementById(id);
-  function setStatus(message) { const el = byId('backupStatus'); if (el) el.textContent = message; }
+  function setStatus(message) {
+    const el = byId('backupStatus');
+    if (el) el.textContent = message;
+  }
   function exportBackup() {
-    const data = {};
-    for (const key of keys) { const value = localStorage.getItem(key); if (value !== null) data[key] = JSON.parse(value); }
-    const payload = { format: 'phong-thuy-viet-backup', version: 1, exportedAt: new Date().toISOString(), data };
-    const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' }));
-    const link = document.createElement('a');
-    link.href = url; link.download = 'phong-thuy-viet-sao-luu-' + new Date().toISOString().slice(0, 10) + '.json';
-    document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
-    setStatus('Đã tạo tệp sao lưu. Hãy giữ tệp ở nơi an toàn.');
+    try {
+      const data = {};
+      for (const key of keys) {
+        const value = localStorage.getItem(key);
+        if (value !== null) data[key] = JSON.parse(value);
+      }
+      const payload = {
+        format: 'phong-thuy-viet-backup',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data
+      };
+      const blobUrl = URL.createObjectURL(new Blob(
+        [JSON.stringify(payload, null, 2)],
+        { type: 'application/json;charset=utf-8' }
+      ));
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'phong-thuy-viet-sao-luu-' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(blobUrl);
+      setStatus('Đã tạo tệp sao lưu. Hãy giữ tệp ở nơi an toàn.');
+    } catch (error) {
+      setStatus('Không thể tạo bản sao lưu: ' + (error && error.message ? error.message : 'lỗi lưu trữ không xác định.'));
+    }
+  }
+  function validDate(value) {
+    if (typeof value !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
   }
   function valid(payload) {
-    if (!payload || payload.format !== 'phong-thuy-viet-backup' || payload.version !== 1 || !payload.data || typeof payload.data !== 'object' || Array.isArray(payload.data)) return false;
+    if (!payload || payload.format !== 'phong-thuy-viet-backup' || payload.version !== 1 ||
+        !payload.data || typeof payload.data !== 'object' || Array.isArray(payload.data)) return false;
     if (Object.keys(payload.data).some((key) => !keys.includes(key))) return false;
     const d = payload.data, p = d.pt_profile_v2;
-    if (p !== undefined && (!p || !Number.isInteger(p.year) || p.year < 1900 || p.year > 2099 || !['nam', 'nu'].includes(p.gender))) return false;
+    if (p !== undefined && (!p || !Number.isInteger(p.year) || p.year < 1900 || p.year > 2099 ||
+        !['nam', 'nu'].includes(p.gender))) return false;
     if (d.pt_house_notes_v2 !== undefined && typeof d.pt_house_notes_v2 !== 'string') return false;
     if (d.pt_theme_v2 !== undefined && !['light', 'dark'].includes(d.pt_theme_v2)) return false;
     const events = d.pt_events_v2;
-    if (events !== undefined && (!Array.isArray(events) || events.length > 10000 || events.some((e) => !e || typeof e.title !== 'string' || e.title.length > 80 || typeof e.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(e.date) || typeof (e.note || '') !== 'string' || (e.note || '').length > 300))) return false;
+    if (events !== undefined && (!Array.isArray(events) || events.length > 10000 ||
+        events.some((e) => !e || typeof e.title !== 'string' || !e.title.trim() || e.title.length > 80 ||
+          !validDate(e.date) || typeof (e.note || '') !== 'string' || (e.note || '').length > 300 ||
+          (e.id !== undefined && !Number.isFinite(e.id))))) return false;
     return true;
   }
   async function importBackup(file) {
@@ -31,10 +64,32 @@
       const payload = JSON.parse(await file.text());
       if (!valid(payload)) throw new Error('Tệp không đúng định dạng hoặc dữ liệu không hợp lệ.');
       if (!confirm('Khôi phục sẽ ghi đè các mục dữ liệu tương ứng trên thiết bị này. Anh đã sao lưu dữ liệu hiện tại nếu cần chưa?')) return;
-      for (const key of keys) if (Object.prototype.hasOwnProperty.call(payload.data, key)) localStorage.setItem(key, JSON.stringify(payload.data[key]));
+
+      // Keep the previous values so a quota/storage failure cannot leave a partial restore.
+      const previous = new Map();
+      for (const key of keys) previous.set(key, localStorage.getItem(key));
+      try {
+        for (const key of keys) {
+          if (Object.prototype.hasOwnProperty.call(payload.data, key)) {
+            localStorage.setItem(key, JSON.stringify(payload.data[key]));
+          }
+        }
+      } catch (writeError) {
+        for (const [key, value] of previous) {
+          try {
+            if (value === null) localStorage.removeItem(key);
+            else localStorage.setItem(key, value);
+          } catch (_) { /* Best-effort rollback if storage is unavailable. */ }
+        }
+        throw writeError;
+      }
       setStatus('Khôi phục thành công. Tải lại trang để hiển thị toàn bộ dữ liệu vừa nhập.');
-    } catch (error) { setStatus('Không thể khôi phục: ' + error.message); }
-    finally { byId('importBackupFile').value = ''; }
+    } catch (error) {
+      setStatus('Không thể khôi phục: ' + (error && error.message ? error.message : 'lỗi dữ liệu không xác định.'));
+    } finally {
+      const input = byId('importBackupFile');
+      if (input) input.value = '';
+    }
   }
   document.addEventListener('DOMContentLoaded', function () {
     byId('exportBackup')?.addEventListener('click', exportBackup);
