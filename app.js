@@ -1,7 +1,7 @@
 /* Phong Thủy Việt — P0–P5 upgrade. No external dependencies. */
 'use strict';
 const $ = (id) => document.getElementById(id);
-const STORE = { profile:'pt_profile_v2', house:'pt_house_notes_v2', events:'pt_events_v2', theme:'pt_theme_v2' };
+const STORE = { profile:'pt_profile_v2', house:'pt_house_notes_v2', houseProfile:'pt_house_profile_v1', events:'pt_events_v2', theme:'pt_theme_v2' };
 const CUNG = {
   1:{name:'Khảm',hanh:'Thủy',group:'Đông Tứ Trạch'},
   2:{name:'Khôn',hanh:'Thổ',group:'Tây Tứ Trạch'},
@@ -154,6 +154,10 @@ function showProfile(year,gender){
  $('shareResult').addEventListener('click',()=>shareText('Kết quả Bát Trạch: năm '+year+', cung '+c.name+', '+c.group+'. Hướng tốt: '+d.good.map(x=>x[0]+' '+x[1]).join(', ')+'. Tham khảo tại '+location.href));
 }
 const ROOM={
+ living:['Phòng khách',['Giữ lối đi từ cửa vào các phòng rộng, không vướng dây điện hoặc đồ dễ đổ.','Bố trí chỗ ngồi ổn định, có ánh sáng phù hợp và thông gió tốt.','Không đặt tủ/kệ nặng thiếu neo giữ; cố định TV và đồ cao nếu có trẻ nhỏ.','Hướng sofa theo Bát Trạch chỉ là tham khảo; ưu tiên giao tiếp và công năng.']],
+ children:['Phòng trẻ em',['Cố định tủ/kệ vào tường, che ổ điện và cất vật nhỏ/nguy hiểm ngoài tầm với.','Đặt giường tránh cửa sổ nguy hiểm, dây rèm và luồng gió trực tiếp mạnh.','Bố trí bàn học đủ sáng, ghế đúng chiều cao và lối đi rõ ràng.','Không đặt vật nặng hoặc đồ trang trí dễ rơi phía trên giường.']],
+ bathroom:['Nhà vệ sinh / phòng tắm',['Ưu tiên chống trượt, thoát nước tốt và thông gió để hạn chế ẩm mốc.','Sửa rò rỉ nước; dùng thiết bị điện phù hợp khu vực ẩm và gọi thợ khi cần.','Giữ cửa và lối đi dễ tiếp cận; bảo đảm riêng tư mà không cản thông gió.','Không cần di chuyển phòng vệ sinh hay đập phá chỉ vì quan niệm phong thủy.']],
+ stairs:['Cầu thang / hành lang',['Giữ bậc thang và hành lang không có đồ cản; bảo đảm tay vịn chắc chắn.','Bổ sung ánh sáng rõ, đánh dấu bậc dễ vấp và xử lý bề mặt trơn.','Không đặt đồ trang trí cồng kềnh hoặc vật nặng ở điểm giao thông.','Ưu tiên lan can an toàn cho trẻ nhỏ; không che lối thoát hiểm.']],
  bedroom:['Phòng ngủ',['Ưu tiên lối đi thông thoáng và lối thoát dễ tiếp cận.','Đặt giường vững chắc, tránh chắn cửa hoặc cửa sổ cần mở.','Giảm ánh sáng xanh và tiếng ồn khi ngủ; ưu tiên thông gió.','Hướng giường theo Bát Trạch chỉ là một tiêu chí tham khảo.']],
  desk:['Bàn làm việc',['Đặt ghế chắc chắn, có ánh sáng đủ và hạn chế phản chiếu màn hình.','Nếu thuận tiện, chọn vị trí nhìn được lối vào mà không cản lối đi.','Đặt màn hình ngang tầm mắt, giữ khoảng trống thao tác.','Không hy sinh công thái học chỉ để khớp một hướng phong thủy.']],
  kitchen:['Nhà bếp',['Bảo đảm thông gió và khoảng cách an toàn quanh bếp nóng.','Không đặt vật dễ cháy sát nguồn nhiệt; kiểm tra thiết bị gas/điện.','Giữ lối đi khô, sáng và không bị cản trở.','Các quy tắc “tọa/hướng” khác nhau theo trường phái; kiểm tra hiện trạng trước.']],
@@ -291,6 +295,26 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
  $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
+ const houseProfile=safeGet(STORE.houseProfile,{});
+ if(houseProfile&&typeof houseProfile==='object'){
+  if($('houseFacing'))$('houseFacing').value=houseProfile.facing||'';
+  if($('houseType'))$('houseType').value=houseProfile.type||'';
+  if($('houseFloors'))$('houseFloors').value=houseProfile.floors||'';
+  if($('housePosition'))$('housePosition').value=houseProfile.position||'';
+  if($('houseLayoutNotes'))$('houseLayoutNotes').value=houseProfile.notes||'';
+ }
+ $('saveHouseProfile').addEventListener('click',()=>{
+  const floorsRaw=$('houseFloors').value.trim(),floors=floorsRaw===''?null:Number(floorsRaw);
+  if(floors!==null&&(!Number.isInteger(floors)||floors<1||floors>100)){ $('houseProfileStatus').textContent='Số tầng phải là số nguyên từ 1 đến 100.';return; }
+  const data={facing:$('houseFacing').value,type:$('houseType').value,floors,position:$('housePosition').value,notes:$('houseLayoutNotes').value.trim().slice(0,1200),updatedAt:new Date().toISOString()};
+  if(safeSet(STORE.houseProfile,data))$('houseProfileStatus').textContent='Đã lưu hồ sơ ngôi nhà trên thiết bị này.';
+ });
+ $('clearHouseProfile').addEventListener('click',()=>{
+  if(!confirm('Xóa hồ sơ mặt bằng và hướng nhà đã lưu trên thiết bị này?'))return;
+  try{localStorage.removeItem(STORE.houseProfile);}catch{}
+  ['houseFacing','houseType','houseFloors','housePosition','houseLayoutNotes'].forEach(id=>$(id).value='');
+  $('houseProfileStatus').textContent='Đã xóa hồ sơ ngôi nhà.';
+ });
  $('startCompass').addEventListener('click',startLiveCompass);
  const dragDial=$('liveCompassDial');
  let dragState=null;
