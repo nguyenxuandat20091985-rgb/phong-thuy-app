@@ -27,7 +27,7 @@
 </section>
 <section class="panel" id="panel-home">
 <div class="section-heading"><div><span class="eyebrow">02 / KHÔNG GIAN SỐNG</span><h2>Gợi ý bố trí nhà ở</h2><p>Chọn khu vực để xem danh sách kiểm tra thực tế.</p></div></div>
-<div class="card"><label for="roomType">Khu vực cần xem</label><select id="roomType"><option value="bedroom">Phòng ngủ</option><option value="desk">Bàn làm việc</option><option value="kitchen">Nhà bếp</option><option value="entrance">Cửa chính / lối vào</option><option value="altar">Bàn thờ</option></select><div id="roomGuidance" class="guidance"></div></div>
+<div class="card"><label for="roomType">Khu vực cần xem</label><select id="roomType"><option value="living">Phòng khách</option><option value="bedroom">Phòng ngủ chính</option><option value="children">Phòng trẻ em</option><option value="desk">Bàn làm việc / học tập</option><option value="kitchen">Nhà bếp</option><option value="entrance">Cửa chính / lối vào</option><option value="altar">Bàn thờ</option><option value="bathroom">Nhà vệ sinh / phòng tắm</option><option value="stairs">Cầu thang / hành lang</option></select><div id="roomGuidance" class="guidance"></div></div>
 <div class="card home-guide-card" id="homeGuide">
   <span class="eyebrow">HƯỚNG DẪN TRỰC QUAN</span><h3>Bố trí nhà ở theo công năng, tuổi và hướng</h3>
   <p class="muted">Sơ đồ minh họa để anh dễ hình dung, không phải bản vẽ thi công. Hãy ưu tiên an toàn, thông gió và lối đi trước; phong thủy là lớp tham khảo bổ sung.</p>
@@ -74,6 +74,19 @@
 <p class="field-hint">Độ lệch từ thay đổi theo vị trí và thời gian. Không tự đoán giá trị. Hướng từ tính không đồng nghĩa với Bắc thực.</p>
 <div class="form-grid"><label>Nhập góc thủ công (0–359°)<input type="number" id="bearing" min="0" max="359" placeholder="Ví dụ 135"></label><div class="bearing-result" id="bearingResult">Chưa có số đo</div></div><button class="secondary-button" id="convertBearing" type="button">Quy đổi hướng thủ công</button>
 </details></div>
+</div>
+<div class="card house-profile-card" id="houseProfile">
+<h3>Hồ sơ mặt bằng &amp; hướng nhà</h3>
+<p class="muted">Ghi nhận dữ liệu ngôi nhà để dùng khi xem hướng dẫn. Hãy nhập hướng đã đo thực tế; không tự suy ra hướng từ địa chỉ hoặc tuổi.</p>
+<div class="form-grid">
+<label>Hướng mặt cửa chính<select id="houseFacing"><option value="">Chưa đo / chưa rõ</option><option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option><option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option></select></label>
+<label>Loại nhà<select id="houseType"><option value="">Chưa chọn</option><option>Nhà phố</option><option>Nhà cấp 4</option><option>Căn hộ chung cư</option><option>Nhà nhiều tầng</option><option>Khác</option></select></label>
+<label>Số tầng<input id="houseFloors" type="number" min="1" max="100" inputmode="numeric" placeholder="Ví dụ 2"></label>
+<label>Vị trí đang xem<select id="housePosition"><option value="">Chưa xác định</option><option>Toàn bộ ngôi nhà</option><option>Tầng 1</option><option>Tầng 2</option><option>Tầng 3 trở lên</option></select></label>
+</div>
+<label for="houseLayoutNotes">Vị trí các phòng / ghi chú mặt bằng</label><textarea id="houseLayoutNotes" rows="3" maxlength="1200" placeholder="Ví dụ: cửa chính hướng Đông, bếp phía sau, phòng ngủ tầng 2… Không cần ghi địa chỉ nhà."></textarea>
+<div class="form-actions"><button class="primary-button" id="saveHouseProfile" type="button">Lưu hồ sơ ngôi nhà</button><button class="secondary-button" id="clearHouseProfile" type="button">Xóa hồ sơ</button></div>
+<p id="houseProfileStatus" class="field-hint" aria-live="polite">Thông tin chỉ lưu trên thiết bị này.</p>
 </div>
 <div class="card"><h3>Kiểm tra nhanh bố trí nhà ở</h3><p class="muted">Đánh dấu các vấn đề đang có để nhận danh sách ưu tiên cải thiện. Công cụ dựa trên công năng và an toàn thực tế, không thay thế khảo sát kết cấu.</p><div id="homeAuditOptions" class="audit-options"><label><input type="checkbox" value="exit"> Lối đi hoặc lối thoát hiểm bị vướng</label><label><input type="checkbox" value="light"> Phòng thiếu ánh sáng tự nhiên</label><label><input type="checkbox" value="air"> Không khí bí, thông gió kém</label><label><input type="checkbox" value="slip"> Sàn trơn hoặc dễ vấp ngã</label><label><input type="checkbox" value="fire"> Bếp, ổ điện hoặc vật dễ cháy chưa an toàn</label><label><input type="checkbox" value="sleep"> Khu ngủ ồn hoặc bị ánh sáng làm phiền</label><label><input type="checkbox" value="clutter"> Đồ đạc bừa bộn, khó vệ sinh</label><label><input type="checkbox" value="privacy"> Thiếu riêng tư ở cửa ra vào hoặc khu nghỉ</label></div><button class="secondary-button" id="runHomeAudit" type="button">Phân tích và sắp xếp ưu tiên</button><div id="homeAuditResult" class="audit-result" aria-live="polite"></div></div><div class="card"><h3>Ghi chú ngôi nhà</h3><label for="houseNotes">Mô tả hướng cửa, vị trí phòng hoặc điều cần cải thiện</label><textarea id="houseNotes" rows="4" placeholder="Ghi chú riêng trên thiết bị…"></textarea><button class="secondary-button" id="saveHouseNotes" type="button">Lưu ghi chú</button><p id="houseSaved" class="field-hint" aria-live="polite"></p></div>
 </section>
