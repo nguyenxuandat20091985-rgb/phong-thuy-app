@@ -1,4 +1,4 @@
-/* Nâng cấp Nhà ở + hero La Kinh 2026-10-29 */
+/* Nâng cấp Nhà ở + La Kinh hero (xoay mặt, kim cố định) 2026-10-29 */
 (function(){
 'use strict';
 const $ = (id) => document.getElementById(id);
@@ -47,7 +47,7 @@ function initLayoutDetails(){
 const HERO_DIRS=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
 function heroDirName(deg){return HERO_DIRS[Math.round((((deg%360)+360)%360)/45)%8];}
 function normalizeDeg(v){return ((v%360)+360)%360;}
-let heroListening=false,heroHandler=null,heroRaf=0,heroPending=null;
+let heroListening=false,heroHandler=null,heroRaf=0,heroPending=null,heroLast=-999;
 
 function renderHero(raw){
   heroPending=raw;
@@ -56,16 +56,12 @@ function renderHero(raw){
     heroRaf=0;
     if(heroPending===null) return;
     const h=normalizeDeg(heroPending); heroPending=null;
-    const d=$('heroCompassDeg'),dir=$('heroCompassDir'),st=$('heroCompassStatus'),needle=$('heroCompassNeedle');
+    const d=$('heroCompassDeg'),dir=$('heroCompassDir'),st=$('heroCompassStatus'),dial=$('heroCompassDial');
     if(d) d.textContent=Math.round(h)+'°';
     if(dir) dir.textContent=heroDirName(h);
     if(st) st.textContent='Hướng từ tính · tham khảo';
-    if(needle){
-      if(needle.tagName && needle.tagName.toLowerCase()==='g')
-        needle.setAttribute('transform','rotate('+h+' 200 200)');
-      else
-        needle.style.transform='rotate('+h+'deg)';
-    }
+    if(dial) dial.style.transform='rotate('+(-h)+'deg)';
+    heroLast=h;
   });
 }
 function stopHeroCompass(){
