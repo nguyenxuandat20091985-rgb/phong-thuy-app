@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v31-phase1-validation';
+const CACHE_NAME = 'phong-thuy-v32-phase1-date-fix';
 const ASSETS = [
   './',
   './index.html',
