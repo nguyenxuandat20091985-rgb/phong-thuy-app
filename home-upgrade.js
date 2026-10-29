@@ -19,14 +19,14 @@ function openRoomDetail(key){
 function closeRoomDetail(){ const modal=$('roomDetailModal'); if(modal) modal.hidden=true; }
 const PROTECT_KEY='pt_protect_checklist_v1';
 const PROTECT_ITEMS=[
-  {id:'p1',title:'Cửa chính & lối thoát',desc:'Mở dễ dàng từ trong.'},
-  {id:'p2',title:'Bếp & gas/điện',desc:'Kiểm tra định kỳ.'},
-  {id:'p3',title:'Sàn chống trượt',desc:'Nhà tắm, bếp, lối vào.'},
-  {id:'p4',title:'Ánh sáng & thông gió',desc:'Đủ sáng, gió lưu thông.'},
-  {id:'p5',title:'Tủ / đồ nặng neo chắc',desc:'Tránh đổ.'},
-  {id:'p6',title:'Dây điện gọn',desc:'Không vướng lối đi.'},
-  {id:'p7',title:'Khóa cửa tốt',desc:'Dễ mở từ trong.'},
-  {id:'p8',title:'Lối đi thông thoáng',desc:'Không chất đồ chắn.'}
+  {id:'p1',title:'1. Khảo sát hiện trạng',desc:'Ghi hướng cửa, vị trí phòng, điểm ẩm/nứt, tiếng ồn, ánh sáng và lối thoát.'},
+  {id:'p2',title:'2. Sửa kết cấu & an toàn',desc:'Xử lý rò điện/gas, nứt, mốc, cửa khó đóng; gọi thợ nếu cần.'},
+  {id:'p3',title:'3. Lối thoát & lối vào',desc:'Dọn thông thoáng cửa chính, hành lang; không chắn lối thoát hiểm.'},
+  {id:'p4',title:'4. Phòng cháy',desc:'Tách vật dễ cháy khỏi bếp; kiểm tra dây/ổ điện; thiết bị gas an toàn.'},
+  {id:'p5',title:'5. Chống trượt / vấp',desc:'Lau khô sàn ẩm, cố định thảm, chống trượt nhà tắm và cầu thang.'},
+  {id:'p6',title:'6. Thông gió & ánh sáng',desc:'Mở cửa hợp lý, hút mùi bếp/WC, bổ sung đèn lối đi và khu làm việc.'},
+  {id:'p7',title:'7. Đồ nặng cố định',desc:'Neo tủ/kệ vào tường; bàn thờ/bếp ổn định, xa vật dễ cháy.'},
+  {id:'p8',title:'8. Không dùng cách nguy hiểm',desc:'Không đốt lửa/nhang thiếu giám sát, không khoan phá kết cấu hay đặt vật nặng nơi dễ rơi để “hóa giải”.'}
 ];
 function loadProtect(){ try{ return JSON.parse(localStorage.getItem(PROTECT_KEY)||'{}'); }catch(e){ return {}; } }
 function saveProtect(s){ try{ localStorage.setItem(PROTECT_KEY, JSON.stringify(s)); }catch(e){} }
@@ -34,7 +34,7 @@ function renderProtect(){
   const box=$('protectChecklist'); if(!box) return;
   const st=loadProtect(); let done=0;
   box.innerHTML=PROTECT_ITEMS.map(it=>{ const on=!!st[it.id]; if(on) done++; return '<label class="protect-item"><input type="checkbox" data-pid="'+it.id+'" '+(on?'checked':'')+'/><span><strong>'+it.title+'</strong><small>'+it.desc+'</small></span></label>'; }).join('');
-  const prog=$('protectProgress'); if(prog) prog.textContent='Đã xong '+done+'/'+PROTECT_ITEMS.length+' mục';
+  const prog=$('protectProgress'); if(prog) prog.textContent='Đã hoàn thành '+done+'/'+PROTECT_ITEMS.length+' mục';
   box.querySelectorAll('input[data-pid]').forEach(inp=>{ inp.addEventListener('change',()=>{ const s=loadProtect(); s[inp.dataset.pid]=inp.checked; saveProtect(s); renderProtect(); }); });
 }
 function initProtectChecklist(){ renderProtect(); }
