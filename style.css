@@ -134,3 +134,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .birth-date-selects select{width:100%;min-width:0;min-height:46px;padding:10px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:14px}
 .birth-date-field .field-hint{display:block;margin-top:7px}
 @media(max-width:380px){.birth-date-selects{grid-template-columns:1fr 1fr 1.2fr;gap:6px}.birth-date-selects select{padding:9px 5px;font-size:13px}}
+
+/* Compact birth-date entry: DD/MM/YYYY */
+.age-direction-card .birth-date-field{display:flex;flex-direction:column;gap:6px;max-width:190px;align-self:start}
+.age-direction-card .birth-date-field input{width:150px;max-width:100%;min-height:38px;padding:7px 10px;border-radius:8px;font-size:14px;letter-spacing:.3px}
+.age-direction-card .birth-date-field .field-hint{font-size:11px;margin-top:0}
+@media(max-width:520px){.age-direction-card .birth-date-field{max-width:190px}.age-direction-card .birth-date-field input{width:150px;min-height:38px}}
