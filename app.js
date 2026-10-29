@@ -263,7 +263,7 @@ function stopLiveCompass(){
 
 function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
 function isValidEvent(event){
- if(!event||typeof event!=='object'||typeof event.title!=='string'||!event.title.trim()||event.title.length>80||typeof event.date!=='string'||!/^\\d{4}-\\d{2}-\\d{2}$/.test(event.date))return false;
+ if(!event||typeof event!=='object'||typeof event.title!=='string'||!event.title.trim()||event.title.length>80||typeof event.date!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(event.date))return false;
  const [year,month,day]=event.date.split('-').map(Number),date=new Date(Date.UTC(year,month-1,day));
  return date.getUTCFullYear()===year&&date.getUTCMonth()===month-1&&date.getUTCDate()===day&&typeof (event.note||'')==='string'&&(event.note||'').length<=300;
 }
