@@ -11,12 +11,18 @@
 <body>
 <div class="app-shell">
 <header class="topbar"><a class="brand" href="#" aria-label="Phong Thủy Việt trang chủ"><span class="brand-mark">☯</span><span><strong>Phong Thủy Việt</strong><small>Sống hài hòa cùng không gian</small></span></a><button id="themeToggle" class="icon-button" aria-label="Đổi giao diện" title="Đổi giao diện">◐</button></header>
-<section class="hero"><div class="hero-copy"><span class="eyebrow">CÔNG CỤ PHONG THỦY CÁ NHÂN</span><h1>Hiểu không gian.<br><em>Sống cân bằng.</em></h1><p>Tra cứu theo phương pháp truyền thống, trình bày rõ ràng và dễ áp dụng.</p></div><div class="hero-symbol">
-  <div class="hero-live-compass" id="heroCompass">
-    <div class="hero-compass-dial" id="heroCompassDial">
-      <span class="hc-n">N</span><span class="hc-e">E</span><span class="hc-s">S</span><span class="hc-w">W</span>
-      <div class="hero-compass-needle" id="heroCompassNeedle"></div>
-      <div class="hero-compass-center">☯</div>
+<section class="hero hero-compass-only">
+<div class="hero-symbol">
+  <div class="hero-live-compass hero-lakinh" id="heroCompass">
+    <div class="hero-lakinh-wrap">
+      <img class="hero-lakinh-svg" id="heroCompassDialImg" src="./hero-lakinh.svg" alt="La Kinh phong thủy" width="400" height="400"/>
+      <svg class="hero-needle-overlay" viewBox="0 0 400 400" aria-hidden="true">
+        <g id="heroCompassNeedle" transform="rotate(0 200 200)">
+          <polygon points="200,48 210,200 200,188 190,200" fill="#c62828"/>
+          <polygon points="200,352 210,200 200,212 190,200" fill="#455a64"/>
+          <circle cx="200" cy="200" r="7" fill="#c79c4d" stroke="#333" stroke-width="1.2"/>
+        </g>
+      </svg>
     </div>
     <div class="hero-compass-readout">
       <strong id="heroCompassDeg">--°</strong>
@@ -25,7 +31,8 @@
       <button type="button" class="hero-compass-btn" id="heroCompassStart">Bật la bàn</button>
     </div>
   </div>
-</div></section>
+</div>
+</section>
 <nav class="tabs" id="tools" aria-label="Công cụ"><button class="tab active" data-tab="personal">✦ Cá nhân</button><button class="tab" data-tab="home">⌂ Nhà ở</button><button class="tab" data-tab="calendar">◷ Ngày tháng</button><button class="tab" data-tab="library">▤ Kiến thức</button></nav>
 <main>
 <section class="panel active" id="panel-personal">
@@ -128,17 +135,14 @@
     <p class="field-hint">Phong thủy và nghi lễ là thực hành văn hóa/truyền thống; không thay thế việc sửa chữa kỹ thuật và phòng cháy chữa cháy.</p>
   </section>
 </div>
-
 <div class="legacy-compass-runtime" aria-hidden="true" inert></div>
 </section>
-
 <section class="panel" id="panel-calendar">
 <div class="section-heading"><div><span class="eyebrow">03 / LỊCH & GHI CHÚ</span><h2>Ngày tháng & sự kiện</h2><p>Đối chiếu dương lịch – âm lịch và lưu ngày quan trọng trên máy.</p></div></div>
 <div class="card form-card"><label for="lunarDateInput">Chọn ngày dương lịch</label><input id="lunarDateInput" type="date"><button class="primary-button" type="button" id="convertLunar">Đổi sang âm lịch</button><p id="lunarDateResult" class="field-hint">Hãy chọn ngày dương lịch</p></div>
 <div class="card form-card"><label for="solarTermsYear">Năm xem tiết khí</label><input id="solarTermsYear" type="number" min="1900" max="2099" placeholder="2026"><button class="primary-button" type="button" id="showSolarTerms">Xem 24 tiết khí</button><div id="solarTermsResult" class="guidance"></div></div>
 <div class="card"><h3>Ghi chú sự kiện</h3><form id="eventForm"><div class="form-grid"><label>Ngày<input id="eventDate" type="date" required></label><label>Tiêu đề<input id="eventTitle" type="text" maxlength="80" placeholder="Ví dụ: cúng nhà mới" required></label></div><button class="primary-button" type="submit">Lưu sự kiện</button></form><div id="eventList" class="event-list"></div></div>
 </section>
-
 <section class="panel" id="panel-library">
 <div class="section-heading"><div><span class="eyebrow">04 / THƯ VIỆN</span><h2>Kiến thức nền tảng</h2><p>Thuật ngữ phổ biến và cách hiểu thận trọng.</p></div></div>
 <div class="library-list">
@@ -150,7 +154,6 @@
 </div>
 <div class="card"><h3>Chia sẻ ứng dụng</h3><p class="muted">Gửi đường dẫn ứng dụng cho người thân.</p><button class="primary-button" id="shareApp" type="button">Chia sẻ / sao chép liên kết <span>↗</span></button><p id="shareStatus" class="field-hint" aria-live="polite"></p></div>
 </section>
-
 </main>
 <footer class="site-footer"><p>© Nguyễn Xuân Đạt · Phong Thủy Việt · Tham khảo</p></footer>
 </div>
