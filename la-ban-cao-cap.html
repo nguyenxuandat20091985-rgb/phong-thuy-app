@@ -1271,17 +1271,30 @@ function startSensor() {
   hasSensor = true;
 }
 
+let smoothedSensorHeading = null;
+let lastAbsoluteSensorAt = 0;
 function handleOrientation(e) {
   let heading = null;
-  if (e.webkitCompassHeading !== undefined) {
-    heading = e.webkitCompassHeading; // iOS
-  } else if (e.alpha !== null) {
-    heading = 360 - e.alpha; // Android
-    if (e.absolute === false && !hasSensor) return;
+  const now = performance.now();
+  if (Number.isFinite(e.webkitCompassHeading)) {
+    heading = e.webkitCompassHeading;
+  } else if (Number.isFinite(e.alpha)) {
+    if (e.type === 'deviceorientationabsolute') lastAbsoluteSensorAt = now;
+    if (e.type === 'deviceorientation' && e.absolute === false && now - lastAbsoluteSensorAt < 400) return;
+    heading = 360 - e.alpha;
+    const screenAngle = (screen.orientation && Number.isFinite(screen.orientation.angle))
+      ? screen.orientation.angle : (Number.isFinite(window.orientation) ? window.orientation : 0);
+    heading += screenAngle;
   }
-  if (heading !== null) {
-    updateCompass(heading);
+  if (!Number.isFinite(heading)) return;
+  heading = ((heading % 360) + 360) % 360;
+  if (smoothedSensorHeading === null) smoothedSensorHeading = heading;
+  else {
+    const delta = ((heading - smoothedSensorHeading + 540) % 360) - 180;
+    const gain = Math.abs(delta) > 18 ? 0.62 : 0.38;
+    smoothedSensorHeading = (smoothedSensorHeading + delta * gain + 360) % 360;
   }
+  updateCompass(smoothedSensorHeading);
 }
 
 // Điều khiển thủ công (kéo chuột / vuốt)
@@ -1338,6 +1351,7 @@ document.getElementById('btn-lock').addEventListener('click', function() {
 });
 document.getElementById('btn-reset').addEventListener('click', () => {
   lockedHeading = null;
+  smoothedSensorHeading = null;
   document.getElementById('btn-lock').textContent = '🔒 Khoá Hướng';
   document.getElementById('btn-lock').classList.remove('danger');
   updateCompass(0);
