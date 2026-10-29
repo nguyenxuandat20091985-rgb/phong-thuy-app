@@ -21,7 +21,7 @@
     if (d.pt_house_notes_v2 !== undefined && typeof d.pt_house_notes_v2 !== 'string') return false;
     if (d.pt_theme_v2 !== undefined && !['light', 'dark'].includes(d.pt_theme_v2)) return false;
     const events = d.pt_events_v2;
-    if (events !== undefined && (!Array.isArray(events) || events.length > 10000 || events.some((e) => !e || typeof e.title !== 'string' || e.title.length > 80 || typeof e.date !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(e.date) || typeof (e.note || '') !== 'string' || (e.note || '').length > 300))) return false;
+    if (events !== undefined && (!Array.isArray(events) || events.length > 10000 || events.some((e) => !e || typeof e.title !== 'string' || e.title.length > 80 || typeof e.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(e.date) || typeof (e.note || '') !== 'string' || (e.note || '').length > 300))) return false;
     return true;
   }
   async function importBackup(file) {
