@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v36-house-bearing-check';
+const CACHE_NAME = 'phong-thuy-v37-age-direction-form';
 const ASSETS = [
   './',
   './index.html',
