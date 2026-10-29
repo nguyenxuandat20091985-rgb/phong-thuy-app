@@ -51,7 +51,7 @@
       <p class="muted">Nhập ngày sinh dương lịch, chọn giới tính dùng trong phép tính và hướng cửa chính đã đo thực tế để nhận gợi ý Bát Trạch cùng cách bố trí cơ bản.</p>
       <form id="houseAgeForm">
         <div class="form-grid">
-          <label for="houseBirthDate">Ngày sinh dương lịch<input id="houseBirthDate" type="date" min="1900-01-01" max="2099-12-31" required></label>
+          <fieldset class="birth-date-field"><legend>Ngày sinh dương lịch</legend><div class="birth-date-selects"><label for="houseBirthDay">Ngày<select id="houseBirthDay" required><option value="">Ngày</option></select></label><label for="houseBirthMonth">Tháng<select id="houseBirthMonth" required><option value="">Tháng</option></select></label><label for="houseBirthYear">Năm<select id="houseBirthYear" required><option value="">Năm sinh</option></select></label></div><small class="field-hint">Chọn lần lượt ngày, tháng và năm sinh.</small></fieldset>
           <label for="houseBirthGender">Giới tính dùng trong phép tính<select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
           <label for="houseMeasuredFacing">Hướng cửa chính đã đo<select id="houseMeasuredFacing"><option value="">Chưa đo / chưa rõ</option><option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option><option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option></select></label>
         </div>
