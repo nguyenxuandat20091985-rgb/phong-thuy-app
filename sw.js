@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v44-hero-compass';
+const CACHE_NAME = 'phong-thuy-v45-lakinh';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './home-upgrade.css',
   './app.js',
   './home-upgrade.js',
+  './hero-lakinh.svg',
   './backup.js',
   './manifest.json',
   './icon-192.png',
