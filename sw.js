@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v27-compass-home-visible';
+const CACHE_NAME = 'phong-thuy-v28-tabs-refresh';
 const ASSETS = [
   './',
   './index.html',
@@ -26,5 +26,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    caches.match(event.request).then((cached) => cached || fetch(event.request))
+  );
 });
