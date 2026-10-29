@@ -124,3 +124,13 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .age-placement-list strong{font-size:13px}
 .age-placement-list p{font-size:12px;line-height:1.65;color:var(--muted);margin:5px 0 0}
 @media(max-width:520px){.age-direction-card .form-actions{flex-direction:column}.age-direction-card .form-actions button{width:100%}.age-direction-result .profile-summary{align-items:flex-start}}
+
+
+/* Large, easy-to-tap birth date selectors on phones */
+.birth-date-field{border:0;padding:0;margin:0;min-width:0}
+.birth-date-field legend{font-size:13px;font-weight:700;margin-bottom:8px;padding:0}
+.birth-date-selects{display:grid;grid-template-columns:.85fr 1.15fr 1.3fr;gap:8px}
+.birth-date-selects label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:12px;color:var(--muted);font-weight:700}
+.birth-date-selects select{width:100%;min-width:0;min-height:46px;padding:10px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:14px}
+.birth-date-field .field-hint{display:block;margin-top:7px}
+@media(max-width:380px){.birth-date-selects{grid-template-columns:1fr 1fr 1.2fr;gap:6px}.birth-date-selects select{padding:9px 5px;font-size:13px}}
