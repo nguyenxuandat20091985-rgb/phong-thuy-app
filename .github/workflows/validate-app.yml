@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check backup.js && node --check sw.js && node --check bat-trach.js && node --check ngay-xay-dung.js
+        run: node --check app.js && node --check backup.js && node --check sw.js && node --check bat-trach.js && node --check ngay-xay-dung.js && node --check huyen-khong.js
       - name: Check advanced house tool JavaScript syntax
         run: |
           node <<'NODE'
@@ -32,6 +32,8 @@ jobs:
         run: node tests/bat-trach.test.js
       - name: Run Kim Lâu, Hoang Ốc, Tam Tai unit tests
         run: node tests/ngay-xay-dung.test.js
+      - name: Run Huyền Không Phi Tinh unit tests
+        run: node tests/huyen-khong.test.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Validate current UI and core calculations
