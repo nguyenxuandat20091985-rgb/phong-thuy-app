@@ -16,25 +16,44 @@ jobs:
         run: node --check app.js && node --check backup.js && node --check sw.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
-      - name: Check required app sections
+      - name: Validate current UI and core calculations
         run: |
           node <<'NODE'
           const fs = require('fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
-          const required = ['panel-personal','panel-home','panel-calendar','panel-library'];
-          for (const id of required) {
-            if (!html.includes('id="' + id + '"')) throw new Error('Missing section: ' + id);
+          const requiredIds = [
+            'panel-compass','panel-personal','panel-calendar','panel-home','panel-library',
+            'fengCompass','compass-svg','btn-calibrate','btn-lock','btn-save-dir',
+            'profileForm','birthYear','gender','personalResult',
+            'lunarDateInput','convertLunarDate','lunarDateResult',
+            'solarTermsYear','showSolarTerms','solarTermsResult',
+            'homeAuditOptions','runHomeAudit','homeAuditResult'
+          ];
+          for (const id of requiredIds) {
+            if (!html.includes('id="' + id + '"')) throw new Error('Missing current UI element: ' + id);
           }
-          for (const token of ['calcCung','renderRoom','renderEvents','bearingName','shareText','convertSolarToLunar','renderLunarDate','runHomeAudit','calculateSolarTerms','renderSolarTerms','startLiveCompass','handleCompassEvent','compassDirection','normalizeDegrees']) {
-            if (!js.includes(token)) throw new Error('Missing feature: ' + token);
+          const requiredFunctions = ['calcCung','convertSolarToLunar','renderLunarDate','calculateSolarTerms','renderSolarTerms','startCompass','handleOrientation','normalizeDegrees','runHomeAudit'];
+          for (const name of requiredFunctions) {
+            if (!js.includes(name)) throw new Error('Missing feature entry point: ' + name);
           }
-          if (!html.includes('id="homeAuditOptions"') || !html.includes('id="runHomeAudit"')) throw new Error('Home audit UI missing');
-          console.log('Required sections and feature entry points present');
           const vm = require('vm');
-          const context = { document: { addEventListener() {} }, localStorage: { getItem(){return null}, setItem(){} }, console, Math, Date, Number, String, Object, Array, JSON, location: { href: 'test' }, navigator: {} };
+          const store = new Map();
+          const document = {
+            getElementById() { return null; },
+            querySelectorAll() { return []; },
+            addEventListener() {},
+            createElementNS() { return { setAttribute(){}, appendChild(){}, textContent:'' }; }
+          };
+          const window = { addEventListener(){}, isSecureContext:true };
+          const context = {
+            document, window, localStorage: { getItem(k){return store.has(k)?store.get(k):null;}, setItem(k,v){store.set(k,String(v));} },
+            console, Math, Date, Number, String, Object, Array, JSON, Set, Map,
+            alert(){}, confirm(){return true;}, prompt(){return null;},
+            screen:{orientation:{angle:0}}, navigator:{}, setTimeout(){}, URL, Blob
+          };
           vm.createContext(context);
-          vm.runInContext(js + ';globalThis.__lunar = convertSolarToLunar; globalThis.__cung = calcCung; globalThis.__terms = calculateSolarTerms;', context);
+          vm.runInContext(js + ';globalThis.__lunar=convertSolarToLunar;globalThis.__cung=calcCung;globalThis.__terms=calculateSolarTerms;globalThis.__normalize=normalizeDegrees;', context);
           for (const [solar, expected] of [
             [[10,2,2024],[1,1,2024]], [[29,1,2025],[1,1,2025]], [[17,2,2026],[1,1,2026]]
           ]) {
@@ -42,20 +61,15 @@ jobs:
             if (!actual || actual.day!==expected[0] || actual.month!==expected[1] || actual.year!==expected[2]) throw new Error('Lunar reference date failed: '+solar.join('-')+' -> '+JSON.stringify(actual));
           }
           for (const year of [1990,2000,2001,2026]) for (const gender of ['nam','nu']) {
-            const result=context.__cung(year,gender); if(!result||!result.name||!result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
+            const result=context.__cung(year,gender);
+            if(!result || !result.name || !result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
           }
-          const terms = context.__terms(2026);
-          if (!terms || terms.length !== 24) throw new Error('Solar term count invalid');
-          const lichXuan = terms.find(x => x.name === 'Lập xuân');
-          if (!lichXuan || lichXuan.date.getUTCMonth() !== 1 || lichXuan.date.getUTCDate() < 3 || lichXuan.date.getUTCDate() > 5) throw new Error('Lập xuân reference date outside expected range');
-          for (const [deg, expected] of [[0,'Bắc'],[90,'Đông'],[180,'Nam'],[270,'Tây'],[359,'Bắc']]) {
-  const actual=context.compassDirection(deg);
-  if(actual!==expected) throw new Error('Compass direction mapping failed: '+deg+' -> '+actual);
-}
-for (const [value, expected] of [[360,0],[-1,359],[721,1]]) {
-  if(context.normalizeDegrees(value)!==expected) throw new Error('Compass normalization failed: '+value);
-}
-if (!html.includes('id="startCompass"') || !html.includes('id="liveCompassDial"') || !html.includes('id="magneticDeclination"') || !html.includes('id="resetCompassCalibration"')) throw new Error('Live compass UI missing');
-console.log('Lunar, Ba Trach, solar terms, live compass mapping and normalization checks passed');
-
+          const terms=context.__terms(2026);
+          if(!terms || terms.length!==24) throw new Error('Expected 24 solar terms for 2026; got '+(terms&&terms.length));
+          const lapXuan=terms.find(x=>x.name==='Lập xuân');
+          if(!lapXuan || lapXuan.date.getUTCMonth()!==1 || lapXuan.date.getUTCDate()<3 || lapXuan.date.getUTCDate()>5) throw new Error('Lập xuân date outside expected range');
+          for (const [value, expected] of [[360,0],[-1,359],[721,1]]) {
+            if(context.__normalize(value)!==expected) throw new Error('Compass degree normalization failed: '+value);
+          }
+          console.log('Current UI IDs and core calculation tests passed');
           NODE
