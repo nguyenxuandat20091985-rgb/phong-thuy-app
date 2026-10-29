@@ -1,32 +1,32 @@
-/* Nang cap Nha o + La Kinh hero (giao dien anh cung cap) 2026-10-30 */
+/* Nâng cấp Nhà ở + La Kinh hero (giao diện anh cung cấp) 2026-10-30 */
 (function(){
 'use strict';
 const $ = (id) => document.getElementById(id);
 const ROOM_DETAILS = {
-  bedroom:{title:'Phong ngu',lead:'Uu tien ngu ngon va thoat hiem truoc.',should:['Giuong vung, khong chan cua.','Loi ra giuong thong thoang.','Anh sang diu.'],avoid:['Tu nang thieu neo.','Chan cua bang do dac.']},
-  desk:{title:'Ban lam viec',lead:'Cong thai hoc va anh sang.',should:['Man hinh ngang tam mat.','Du sang.'],avoid:['Ngoi lau voi tu the xau.']},
-  kitchen:{title:'Nha bep',lead:'An toan chay.',should:['Tach vung bep nong.','Loi di kho.'],avoid:['Chat do de chay sat bep.']},
-  entrance:{title:'Cua chinh',lead:'Loi vao an toan.',should:['Loi vao sang, kho.','Tham chong truot.'],avoid:['Chat do ngay cua.']},
-  living:{title:'Phong khach',lead:'Giao tiep on dinh.',should:['Cho ngoi vung.','Anh sang du.'],avoid:['Day dien giua loi di.']},
-  bath:{title:'Nha ve sinh',lead:'Chong truot, thong gio.',should:['San chong truot.'],avoid:['Do de do gan bon.']}
+  bedroom:{title:'Phòng ngủ',lead:'Ưu tiên ngủ ngon và thoát hiểm trước.',should:['Giường vững, không chắn cửa.','Lối ra giường thông thoáng.','Ánh sáng dịu.'],avoid:['Tủ nặng thiếu neo.','Chặn cửa bằng đồ đạc.']},
+  desk:{title:'Bàn làm việc',lead:'Công thái học và ánh sáng.',should:['Màn hình ngang tầm mắt.','Đủ sáng.'],avoid:['Ngồi lâu với tư thế xấu.']},
+  kitchen:{title:'Nhà bếp',lead:'An toàn cháy.',should:['Tách vùng bếp nóng.','Lối đi khô.'],avoid:['Chất đồ dễ cháy sát bếp.']},
+  entrance:{title:'Cửa chính',lead:'Lối vào an toàn.',should:['Lối vào sáng, khô.','Thảm chống trượt.'],avoid:['Chất đồ ngay cửa.']},
+  living:{title:'Phòng khách',lead:'Giao tiếp ổn định.',should:['Chỗ ngồi vững.','Ánh sáng đủ.'],avoid:['Dây điện giữa lối đi.']},
+  bath:{title:'Nhà vệ sinh',lead:'Chống trượt, thông gió.',should:['Sàn chống trượt.'],avoid:['Đồ dễ đổ gần bồn.']}
 };
 function openRoomDetail(key){
   const data=ROOM_DETAILS[key]; if(!data) return;
   const body=$('roomModalBody'); if(!body) return;
-  body.innerHTML='<h3>'+data.title+'</h3><p class="room-modal-lead">'+data.lead+'</p><div class="room-check-grid"><div class="room-check-block"><h4>Nen</h4><ul>'+data.should.map(t=>'<li>'+t+'</li>').join('')+'</ul></div><div class="room-check-block avoid"><h4>Tranh</h4><ul>'+data.avoid.map(t=>'<li>'+t+'</li>').join('')+'</ul></div></div>';
+  body.innerHTML='<h3>'+data.title+'</h3><p class="room-modal-lead">'+data.lead+'</p><div class="room-check-grid"><div class="room-check-block"><h4>Nên</h4><ul>'+data.should.map(t=>'<li>'+t+'</li>').join('')+'</ul></div><div class="room-check-block avoid"><h4>Tránh</h4><ul>'+data.avoid.map(t=>'<li>'+t+'</li>').join('')+'</ul></div></div>';
   const modal=$('roomDetailModal'); if(modal) modal.hidden=false;
 }
 function closeRoomDetail(){ const modal=$('roomDetailModal'); if(modal) modal.hidden=true; }
 const PROTECT_KEY='pt_protect_checklist_v1';
 const PROTECT_ITEMS=[
-  {id:'p1',title:'Cua chinh & loi thoat',desc:'Mo de dang tu trong.'},
-  {id:'p2',title:'Bep & gas/dien',desc:'Kiem tra dinh ky.'},
-  {id:'p3',title:'San chong truot',desc:'Nha tam, bep, loi vao.'},
-  {id:'p4',title:'Anh sang & thong gio',desc:'Du sang, gio luu thong.'},
-  {id:'p5',title:'Tu / do nang neo chac',desc:'Tranh do.'},
-  {id:'p6',title:'Day dien gon',desc:'Khong vuong loi di.'},
-  {id:'p7',title:'Khoa cua tot',desc:'De mo tu trong.'},
-  {id:'p8',title:'Loi di thong thoang',desc:'Khong chat do chan.'}
+  {id:'p1',title:'Cửa chính & lối thoát',desc:'Mở dễ dàng từ trong.'},
+  {id:'p2',title:'Bếp & gas/điện',desc:'Kiểm tra định kỳ.'},
+  {id:'p3',title:'Sàn chống trượt',desc:'Nhà tắm, bếp, lối vào.'},
+  {id:'p4',title:'Ánh sáng & thông gió',desc:'Đủ sáng, gió lưu thông.'},
+  {id:'p5',title:'Tủ / đồ nặng neo chắc',desc:'Tránh đổ.'},
+  {id:'p6',title:'Dây điện gọn',desc:'Không vướng lối đi.'},
+  {id:'p7',title:'Khóa cửa tốt',desc:'Dễ mở từ trong.'},
+  {id:'p8',title:'Lối đi thông thoáng',desc:'Không chất đồ chắn.'}
 ];
 function loadProtect(){ try{ return JSON.parse(localStorage.getItem(PROTECT_KEY)||'{}'); }catch(e){ return {}; } }
 function saveProtect(s){ try{ localStorage.setItem(PROTECT_KEY, JSON.stringify(s)); }catch(e){} }
@@ -34,7 +34,7 @@ function renderProtect(){
   const box=$('protectChecklist'); if(!box) return;
   const st=loadProtect(); let done=0;
   box.innerHTML=PROTECT_ITEMS.map(it=>{ const on=!!st[it.id]; if(on) done++; return '<label class="protect-item"><input type="checkbox" data-pid="'+it.id+'" '+(on?'checked':'')+'/><span><strong>'+it.title+'</strong><small>'+it.desc+'</small></span></label>'; }).join('');
-  const prog=$('protectProgress'); if(prog) prog.textContent='Da xong '+done+'/'+PROTECT_ITEMS.length+' muc';
+  const prog=$('protectProgress'); if(prog) prog.textContent='Đã xong '+done+'/'+PROTECT_ITEMS.length+' mục';
   box.querySelectorAll('input[data-pid]').forEach(inp=>{ inp.addEventListener('change',()=>{ const s=loadProtect(); s[inp.dataset.pid]=inp.checked; saveProtect(s); renderProtect(); }); });
 }
 function initProtectChecklist(){ renderProtect(); }
@@ -66,7 +66,7 @@ function buildLakinhSVG(){
     }
   }
   svg.appendChild(tickG);
-  const dirs=[{name:'BAC',angle:0,isRed:true},{name:'DONG BAC',angle:45,isRed:false},{name:'DONG',angle:90,isRed:true},{name:'DONG NAM',angle:135,isRed:false},{name:'NAM',angle:180,isRed:true},{name:'TAY NAM',angle:225,isRed:false},{name:'TAY',angle:270,isRed:true},{name:'TAY BAC',angle:315,isRed:false}];
+  const dirs=[{name:'BẮC',angle:0,isRed:true},{name:'ĐÔNG BẮC',angle:45,isRed:false},{name:'ĐÔNG',angle:90,isRed:true},{name:'ĐÔNG NAM',angle:135,isRed:false},{name:'NAM',angle:180,isRed:true},{name:'TÂY NAM',angle:225,isRed:false},{name:'TÂY',angle:270,isRed:true},{name:'TÂY BẮC',angle:315,isRed:false}];
   const rIn=260, rOut=400;
   dirs.forEach(function(dir){
     const a1=(dir.angle-22.5)*Math.PI/180, a2=(dir.angle+22.5)*Math.PI/180;
@@ -78,12 +78,11 @@ function buildLakinhSVG(){
     const t=el('text',{x:tx,y:ty,'text-anchor':'middle','dominant-baseline':'central',transform:'rotate('+dir.angle+','+tx+','+ty+')','font-family':'Arial,sans-serif','font-size':'36','font-weight':'700',fill:dir.isRed?'#fff':'#000'});
     t.textContent=dir.name; svg.appendChild(t);
   });
-  const bagua=[{name:'KHAM',angle:0},{name:'CAN',angle:45},{name:'CHAN',angle:90},{name:'TON',angle:135},{name:'LY',angle:180},{name:'KHON',angle:225},{name:'DOAI',angle:270},{name:'CAN2',angle:315}];
-  const baguaVN=['KHAM','CAN','CHAN','TON','LY','KHON','DOAI','CAN'];
-  bagua.forEach(function(b,idx){
+  const bagua=[{name:'KHẢM',angle:0},{name:'CẤN',angle:45},{name:'CHẤN',angle:90},{name:'TỐN',angle:135},{name:'LY',angle:180},{name:'KHÔN',angle:225},{name:'ĐOÀI',angle:270},{name:'CÀN',angle:315}];
+  bagua.forEach(function(b){
     const tr=215, tx=CX+tr*Math.sin(b.angle*Math.PI/180), ty=CY-tr*Math.cos(b.angle*Math.PI/180);
     const t=el('text',{x:tx,y:ty,'text-anchor':'middle','dominant-baseline':'central',transform:'rotate('+b.angle+','+tx+','+ty+')','font-family':'Arial,sans-serif','font-size':'32','font-weight':'700',fill:'#0033cc'});
-    t.textContent=['KHAM','CAN','CHAN','TON','LY','KHON','DOAI','CAN'][idx]; svg.appendChild(t);
+    t.textContent=b.name; svg.appendChild(t);
   });
   function arcPath(r,aStart,aEnd){ const a1=aStart*Math.PI/180,a2=aEnd*Math.PI/180; const x1=CX+r*Math.sin(a1),y1=CY-r*Math.cos(a1),x2=CX+r*Math.sin(a2),y2=CY-r*Math.cos(a2); return 'M '+x1+' '+y1+' A '+r+' '+r+' 0 0 1 '+x2+' '+y2; }
   const trigData=[{angle:0,lines:[0,1,0]},{angle:45,lines:[1,1,0]},{angle:90,lines:[0,0,1]},{angle:135,lines:[1,0,0]},{angle:180,lines:[1,0,1]},{angle:225,lines:[0,0,0]},{angle:270,lines:[0,1,1]},{angle:315,lines:[1,1,1]}];
@@ -101,7 +100,7 @@ function buildLakinhSVG(){
   return svg;
 }
 function normalizeDeg(d){ d=Number(d)||0; d=d%360; if(d<0)d+=360; return d; }
-function heroDirName(deg){ const names=['Bac','Dong Bac','Dong','Dong Nam','Nam','Tay Nam','Tay','Tay Bac']; return names[Math.round(normalizeDeg(deg)/45)%8]; }
+function heroDirName(deg){ const names=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc']; return names[Math.round(normalizeDeg(deg)/45)%8]; }
 let heroListening=false,heroHandler=null,heroRaf=0,heroPending=null;
 function renderHero(raw){
   heroPending=raw; if(heroRaf) return;
@@ -111,22 +110,22 @@ function renderHero(raw){
     const d=$('heroCompassDeg'),dir=$('heroCompassDir'),st=$('heroCompassStatus'),dial=$('heroCompassDial');
     if(d) d.textContent=Math.round(h)+'\u00b0';
     if(dir) dir.textContent=heroDirName(h);
-    if(st) st.textContent='Huong tu tinh · tham khao';
+    if(st) st.textContent='Hướng từ tính · tham khảo';
     if(dial){ dial.style.transformOrigin='50% 50%'; dial.style.transform='rotate('+(-h)+'deg)'; }
   });
 }
 function stopHeroCompass(){
   if(heroHandler){ window.removeEventListener('deviceorientationabsolute', heroHandler, true); window.removeEventListener('deviceorientation', heroHandler, true); heroHandler=null; }
   heroListening=false;
-  const btn=$('heroCompassStart'); if(btn){ btn.textContent='Bat la ban'; btn.classList.remove('running'); }
-  const st=$('heroCompassStatus'); if(st) st.textContent='Da tat · cham Bat de do lai';
+  const btn=$('heroCompassStart'); if(btn){ btn.textContent='Bật la bàn'; btn.classList.remove('running'); }
+  const st=$('heroCompassStatus'); if(st) st.textContent='Đã tắt · chạm Bật để đo lại';
 }
 function startHeroCompass(){
   const btn=$('heroCompassStart'), st=$('heroCompassStatus');
-  if(!window.DeviceOrientationEvent){ if(st) st.textContent='Trinh duyet khong ho tro cam bien huong'; return; }
+  if(!window.DeviceOrientationEvent){ if(st) st.textContent='Trình duyệt không hỗ trợ cảm biến hướng'; return; }
   const onOrient=function(e){ let heading=null; if(typeof e.webkitCompassHeading==='number' && !isNaN(e.webkitCompassHeading)) heading=e.webkitCompassHeading; else if(typeof e.alpha==='number' && e.alpha!==null) heading=normalizeDeg(360-e.alpha); if(heading!==null) renderHero(heading); };
-  const bind=function(){ heroHandler=onOrient; window.addEventListener('deviceorientationabsolute', onOrient, true); window.addEventListener('deviceorientation', onOrient, true); heroListening=true; if(btn){ btn.textContent='Tat la ban'; btn.classList.add('running'); } if(st) st.textContent='Dang do · giu may nam ngang'; };
-  if(typeof DeviceOrientationEvent.requestPermission==='function'){ DeviceOrientationEvent.requestPermission().then(function(state){ if(state==='granted') bind(); else if(st) st.textContent='Can cap quyen cam bien huong'; }).catch(function(){ if(st) st.textContent='Khong xin duoc quyen cam bien'; }); } else { bind(); }
+  const bind=function(){ heroHandler=onOrient; window.addEventListener('deviceorientationabsolute', onOrient, true); window.addEventListener('deviceorientation', onOrient, true); heroListening=true; if(btn){ btn.textContent='Tắt la bàn'; btn.classList.add('running'); } if(st) st.textContent='Đang đo · giữ máy nằm ngang'; };
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){ DeviceOrientationEvent.requestPermission().then(function(state){ if(state==='granted') bind(); else if(st) st.textContent='Cần cấp quyền cảm biến hướng'; }).catch(function(){ if(st) st.textContent='Không xin được quyền cảm biến'; }); } else { bind(); }
 }
 function initHeroCompass(){
   const dial=$('heroCompassDial');
