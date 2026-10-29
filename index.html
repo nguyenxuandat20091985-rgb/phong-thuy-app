@@ -32,6 +32,7 @@
     <main>
       <section id="panel-compass" class="panel active">
         <div class="card compass-card">
+          <div class="compass-eyebrow">LA KINH 24 SƠN · HẬU THIÊN BÁT QUÁI</div>
           <div class="datetime-bar">
             <span id="duong-lich">--</span> • <span id="am-lich">--</span>
           </div>
@@ -68,6 +69,7 @@
 
       <section id="panel-personal" class="panel">
         <div class="card">
+          <p class="panel-kicker">HỒ SƠ PHONG THỦY</p>
           <h2 class="section-title">🏛️ Tính Cung Mệnh Bát Trạch</h2>
           <form id="profileForm" class="form-grid">
             <div class="form-group">
@@ -92,6 +94,7 @@
 
       <section id="panel-calendar" class="panel">
         <div class="card">
+          <p class="panel-kicker">LỊCH PHÁP Á ĐÔNG</p>
           <h2 class="section-title">📅 Đổi Ngày Dương Sang Âm</h2>
           <div class="form-group">
             <label for="lunarDateInput">Chọn ngày dương lịch</label>
@@ -113,6 +116,7 @@
 
       <section id="panel-home" class="panel">
         <div class="card">
+          <p class="panel-kicker">KHÔNG GIAN SỐNG</p>
           <h2 class="section-title">🏠 Kiểm Tra An Toàn & Phong Thủy Nhà Ở</h2>
           <div class="audit-options" id="homeAuditOptions">
             <label><input type="checkbox" value="exit"> Thông thoáng lối đi, lối thoát hiểm</label>
@@ -141,7 +145,21 @@
             <details><summary>Nguyên lý Âm Dương</summary><p>Âm Dương là hai mặt đối lập nhưng thống nhất, luôn vận động và chuyển hóa lẫn nhau. Trong phong thủy, sự cân bằng Âm Dương là yếu tố tiên quyết để mang lại sinh khí.</p></details>
             <details><summary>Ngũ Hành Tương Sinh - Tương Khắc</summary><p><strong>Tương sinh:</strong> Mộc sinh Hỏa, Hỏa sinh Thổ, Thổ sinh Kim, Kim sinh Thủy, Thủy sinh Mộc.<br><strong>Tương khắc:</strong> Mộc khắc Thổ, Thổ khắc Thủy, Thủy khắc Hỏa, Hỏa khắc Kim, Kim khắc Mộc.</p></details>
             <details><summary>Hậu Thiên Bát Quái</summary><p>Là sơ đồ bát quái do vua Văn Vương sắp xếp, dùng để ứng dụng trong phong thủy nhà ở, xác định hướng tốt xấu (Bát Trạch) và phi tinh (Huyền Không).</p></details>
+            <details><summary>Đông Tứ Trạch và Tây Tứ Trạch</summary><p>Đông Tứ Trạch gồm Khảm, Ly, Chấn, Tốn; Tây Tứ Trạch gồm Càn, Khôn, Cấn, Đoài. Khi xem hướng cần đối chiếu cung mệnh, mục đích sử dụng và bối cảnh thực tế.</p></details>
+            <details><summary>24 sơn hướng là gì?</summary><p>La bàn phong thủy chia vòng phương vị thành 24 sơn, mỗi sơn rộng 15°. Cần giữ la bàn cân bằng, tránh vật kim loại và nguồn từ trường khi đo.</p></details>
+            <details><summary>Nguyên tắc bố trí nhà ở</summary><p>Ưu tiên an toàn, thông gió, ánh sáng tự nhiên, lối đi thông thoáng và công năng sử dụng. Phong thủy là hệ thống tham khảo văn hóa, không thay thế tiêu chuẩn xây dựng hay tư vấn chuyên môn.</p></details>
           </div>
+        </div>
+        <div class="card backup-card">
+          <p class="panel-kicker">QUẢN LÝ DỮ LIỆU</p>
+          <h2 class="section-title">🛡️ Sao lưu & Khôi phục</h2>
+          <p class="backup-description">Lưu hồ sơ, ghi chú và lịch cá nhân thành tệp JSON để chuyển sang thiết bị khác hoặc khôi phục khi cần.</p>
+          <div class="backup-actions">
+            <button type="button" id="exportBackup" class="btn btn-primary">⬇️ Xuất bản sao lưu</button>
+            <button type="button" id="importBackupButton" class="btn btn-secondary">⬆️ Khôi phục dữ liệu</button>
+            <input type="file" id="importBackupFile" accept="application/json,.json" hidden>
+          </div>
+          <p id="backupStatus" class="field-hint" role="status" aria-live="polite"></p>
         </div>
       </section>
     </main>
