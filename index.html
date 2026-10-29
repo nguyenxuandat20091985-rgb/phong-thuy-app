@@ -45,7 +45,22 @@
     </div>
   </section>
   <section class="home-guide-panel" data-guide-panel="age" hidden>
-    <ol class="guide-steps"><li><strong>Tra cung phi cá nhân:</strong> vào tab <b>Cá nhân</b>, nhập năm sinh dương lịch và giới tính theo phương pháp Bát Trạch phổ biến.</li><li><strong>Đo hướng nhà riêng:</strong> dùng la bàn ở vài vị trí thoáng, tránh kim loại/loa/nam châm; ghi rõ đang đo mặt cửa, mặt nhà hay hướng nhìn.</li><li><strong>Đối chiếu, không suy đoán:</strong> so hướng đo được với bảng hướng trong kết quả cá nhân. Nếu sinh gần Tết âm lịch, cần xác minh cách quy đổi năm theo trường phái đang dùng.</li><li><strong>Áp dụng có chọn lọc:</strong> cân nhắc hướng khi sắp xếp bàn/giường nếu thuận tiện; không phá tường, chuyển bếp hoặc sửa kết cấu chỉ vì một bảng tra.</li></ol>
+    <div class="card age-direction-card">
+      <span class="eyebrow">TRA CỨU CÁ NHÂN HÓA</span>
+      <h3>Tính hướng theo ngày sinh nam / nữ</h3>
+      <p class="muted">Nhập ngày sinh dương lịch, chọn giới tính dùng trong phép tính và hướng cửa chính đã đo thực tế để nhận gợi ý Bát Trạch cùng cách bố trí cơ bản.</p>
+      <form id="houseAgeForm">
+        <div class="form-grid">
+          <label for="houseBirthDate">Ngày sinh dương lịch<input id="houseBirthDate" type="date" min="1900-01-01" max="2099-12-31" required></label>
+          <label for="houseBirthGender">Giới tính dùng trong phép tính<select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
+          <label for="houseMeasuredFacing">Hướng cửa chính đã đo<select id="houseMeasuredFacing"><option value="">Chưa đo / chưa rõ</option><option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option><option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option></select></label>
+        </div>
+        <div class="form-actions"><button class="primary-button" type="submit">Tính hướng &amp; bố trí</button><button class="secondary-button" type="button" id="clearHouseAgeForm">Xóa thông tin nhập</button></div>
+      </form>
+      <div id="houseAgeResult" class="age-direction-result" aria-live="polite"><p class="empty-state small">Nhập thông tin để xem cung phi, nhóm trạch, hướng hợp theo bảng tra và gợi ý bố trí phòng.</p></div>
+      <p class="field-hint">Đây là cách tra cứu Bát Trạch truyền thống để tham khảo, không phải kết luận khoa học. Người sinh sát thời điểm Tết âm lịch có thể cần xác định lại năm quy đổi theo trường phái đang dùng. Hướng cửa chính không tự động đồng nghĩa với hướng đặt giường hoặc bàn.</p>
+    </div>
+    <ol class="guide-steps"><li><strong>Đo hướng nhà riêng:</strong> dùng la bàn ở vài vị trí thoáng, tránh kim loại/loa/nam châm; ghi rõ đang đo mặt cửa, mặt nhà hay hướng nhìn.</li><li><strong>Áp dụng có chọn lọc:</strong> cân nhắc hướng khi sắp xếp bàn/giường nếu thuận tiện; không phá tường, chuyển bếp hoặc sửa kết cấu chỉ vì một bảng tra.</li></ol>
     <button type="button" class="secondary-button" id="goPersonalGuide">Mở tra cứu cung phi ở tab Cá nhân</button>
   </section>
   <section class="home-guide-panel" data-guide-panel="protect" hidden>
