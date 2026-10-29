@@ -180,7 +180,7 @@ function runHomeAudit(){
 function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
 function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
 const COMPASS_DIRECTIONS=['Bắc','Bắc Đông Bắc','Đông Bắc','Đông Đông Bắc','Đông','Đông Đông Nam','Đông Nam','Nam Đông Nam','Nam','Nam Tây Nam','Tây Nam','Tây Tây Nam','Tây','Tây Tây Bắc','Tây Bắc','Bắc Tây Bắc'];
-let compassListening=false,compassLastHeading=null,compassSensorHandler=null,compassSource='';
+let compassListening=false,compassLastHeading=null,compassSensorHandler=null,compassSource='',compassLastAbsoluteAt=0;
 function normalizeDegrees(value){return ((value%360)+360)%360;}
 function compassDirection(degrees){return COMPASS_DIRECTIONS[Math.round(normalizeDegrees(degrees)/22.5)%16];}
 let compassRenderFrame=0,compassPendingHeading=null,lastRenderedHeading=null;
@@ -196,27 +196,29 @@ function renderCompassHeading(raw){
   $('compassHeading').textContent=magnetic.toFixed(0)+'°';
   $('compassDirection').textContent=compassDirection(magnetic);
  
-  const counter=magnetic+'deg';
-  document.querySelectorAll('.feng-ring-ticks,.feng-ring-degree,.feng-bagua').forEach(ring=>ring.style.transform='rotate('+(-magnetic)+'deg)');
-  document.querySelectorAll('.bagua-label,.degree-label').forEach(label=>label.style.setProperty('--label-counter-rotation',counter));
-  if(lastRenderedHeading===null||Math.abs(((magnetic-lastRenderedHeading+540)%360)-180)>=0.5){
-   lastRenderedHeading=magnetic;
-   const declinationText=$('magneticDeclination').value.trim();
-   if(declinationText===''){
-    $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
+  const counter=(-magnetic)+'deg';
+  // Xoay các vòng số/La Kinh bên dưới kim cố định; giữ chữ luôn đứng thẳng.
+  document.querySelectorAll('.feng-ring-ticks,.feng-ring-degree,.feng-bagua,.feng-inner').forEach(ring=>ring.style.transform='rotate('+(-magnetic)+'deg)');
+  document.querySelectorAll('.bagua-label,.degree-label,.feng-direction').forEach(label=>label.style.setProperty('--label-counter-rotation',magnetic+'deg'));
+  lastRenderedHeading=magnetic;
+  const declinationText=$('magneticDeclination').value.trim();
+  if(declinationText===''){
+   $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
+  }else{
+   const declination=Number(declinationText);
+   if(!Number.isFinite(declination)||declination < -30||declination>30){
+    $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
    }else{
-    const declination=Number(declinationText);
-    if(!Number.isFinite(declination)||declination < -30||declination>30){
-     $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
-    }else{
-     const truth=normalizeDegrees(magnetic+declination);
-     $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
-    }
+    const truth=normalizeDegrees(magnetic+declination);
+    $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
    }
   }
  });
 }
 function handleCompassEvent(event){
+ // Khi trình duyệt phát cả hai loại sự kiện, ưu tiên số đo tuyệt đối để tránh rung/nhảy hướng.
+ if(event.type==='deviceorientationabsolute'&&event.absolute===true)compassLastAbsoluteAt=Date.now();
+ if(event.type==='deviceorientation'&&event.absolute!==true&&!Number.isFinite(event.webkitCompassHeading)&&Date.now()-compassLastAbsoluteAt<300)return;
  let heading=null;
  if(Number.isFinite(event.webkitCompassHeading)){heading=event.webkitCompassHeading;compassSource='Cảm biến la bàn của thiết bị';}
  else if(event.absolute===true&&Number.isFinite(event.alpha)){heading=360-event.alpha;compassSource='Cảm biến hướng tuyệt đối';}
@@ -237,8 +239,7 @@ async function startLiveCompass(){
  try{
   if(typeof DeviceOrientationEvent.requestPermission==='function'){
    let permission;
-   try{permission=await DeviceOrientationEvent.requestPermission(true);}
-   catch{permission=await DeviceOrientationEvent.requestPermission();}
+   permission=await DeviceOrientationEvent.requestPermission();
    if(permission!=='granted'){$('compassStatus').textContent='Chưa được cấp quyền cảm biến. Hãy cho phép trong trình duyệt rồi thử lại.';return;}
   }
   if(compassListening)return;
