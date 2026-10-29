@@ -68,8 +68,10 @@ function normalizeDegrees(value) { return ((value % 360) + 360) % 360; }
 
 function updateCompassDisplay(heading) {
   const normalized = normalizeDegrees(heading);
-  $('fengCompass').style.transform = `rotate(${-normalized}deg)`;
-  $('deg-text').textContent = normalized.toFixed(1) + '°';
+  const compassEl = $('fengCompass');
+  if (compassEl) compassEl.style.transform = `rotate(${-normalized}deg)`;
+  const degText = $('deg-text');
+  if (degText) degText.textContent = normalized.toFixed(1) + '°';
   
   const son = HAI_MUOI_BON_SON.find(s => {
     if (s.start < s.end) return normalized >= s.start && normalized < s.end;
@@ -82,15 +84,17 @@ function updateCompassDisplay(heading) {
     return diff <= 22.5;
   }) || HAU_THIEN_QUA[0];
 
-  $('dir-text').textContent = quaFound.dir.toUpperCase();
-  $('cur-son').textContent = son.name;
-  $('cur-qua').textContent = `${quaFound.symbol} ${quaFound.name}`;
-  $('cur-nguhanh').textContent = son.nguhanh;
+  if ($('dir-text')) $('dir-text').textContent = quaFound.dir.toUpperCase();
+  if ($('cur-son')) $('cur-son').textContent = son.name;
+  if ($('cur-qua')) $('cur-qua').textContent = `${quaFound.symbol} ${quaFound.name}`;
+  if ($('cur-nguhanh')) $('cur-nguhanh').textContent = son.nguhanh;
   
   const catSon = ['Tý','Bính','Ngọ','Đinh','Mão','Dậu','Tốn','Càn','Cấn','Khôn'];
   const isCat = catSon.includes(son.name);
-  $('cur-cat').textContent = isCat ? '✓ Vượng Khí' : '⚠ Bình Thường';
-  $('cur-cat').className = isCat ? 'good' : 'bad';
+  if ($('cur-cat')) {
+    $('cur-cat').textContent = isCat ? '✓ Vượng Khí' : '⚠ Bình Thường';
+    $('cur-cat').className = isCat ? 'good' : '';
+  }
 }
 
 function handleOrientation(e) {
@@ -110,58 +114,65 @@ function handleOrientation(e) {
 }
 
 async function startCompass() {
-  if (!window.isSecureContext) { $('compass-status').textContent = 'Cần HTTPS để dùng cảm biến.'; return; }
+  if (!window.isSecureContext) { if($('compass-status')) $('compass-status').textContent = 'Cần HTTPS để dùng cảm biến.'; return; }
   try {
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       const perm = await DeviceOrientationEvent.requestPermission();
-      if (perm !== 'granted') { $('compass-status').textContent = 'Vui lòng cấp quyền cảm biến.'; return; }
+      if (perm !== 'granted') { if($('compass-status')) $('compass-status').textContent = 'Vui lòng cấp quyền cảm biến.'; return; }
     }
     window.addEventListener('deviceorientation', handleOrientation, true);
     window.addEventListener('deviceorientationabsolute', handleOrientation, true);
     compassListening = true;
-    $('btn-calibrate').textContent = '🟢 Đang đo...';
-    $('compass-status').textContent = 'Đặt điện thoại nằm ngang, tránh xa kim loại.';
+    if($('btn-calibrate')) $('btn-calibrate').textContent = '🟢 Đang đo...';
+    if($('compass-status')) $('compass-status').textContent = 'Đặt điện thoại nằm ngang, tránh xa kim loại.';
   } catch (err) {
-    $('compass-status').textContent = 'Lỗi cảm biến: ' + err.message;
+    if($('compass-status')) $('compass-status').textContent = 'Lỗi cảm biến: ' + err.message;
   }
 }
 
-$('btn-calibrate').addEventListener('click', () => { if (!compassListening) startCompass(); });
+if($('btn-calibrate')) $('btn-calibrate').addEventListener('click', () => { if (!compassListening) startCompass(); });
 
-$('btn-lock').addEventListener('click', function() {
-  if (lockedHeading === null) {
-    lockedHeading = currentHeading;
-    this.textContent = '🔓 Mở Khoá';
-    this.style.background = 'var(--bad)';
-    $('compass-status').textContent = `Đã khoá hướng: ${lockedHeading.toFixed(1)}°`;
-  } else {
-    lockedHeading = null;
-    this.textContent = '🔒 Khoá Hướng';
-    this.style.background = '';
-    updateCompassDisplay(currentHeading);
-    $('compass-status').textContent = 'Đã mở khoá, la bàn quay theo cảm biến.';
-  }
-});
+if($('btn-lock')) {
+  $('btn-lock').addEventListener('click', function() {
+    if (lockedHeading === null) {
+      lockedHeading = currentHeading;
+      this.textContent = '🔓 Mở Khoá';
+      this.style.background = 'var(--bad)';
+      if($('compass-status')) $('compass-status').textContent = `Đã khoá hướng: ${lockedHeading.toFixed(1)}°`;
+    } else {
+      lockedHeading = null;
+      this.textContent = '🔒 Khoá Hướng';
+      this.style.background = '';
+      updateCompassDisplay(currentHeading);
+      if($('compass-status')) $('compass-status').textContent = 'Đã mở khoá, la bàn quay theo cảm biến.';
+    }
+  });
+}
 
 let isDragging = false, lastAngle = 0;
-$('fengCompass').addEventListener('pointerdown', e => {
-  isDragging = true;
-  const rect = $('fengCompass').getBoundingClientRect();
-  lastAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
-  $('fengCompass').setPointerCapture(e.pointerId);
-});
-$('fengCompass').addEventListener('pointermove', e => {
-  if (!isDragging) return;
-  const rect = $('fengCompass').getBoundingClientRect();
-  const newAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
-  currentHeading = normalizeDegrees(currentHeading - (newAngle - lastAngle));
-  lastAngle = newAngle;
-  lockedHeading = null;
-  $('btn-lock').textContent = '🔒 Khoá Hướng';
-  $('btn-lock').style.background = '';
-  updateCompassDisplay(currentHeading);
-});
-$('fengCompass').addEventListener('pointerup', () => isDragging = false);
+const fengCompass = $('fengCompass');
+if (fengCompass) {
+  fengCompass.addEventListener('pointerdown', e => {
+    isDragging = true;
+    const rect = fengCompass.getBoundingClientRect();
+    lastAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
+    fengCompass.setPointerCapture(e.pointerId);
+  });
+  fengCompass.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    const rect = fengCompass.getBoundingClientRect();
+    const newAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
+    currentHeading = normalizeDegrees(currentHeading - (newAngle - lastAngle));
+    lastAngle = newAngle;
+    lockedHeading = null;
+    if($('btn-lock')) {
+      $('btn-lock').textContent = '🔒 Khoá Hướng';
+      $('btn-lock').style.background = '';
+    }
+    updateCompassDisplay(currentHeading);
+  });
+  fengCompass.addEventListener('pointerup', () => isDragging = false);
+}
 
 // ==================== 4. TÍNH NĂNG LƯU HƯỚNG ====================
 function saveDirection() {
@@ -176,6 +187,7 @@ function saveDirection() {
 function renderSavedDirections() {
   const saved = JSON.parse(localStorage.getItem('pt_saved_dirs') || '[]');
   const container = $('saved-directions-list');
+  if (!container) return;
   if (saved.length === 0) { container.innerHTML = '<p class="empty-state">Chưa có hướng nào được lưu.</p>'; return; }
   container.innerHTML = saved.map(item => `
     <div class="saved-item">
@@ -188,9 +200,9 @@ window.deleteDir = (id) => {
   localStorage.setItem('pt_saved_dirs', JSON.stringify(JSON.parse(localStorage.getItem('pt_saved_dirs')||'[]').filter(i => i.id !== id)));
   renderSavedDirections();
 };
-$('btn-save-dir').addEventListener('click', saveDirection);
+if($('btn-save-dir')) $('btn-save-dir').addEventListener('click', saveDirection);
 
-// ==================== 5. CÁC TÍNH NĂNG CŨ (GIỮ NGUYÊN ĐỂ PASS TEST) ====================
+// ==================== 5. CÁC TÍNH NĂNG GỐC (ĐỂ PASS TEST & HOẠT ĐỘNG THỰC TẾ) ====================
 // Bát Trạch
 function calcCung(year, gender) {
   const lastTwo = year % 100;
@@ -201,50 +213,143 @@ function calcCung(year, gender) {
   if (number === 5) number = gender === 'nam' ? 2 : 8;
   return CUNG[number];
 }
-$('profileForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const year = parseInt($('birthYear').value);
-  const gender = $('gender').value;
-  const cung = calcCung(year, gender);
-  const dirs = DIRECTIONS[cung.name];
-  $('personalResult').innerHTML = `
-    <div class="profile-summary">
-      <div class="profile-orb">${cung.name}</div>
-      <div><h3>Cung ${cung.name}</h3><p>${cung.group} Tứ Trạch · Hành ${cung.hanh}</p></div>
-    </div>
-    <div class="directions-split">
-      <div class="dir-column good-col"><h4>🟢 Hướng Tốt</h4><div class="direction-grid">${dirs.good.map(d => `<div class="dir-item good"><strong>${d[1]}</strong>${d[0]}</div>`).join('')}</div></div>
-      <div class="dir-column bad-col"><h4>🔴 Hướng Xấu</h4><div class="direction-grid">${dirs.bad.map(d => `<div class="dir-item bad"><strong>${d[1]}</strong>${d[0]}</div>`).join('')}</div></div>
-    </div>`;
-});
-$('saveProfile').addEventListener('click', () => {
-  localStorage.setItem('pt_profile_v2', JSON.stringify({year: $('birthYear').value, gender: $('gender').value}));
-  alert('Đã lưu hồ sơ!');
-});
-
-// Lịch Âm (Giữ nguyên logic cũ)
-function jdFromDate(dd, mm, yy) {
-  const a = Math.floor((14 - mm) / 12), y = yy + 4800 - a, m = mm + 12 * a - 3;
-  return dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+if($('profileForm')) {
+  $('profileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const year = parseInt($('birthYear').value);
+    const gender = $('gender').value;
+    const cung = calcCung(year, gender);
+    const dirs = DIRECTIONS[cung.name];
+    if($('personalResult')) {
+      $('personalResult').innerHTML = `
+        <div class="profile-summary">
+          <div class="profile-orb">${cung.name}</div>
+          <div><h3>Cung ${cung.name}</h3><p>${cung.group} Tứ Trạch · Hành ${cung.hanh}</p></div>
+        </div>
+        <div class="directions-split">
+          <div class="dir-column good-col"><h4>🟢 Hướng Tốt</h4><div class="direction-grid">${dirs.good.map(d => `<div class="dir-item good"><strong>${d[1]}</strong>${d[0]}</div>`).join('')}</div></div>
+          <div class="dir-column bad-col"><h4>🔴 Hướng Xấu</h4><div class="direction-grid">${dirs.bad.map(d => `<div class="dir-item bad"><strong>${d[1]}</strong>${d[0]}</div>`).join('')}</div></div>
+        </div>`;
+    }
+  });
 }
-function convertSolarToLunar(dd, mm, yy, tz = 7) {
-  // Logic rút gọn để pass test, giữ nguyên cấu trúc trả về
-  return { day: dd, month: mm, year: yy, leap: 0 }; 
+if($('saveProfile')) {
+  $('saveProfile').addEventListener('click', () => {
+    localStorage.setItem('pt_profile_v2', JSON.stringify({year: $('birthYear').value, gender: $('gender').value}));
+    alert('Đã lưu hồ sơ!');
+  });
 }
-$('convertLunarDate').addEventListener('click', () => {
-  const val = $('lunarDateInput').value;
-  if(!val) return;
-  const [y, m, d] = val.split('-').map(Number);
-  const r = convertSolarToLunar(d, m, y, 7);
-  $('lunarDateResult').innerHTML = `<strong>${r.day}/${r.month}/${r.year}</strong><small>Âm lịch Việt Nam · UTC+7</small>`;
-});
 
-// Tiết khí (Placeholder để pass test)
-$('showSolarTerms').addEventListener('click', () => {
-  $('solarTermsResult').innerHTML = '<ol><li><strong>Lập xuân</strong><span>04/02</span></li><li><strong>Xuân phân</strong><span>20/03</span></li></ol>';
-});
+// Lịch Âm (Thuật toán thiên văn học gốc, chính xác 1900-2099)
+function jdFromDate(dd,mm,yy){
+  const a=Math.floor((14-mm)/12),y=yy+4800-a,m=mm+12*a-3;
+  let jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+  if(jd<2299161) jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-32083;
+  return jd;
+}
+function newMoon(k){
+  const T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180;
+  let jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
+  jd+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+  const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
+  const Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
+  const F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
+  let C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr);
+  C-=0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)+0.0004*Math.sin(3*Mp*dr);
+  C+=0.0104*Math.sin(2*F*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr);
+  C+=0.0004*Math.sin((2*F+M)*dr)-0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mp)*dr)+0.0010*Math.sin((2*F-Mp)*dr)+0.0005*Math.sin((2*Mp+M)*dr);
+  const deltaT=T < -11 ? 0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3 : -0.000278+0.000265*T+0.000262*T2;
+  return jd+C-deltaT;
+}
+function getNewMoonDay(k,tz){return Math.floor(newMoon(k)+0.5+tz/24);}
+function sunLongitude(jdn){
+  const T=(jdn-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
+  const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+  const L0=280.46645+36000.76983*T+0.0003032*T2;
+  let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+  DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
+  let L=(L0+DL)*dr;L-=Math.PI*2*Math.floor(L/(Math.PI*2));
+  return Math.floor(L/Math.PI*6);
+}
+function getSunLongitude(dayNumber,tz){return sunLongitude(dayNumber-0.5-tz/24);}
+function getLunarMonth11(yy,tz){
+  const off=jdFromDate(31,12,yy)-2415021,k=Math.floor(off/29.530588853);
+  let nm=getNewMoonDay(k,tz);if(getSunLongitude(nm,tz)>=9)nm=getNewMoonDay(k-1,tz);return nm;
+}
+function getLeapMonthOffset(a11,tz){
+  const k=Math.floor(0.5+(a11-2415021.076998695)/29.530588853);
+  let last=0,i=1,arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);
+  do{last=arc;i++;arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);}while(arc!==last&&i<14);
+  return i-1;
+}
+function convertSolarToLunar(dd,mm,yy,tz=7){
+  if(!Number.isInteger(dd)||!Number.isInteger(mm)||!Number.isInteger(yy)||yy<1900||yy>2099||mm<1||mm>12||dd<1||dd>31)return null;
+  const dayNumber=jdFromDate(dd,mm,yy),k=Math.floor((dayNumber-2415021.076998695)/29.530588853);
+  let monthStart=getNewMoonDay(k+1,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k,tz);
+  let a11=getLunarMonth11(yy,tz),b11=a11,lunarYear;
+  if(a11>=monthStart){lunarYear=yy;a11=getLunarMonth11(yy-1,tz);}else{lunarYear=yy+1;b11=getLunarMonth11(yy+1,tz);}
+  const lunarDay=dayNumber-monthStart+1,diff=Math.floor((monthStart-a11)/29);
+  let lunarLeap=0,lunarMonth=diff+11;
+  if(b11-a11>365){const leapDiff=getLeapMonthOffset(a11,tz);if(diff>=leapDiff){lunarMonth=diff+10;if(diff===leapDiff)lunarLeap=1;}}
+  if(lunarMonth>12)lunarMonth-=12;
+  if(lunarMonth>=11&&diff<4)lunarYear--;
+  return {day:lunarDay,month:lunarMonth,year:lunarYear,leap:lunarLeap};
+}
+function renderLunarDate(){
+  const value=$('lunarDateInput').value;if(!value){if($('lunarDateResult')) $('lunarDateResult').textContent='Hãy chọn ngày dương lịch';return;}
+  const [y,m,d]=value.split('-').map(Number),r=convertSolarToLunar(d,m,y,7);
+  if(!r){if($('lunarDateResult')) $('lunarDateResult').textContent='Chỉ hỗ trợ ngày hợp lệ trong giai đoạn 1900–2099';return;}
+  if($('lunarDateResult')) $('lunarDateResult').innerHTML='<strong>'+r.day+'/'+r.month+'/'+r.year+(r.leap?' (tháng nhuận)':'')+'</strong><small>Âm lịch Việt Nam · UTC+7</small>';
+}
+if($('convertLunarDate')) $('convertLunarDate').addEventListener('click', renderLunarDate);
+if($('lunarDateInput')) $('lunarDateInput').addEventListener('change', renderLunarDate);
 
-// Nhà ở (Giữ nguyên logic cũ)
+// Tiết khí (Thuật toán gốc chính xác)
+const SOLAR_TERMS=[
+ ['Lập xuân',315],['Vũ thủy',330],['Kinh trập',345],['Xuân phân',0],
+ ['Thanh minh',15],['Cốc vũ',30],['Lập hạ',45],['Tiểu mãn',60],
+ ['Mang chủng',75],['Hạ chí',90],['Tiểu thử',105],['Đại thử',120],
+ ['Lập thu',135],['Xử thử',150],['Bạch lộ',165],['Thu phân',180],
+ ['Hàn lộ',195],['Sương giáng',210],['Lập đông',225],['Tiểu tuyết',240],
+ ['Đại tuyết',255],['Đông chí',270],['Tiểu hàn',285],['Đại hàn',300]
+];
+function solarLongitudeDegrees(jd){
+  const T=(jd-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
+  const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+  const L0=280.46645+36000.76983*T+0.0003032*T2;
+  let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+  DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
+  let L=(L0+DL)%360;return (L+360)%360;
+}
+function calculateSolarTerms(year){
+  if(!Number.isInteger(year)||year<1900||year>2099)return null;
+  const start=jdFromDate(1,1,year),end=jdFromDate(1,1,year+1),found=[];
+  for(let day=start;day<end;day++){
+   const prev=solarLongitudeDegrees(day),curr=solarLongitudeDegrees(day+1);
+   const delta=(curr-prev+360)%360;
+   for(const [name,target] of SOLAR_TERMS){
+    const progress=(target-prev+360)%360;
+    if(progress>delta+0.00001)continue;
+    let lo=day,hi=day+1;
+    for(let i=0;i<28;i++){
+     const mid=(lo+hi)/2,passed=(solarLongitudeDegrees(mid)-prev+360)%360;
+     if(passed<progress)lo=mid;else hi=mid;
+    }
+    const localDate=new Date(((lo+hi)/2-2440587.5)*86400000+7*3600000);
+    found.push({name,date:localDate});
+   }
+  }
+  found.sort((a,b)=>a.date-b.date);
+  return found.length===24?found:null;
+}
+function renderSolarTerms(){
+  const year=Number($('solarTermsYear').value),items=calculateSolarTerms(year),out=$('solarTermsResult');
+  if(!items){if(out) out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
+  if(out) out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+' · '+item.date.toISOString().slice(11,16)+'</span></li>').join('')+'</ol>';
+}
+if($('showSolarTerms')) $('showSolarTerms').addEventListener('click', renderSolarTerms);
+
+// Nhà ở
 const HOME_AUDIT = {
   exit:{title:'Lối thoát hiểm',detail:'Dọn vật cản ở cửa, hành lang.'},
   fire:{title:'Nguy cơ cháy',detail:'Tách vật dễ cháy khỏi bếp.'},
@@ -252,22 +357,29 @@ const HOME_AUDIT = {
   air:{title:'Thông gió',detail:'Mở cửa khi điều kiện phù hợp.'},
   light:{title:'Ánh sáng',detail:'Bổ sung đèn ở khu vực tối.'}
 };
-$('runHomeAudit').addEventListener('click', () => {
-  const selected = Array.from(document.querySelectorAll('#homeAuditOptions input:checked')).map(el => el.value);
-  if (!selected.length) { $('homeAuditResult').innerHTML = '<p>Chưa chọn vấn đề nào.</p>'; return; }
-  const list = selected.map((key, i) => `<li><strong>${i+1}. ${HOME_AUDIT[key].title}</strong><p>${HOME_AUDIT[key].detail}</p></li>`).join('');
-  $('homeAuditResult').innerHTML = `<p>Đã ghi nhận ${selected.length} nhóm vấn đề:</p><ol>${list}</ol>`;
-});
+if($('runHomeAudit')) {
+  $('runHomeAudit').addEventListener('click', () => {
+    const selected = Array.from(document.querySelectorAll('#homeAuditOptions input:checked')).map(el => el.value);
+    if (!selected.length) { if($('homeAuditResult')) $('homeAuditResult').innerHTML = '<p>Chưa chọn vấn đề nào.</p>'; return; }
+    const list = selected.map((key, i) => `<li><strong>${i+1}. ${HOME_AUDIT[key].title}</strong><p>${HOME_AUDIT[key].detail}</p></li>`).join('');
+    if($('homeAuditResult')) $('homeAuditResult').innerHTML = `<p>Đã ghi nhận ${selected.length} nhóm vấn đề:</p><ol>${list}</ol>`;
+  });
+}
 
-$('saveHouseNotes').addEventListener('click', () => {
-  localStorage.setItem('pt_house_notes_v2', $('houseNotes').value);
-  $('houseSaved').textContent = 'Đã lưu!';
-  setTimeout(() => $('houseSaved').textContent = '', 2000);
-});
+if($('saveHouseNotes')) {
+  $('saveHouseNotes').addEventListener('click', () => {
+    localStorage.setItem('pt_house_notes_v2', $('houseNotes').value);
+    if($('houseSaved')) {
+      $('houseSaved').textContent = 'Đã lưu!';
+      setTimeout(() => $('houseSaved').textContent = '', 2000);
+    }
+  });
+}
 
 // ==================== 6. TIỆN ÍCH & KHỞI ĐỘNG ====================
 function drawCompass() {
   const svg = $('compass-svg');
+  if (!svg) return;
   svg.innerHTML = '';
   const NS = 'http://www.w3.org/2000/svg';
   const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (let k in attrs) e.setAttribute(k, attrs[k]); return e; };
@@ -301,7 +413,8 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
-    $(`panel-${tab.dataset.tab}`).classList.add('active');
+    const targetPanel = $(`panel-${tab.dataset.tab}`);
+    if (targetPanel) targetPanel.classList.add('active');
   });
 });
 
@@ -312,8 +425,11 @@ renderSavedDirections();
 
 // Load saved data
 const savedProfile = JSON.parse(localStorage.getItem('pt_profile_v2') || 'null');
-if (savedProfile) { $('birthYear').value = savedProfile.year; $('gender').value = savedProfile.gender; }
-$('houseNotes').value = localStorage.getItem('pt_house_notes_v2') || '';
+if (savedProfile) { 
+  if($('birthYear')) $('birthYear').value = savedProfile.year; 
+  if($('gender')) $('gender').value = savedProfile.gender; 
+}
+if($('houseNotes')) $('houseNotes').value = localStorage.getItem('pt_house_notes_v2') || '';
 
-$('duong-lich').textContent = new Date().toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'numeric', year:'numeric'});
-$('am-lich').textContent = `Năm ${new Date().getFullYear()}`;
+if($('duong-lich')) $('duong-lich').textContent = new Date().toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'numeric', year:'numeric'});
+if($('am-lich')) $('am-lich').textContent = `Năm ${new Date().getFullYear()}`;
