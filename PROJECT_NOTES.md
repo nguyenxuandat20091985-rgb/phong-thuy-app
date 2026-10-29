@@ -1,6 +1,6 @@
 # Ghi chú dự án Phong Thủy App
 
-## Cập nhật 2026-10-29 — Nâng cấp mục Nhà ở + khôi phục panel (Grok)
+## Cập nhật 2026-10-29 — Nâng cấp mục Nhà ở + khôi phục panel + gọn hero (Grok)
 
 ### Đã làm
 
@@ -30,12 +30,19 @@
    - `sw.js` cache name → `phong-thuy-v43-home-interactive`.
    - ASSETS thêm `./home-upgrade.css`, `./home-upgrade.js`.
 
+6. **Gọn hero (theo yêu cầu)**
+   - Xóa nút **“Mở la bàn phong thủy”** trên hero cho đỡ chật chỗ.
+   - La bàn chính: card **La Bàn Phong Thủy Cao Cấp** trong tab **Cá nhân** (iframe `la-ban-cao-cap.html`).
+   - `la-ban-cao-cap.html` dùng Device Orientation / magnetometer, có hiệu chuẩn, khóa hướng, Bát Trạch, Huyền Không Phi Tinh, giờ hoàng đạo.
+   - Hero chỉ còn text + vòng la bàn trang trí (không còn CTA nhảy xuống compass).
+
 ### File liên quan
-- `index.html` — full panels + modal + layout/protect interactive
+- `index.html` — full panels + modal + layout/protect interactive; **không** còn `#openCompassHero`
 - `style.css` — base styles
 - `home-upgrade.css` — modal, interactive cards, checklist, progress
 - `home-upgrade.js` — `ROOM_DETAILS`, `openRoomDetail`, `initLayoutDetails`, `initProtectChecklist`
 - `app.js` — Bát Trạch, lịch âm, house age form, room guidance, tabs
+- `la-ban-cao-cap.html` — la bàn cảm biến đầy đủ (đặt điện thoại nằm ngang, tránh kim loại)
 - `sw.js` — offline cache v43
 - `manifest.json` — icon-192 / icon-512
 
@@ -46,6 +53,7 @@
 - Tab nhà ở: `.home-guide-tab` + `[data-guide-panel]` (layout | age | protect).
 - Script order: `app.js` rồi `home-upgrade.js`.
 - Khi đổi offline assets: bump `CACHE_NAME` trong `sw.js`.
+- La bàn: không đưa lại nút hero trừ khi user yêu cầu; compass = iframe trong `#compassCard`.
 
 ### Repo & app
 - https://github.com/nguyenxuandat20091985-rgb/phong-thuy-app
