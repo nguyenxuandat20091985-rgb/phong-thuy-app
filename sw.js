@@ -1,7 +1,8 @@
-const CACHE_NAME = 'phong-thuy-v24-index-cleanup';
+const CACHE_NAME = 'phong-thuy-v25-premium-compass-preview';
 const ASSETS = [
   './',
   './index.html',
+  './la-ban-cao-cap.html',
   './style.css',
   './app.js',
   './backup.js',
