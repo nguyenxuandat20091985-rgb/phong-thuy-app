@@ -28,6 +28,8 @@ jobs:
           console.log('Advanced house UI entry points found');
           NODE
           node --check /tmp/advanced-house.js
+      - name: Run Bát Trạch unit tests
+        run: node tests/bat-trach.test.js
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest.json valid')"
       - name: Validate current UI and core calculations

@@ -1,9 +1,10 @@
-const CACHE_NAME = 'phong-thuy-v43-advanced-house';
+const CACHE_NAME = 'phong-thuy-v44-bat-trach-tests';
 const ASSETS = [
   './',
   './index.html',
   './la-ban-cao-cap.html',
   './phong-thuy-nha-nang-cao.html',
+  './bat-trach.js',
   './style.css',
   './app.js',
   './backup.js',
