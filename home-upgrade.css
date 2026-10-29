@@ -1,4 +1,4 @@
-/* Nâng cấp Nhà ở 2026-10-29 */
+/* Nâng cấp Nhà ở + La Kinh hero 2026-10-29 */
 .layout-hint{margin:0 0 12px;font-size:.9rem}
 .home-diagram.interactive{display:flex;flex-direction:column;align-items:stretch;text-align:left;border:0;background:#fff;cursor:pointer;padding:12px;border-radius:16px;box-shadow:0 2px 12px rgba(18,63,53,.08);transition:transform .15s,box-shadow .15s;width:100%;font:inherit;color:inherit}
 .home-diagram.interactive:active{transform:scale(.98)}
@@ -31,24 +31,24 @@
 .home-diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.home-diagram-grid{grid-template-columns:1fr}}
 
-/* Hero La Kinh traditional compass */
-.hero.hero-compass-only{min-height:unset;padding:18px 0 8px;display:flex;justify-content:center;grid-template-columns:1fr}
+/* Hero La Kinh: fixed top pointer + rotating dial */
+.hero.hero-compass-only{min-height:unset;padding:12px 0 6px;display:flex;justify-content:center;grid-template-columns:1fr}
 .hero.hero-compass-only .hero-symbol{min-height:unset;width:100%;max-width:420px;margin:0 auto;background:none}
-.hero-lakinh{max-width:100%;width:100%}
-.hero-lakinh-wrap{position:relative;width:min(92vw,380px);margin:0 auto;aspect-ratio:1;filter:drop-shadow(0 8px 24px rgba(24,56,47,.14))}
-.hero-needle-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.hero-lakinh-wrap img.hero-lakinh-svg{width:100%;height:auto;display:block}
-.hero-lakinh-svg{width:100%;height:100%;display:block}
-#heroCompassNeedle{transform-box:fill-box;transform-origin:center;transition:transform .08s linear}
-.hero-compass-readout{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;margin-top:10px}
-.hero-compass-readout strong{font-size:30px;line-height:1.1;color:#174c3d;font-variant-numeric:tabular-nums}
-.hero-compass-readout>span{font-size:15px;font-weight:700;color:#18382f}
-.hero-compass-readout small{font-size:11px;color:#65756c;max-width:220px;line-height:1.35}
+.hero-lakinh{max-width:100%;width:100%;display:flex;flex-direction:column;align-items:center}
+.hero-lakinh-stage{position:relative;width:min(92vw,360px);aspect-ratio:1;margin:0 auto}
+.hero-lakinh-rotator{width:100%;height:100%;border-radius:50%;will-change:transform;transition:transform .06s linear}
+.hero-lakinh-img{width:100%;height:100%;display:block;border-radius:50%;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.hero-fixed-pointer{position:absolute;left:50%;top:2px;transform:translateX(-50%);z-index:5;width:0;height:0;pointer-events:none}
+.hero-fixed-pointer span{display:block;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:18px solid #c62828;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.hero-compass-readout{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;margin-top:8px}
+.hero-compass-readout strong{font-size:32px;line-height:1.1;color:#174c3d;font-variant-numeric:tabular-nums}
+.hero-compass-readout>span{font-size:16px;font-weight:700;color:#18382f}
+.hero-compass-readout small{font-size:11px;color:#65756c;max-width:240px;line-height:1.35}
 .hero-compass-btn{margin-top:8px;border:0;background:#174c3d;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
 .hero-compass-btn:active{transform:scale(.97)}
 .hero-compass-btn.running{background:#246d55}
 @media(max-width:650px){
-  .hero.hero-compass-only{padding:12px 0 4px}
-  .hero-lakinh-wrap{width:min(94vw,340px)}
-  .hero-compass-readout strong{font-size:26px}
+  .hero.hero-compass-only{padding:8px 0 4px}
+  .hero-lakinh-stage{width:min(94vw,340px)}
+  .hero-compass-readout strong{font-size:28px}
 }
