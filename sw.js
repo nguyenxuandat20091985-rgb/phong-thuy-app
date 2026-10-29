@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v38-birth-date-selects';
+const CACHE_NAME = 'phong-thuy-v39-compact-birth-date';
 const ASSETS = [
   './',
   './index.html',
