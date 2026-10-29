@@ -1,8 +1,9 @@
-const CACHE_NAME = 'phong-thuy-v42-auto-birth-profile';
+const CACHE_NAME = 'phong-thuy-v43-advanced-house';
 const ASSETS = [
   './',
   './index.html',
   './la-ban-cao-cap.html',
+  './phong-thuy-nha-nang-cao.html',
   './style.css',
   './app.js',
   './backup.js',
