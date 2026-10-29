@@ -140,3 +140,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .age-direction-card .birth-date-field input{width:150px;max-width:100%;min-height:38px;padding:7px 10px;border-radius:8px;font-size:14px;letter-spacing:.3px}
 .age-direction-card .birth-date-field .field-hint{font-size:11px;margin-top:0}
 @media(max-width:520px){.age-direction-card .birth-date-field{max-width:190px}.age-direction-card .birth-date-field input{width:150px;min-height:38px}}
+
+/* Keep the birth-date field reliably editable on touch devices */
+.age-direction-card .birth-date-field{position:relative;z-index:1;pointer-events:auto;user-select:text;-webkit-user-select:text}
+.age-direction-card .birth-date-field input{display:block;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation;user-select:text;-webkit-user-select:text;width:190px;min-height:44px;font-size:16px;letter-spacing:normal}
