@@ -31,25 +31,22 @@
 .home-diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.home-diagram-grid{grid-template-columns:1fr}}
 
-/* Hero live mini-compass */
-.hero-live-compass{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:220px;margin:0 auto}
-.hero-compass-dial{position:relative;width:160px;height:160px;border-radius:50%;border:3px solid #c79c4d;background:radial-gradient(circle at 50% 45%,#fff 0 55%,#eaf2e9 56% 100%);box-shadow:0 0 0 6px #f5f5ee,0 8px 24px rgba(24,56,47,.12)}
-.hero-compass-dial .hc-n,.hero-compass-dial .hc-e,.hero-compass-dial .hc-s,.hero-compass-dial .hc-w{position:absolute;font-size:11px;font-weight:800;color:#174c3d}
-.hero-compass-dial .hc-n{top:8px;left:50%;transform:translateX(-50%);color:#b23b31}
-.hero-compass-dial .hc-e{right:10px;top:50%;transform:translateY(-50%)}
-.hero-compass-dial .hc-s{bottom:8px;left:50%;transform:translateX(-50%)}
-.hero-compass-dial .hc-w{left:10px;top:50%;transform:translateY(-50%)}
-.hero-compass-needle{position:absolute;left:50%;top:18%;width:4px;height:32%;margin-left:-2px;background:linear-gradient(to bottom,#c43e35 0 52%,#65756c 52%);clip-path:polygon(50% 0,100% 100%,50% 85%,0 100%);transform-origin:50% 100%;border-radius:2px;z-index:2;transition:transform .08s linear}
-.hero-compass-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#174c3d;color:#f8e4b6;display:grid;place-items:center;font-size:18px;z-index:3;box-shadow:0 0 0 3px #c79c4d}
-.hero-compass-readout{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
-.hero-compass-readout strong{font-size:28px;line-height:1.1;color:#174c3d;font-variant-numeric:tabular-nums}
-.hero-compass-readout>span{font-size:14px;font-weight:700;color:#18382f}
-.hero-compass-readout small{font-size:11px;color:#65756c;max-width:180px;line-height:1.35}
-.hero-compass-btn{margin-top:6px;border:0;background:#174c3d;color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+/* Hero La Kinh traditional compass */
+.hero.hero-compass-only{min-height:unset;padding:18px 0 8px;display:flex;justify-content:center;grid-template-columns:1fr}
+.hero.hero-compass-only .hero-symbol{min-height:unset;width:100%;max-width:420px;margin:0 auto;background:none}
+.hero-lakinh{max-width:100%;width:100%}
+.hero-lakinh-wrap{width:min(92vw,380px);margin:0 auto;aspect-ratio:1;filter:drop-shadow(0 8px 24px rgba(24,56,47,.14))}
+.hero-lakinh-svg{width:100%;height:100%;display:block}
+#heroCompassNeedle{transform-box:fill-box;transform-origin:center;transition:transform .08s linear}
+.hero-compass-readout{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;margin-top:10px}
+.hero-compass-readout strong{font-size:30px;line-height:1.1;color:#174c3d;font-variant-numeric:tabular-nums}
+.hero-compass-readout>span{font-size:15px;font-weight:700;color:#18382f}
+.hero-compass-readout small{font-size:11px;color:#65756c;max-width:220px;line-height:1.35}
+.hero-compass-btn{margin-top:8px;border:0;background:#174c3d;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
 .hero-compass-btn:active{transform:scale(.97)}
 .hero-compass-btn.running{background:#246d55}
 @media(max-width:650px){
-  .hero-live-compass{max-width:180px}
-  .hero-compass-dial{width:130px;height:130px}
-  .hero-compass-readout strong{font-size:22px}
+  .hero.hero-compass-only{padding:12px 0 4px}
+  .hero-lakinh-wrap{width:min(94vw,340px)}
+  .hero-compass-readout strong{font-size:26px}
 }
