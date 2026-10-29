@@ -303,6 +303,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   const digits=birthDateInput.value.replace(/\D/g,'').slice(0,8);
   if(digits.length===8)birthDateInput.value=digits.slice(0,2)+'/'+digits.slice(2,4)+'/'+digits.slice(4);
  });
+ const autoCalculateBirthProfile=()=>{
+  const v=birthDateInput.value.trim();
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(v))$('houseAgeForm').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+ };
+ birthDateInput.addEventListener('input',()=>{
+  const digits=birthDateInput.value.replace(/\D/g,'').slice(0,8);
+  if(digits.length===8){birthDateInput.value=digits.slice(0,2)+'/'+digits.slice(2,4)+'/'+digits.slice(4);autoCalculateBirthProfile();}
+ });
+ $('houseBirthGender').addEventListener('change',autoCalculateBirthProfile);
+ $('houseMeasuredFacing').addEventListener('change',autoCalculateBirthProfile);
  $('houseAgeForm').addEventListener('submit',e=>{
   e.preventDefault();
   const birthText=$('houseBirthDate').value.trim(),parts=birthText.split('/'),day=Number(parts[0]),month=Number(parts[1]),year=Number(parts[2]),gender=$('houseBirthGender').value,facing=$('houseMeasuredFacing').value;
@@ -312,6 +322,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   const c=calcCung(year,gender);
   if(!c){$('houseAgeResult').innerHTML='<p>Chưa thể tính cung phi với dữ liệu này.</p>';return;}
   const d=DIRECTIONS[c.name];
+  const lunar=convertSolarToLunar(day,month,year,7);
+  const lunarYear=lunar?lunar.year:year;
+  const stems=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+  const branches=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const animals=['Chuột','Trâu','Hổ','Mèo','Rồng','Rắn','Ngựa','Dê','Khỉ','Gà','Chó','Lợn'];
+  const cycleYear=lunarYear-4;
+  const canChi=stems[((cycleYear%10)+10)%10]+' '+branches[((cycleYear%12)+12)%12];
+  const animal=animals[((cycleYear%12)+12)%12];
+  const lunarText=lunar?(lunar.day+'/'+lunar.month+'/'+lunar.year+(lunar.leap?' (tháng nhuận)':'')):'Chưa quy đổi được';
   const facingGood=facing?d.good.some(item=>item[1]===facing):null;
   const facingBad=facing?d.bad.some(item=>item[1]===facing):null;
   const tips=[
@@ -323,7 +342,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(facingGood)compare='<div class="age-facing-check positive"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Hướng này nằm trong nhóm hướng tốt của cung '+c.name+' theo bảng Bát Trạch đang dùng.</p></div>';
   else if(facingBad)compare='<div class="age-facing-check caution"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Hướng này nằm trong nhóm hướng cần cân nhắc của cung '+c.name+' theo bảng tra. Không cần sửa chữa vội; hãy kiểm tra cách đo, cách xác định năm sinh và mặt bằng thực tế.</p></div>';
   else if(facing)compare='<div class="age-facing-check"><strong>Hướng cửa đã nhập: '+escapeHtml(facing)+'</strong><p>Không xác định được hướng này trong bảng tra; hãy kiểm tra lại hướng đã chọn.</p></div>';
-  $('houseAgeResult').innerHTML='<div class="profile-summary"><div class="profile-orb">'+c.name+'</div><div><span class="eyebrow">KẾT QUẢ BÁT TRẠCH THAM KHẢO</span><h3>Cung '+c.name+'</h3><p>'+c.group+' · Hành cung '+c.hanh+'</p><small>Ngày sinh: '+birthText+' · '+(gender==='nam'?'Nam':'Nữ')+'</small></div></div>'+compare+'<div class="age-result-section"><h4>4 hướng tốt theo bảng tra</h4><div class="direction-grid">'+renderPairs(d.good,'good')+'</div></div><div class="age-result-section"><h4>4 hướng cần cân nhắc</h4><div class="direction-grid">'+renderPairs(d.bad,'bad')+'</div></div><div class="age-result-section"><h4>Gợi ý bố trí theo không gian</h4><ul class="age-placement-list">'+tips.map(t=>'<li><strong>'+t[0]+'</strong><p>'+t[1]+'</p></li>').join('')+'</ul></div>';
+  $('houseAgeResult').innerHTML='<div class="profile-summary"><div class="profile-orb">'+c.name+'</div><div><span class="eyebrow">HỒ SƠ PHONG THỦY CÁ NHÂN · THAM KHẢO</span><h3>Cung '+c.name+'</h3><p>'+c.group+' · Hành cung '+c.hanh+'</p><small>Ngày sinh: '+birthText+' · '+(gender==='nam'?'Nam':'Nữ')+'</small></div></div><div class="age-result-section"><h4>Thông tin năm sinh</h4><div class="direction-grid"><div class="direction-item"><span>Năm âm lịch</span><strong>'+lunarText+'</strong></div><div class="direction-item"><span>Can chi năm</span><strong>'+canChi+'</strong></div><div class="direction-item"><span>Con giáp</span><strong>'+animal+'</strong></div><div class="direction-item"><span>Nhóm trạch</span><strong>'+c.group+'</strong></div></div><p class="field-hint">Can chi/con giáp lấy theo năm âm lịch Việt Nam; cung phi dùng năm sinh và giới tính theo bảng Bát Trạch phổ biến.</p></div>'+compare+'<div class="age-result-section"><h4>4 hướng tốt theo bảng tra</h4><div class="direction-grid">'+renderPairs(d.good,'good')+'</div></div><div class="age-result-section"><h4>4 hướng cần cân nhắc</h4><div class="direction-grid">'+renderPairs(d.bad,'bad')+'</div></div><div class="age-result-section"><h4>Gợi ý bố trí theo không gian</h4><ul class="age-placement-list">'+tips.map(t=>'<li><strong>'+t[0]+'</strong><p>'+t[1]+'</p></li>').join('')+'</ul></div>';
  });
  $('clearHouseAgeForm').addEventListener('click',()=>{$('houseAgeForm').reset();$('houseAgeResult').innerHTML='<p class="empty-state small">Nhập thông tin để xem cung phi, nhóm trạch, hướng hợp theo bảng tra và gợi ý bố trí phòng.</p>';});
 
