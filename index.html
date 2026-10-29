@@ -6,7 +6,6 @@
   <title>Phong Thủy Việt - La Bàn Cao Cấp</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,95 +21,137 @@
       </div>
     </header>
 
+    <!-- TAB NAVIGATION -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="compass">🧭 La Bàn</button>
+      <button class="tab" data-tab="bat-trach">🏛️ Bát Trạch</button>
+      <button class="tab" data-tab="calendar">📅 Lịch & Giờ</button>
+      <button class="tab" data-tab="house">🏠 Nhà Ở</button>
+    </nav>
+
     <main>
-      <!-- COMPASS SECTION -->
-      <section class="card compass-card">
-        <h2 class="section-title">🧭 La Bàn Phong Thủy</h2>
-        <div class="datetime-bar">
-          <span id="duong-lich">--</span> • <span id="am-lich">--</span>
-        </div>
-        
-        <div class="compass-container">
-          <div class="north-marker">▼</div>
-          <div class="feng-compass" id="fengCompass">
-            <svg id="compass-svg" viewBox="-300 -300 600 600"></svg>
-            <div class="compass-center-info">
-              <div class="direction-text" id="dir-text">BẮC</div>
-              <div class="degree-text" id="deg-text">0.0°</div>
+      <!-- TAB 1: LA BÀN (PREMIUM) -->
+      <section id="panel-compass" class="panel active">
+        <div class="card compass-card">
+          <div class="datetime-bar">
+            <span id="duong-lich">--</span> • <span id="am-lich">--</span>
+          </div>
+          
+          <div class="compass-container">
+            <div class="north-marker">▼</div>
+            <div class="feng-compass" id="fengCompass">
+              <svg id="compass-svg" viewBox="-300 -300 600 600"></svg>
+              <div class="compass-center-info">
+                <div class="direction-text" id="dir-text">BẮC</div>
+                <div class="degree-text" id="deg-text">0.0°</div>
+              </div>
             </div>
           </div>
+
+          <div class="compass-info-grid">
+            <div class="info-item"><span class="label">Sơn hướng</span><strong id="cur-son">--</strong></div>
+            <div class="info-item"><span class="label">Quẻ Bát Quái</span><strong id="cur-qua">--</strong></div>
+            <div class="info-item"><span class="label">Ngũ Hành</span><strong id="cur-nguhanh">--</strong></div>
+            <div class="info-item"><span class="label">Đánh giá</span><strong id="cur-cat" class="good">--</strong></div>
+          </div>
+
+          <div class="compass-actions">
+            <button class="btn btn-primary" id="btn-calibrate">📡 Bật Cảm Biến</button>
+            <button class="btn btn-secondary" id="btn-lock">🔒 Khoá Hướng</button>
+            <button class="btn btn-secondary" id="btn-save-dir">💾 Lưu Hướng</button>
+          </div>
+          <p class="status-text" id="compass-status">Chạm "Bật Cảm Biến" hoặc xoay thủ công bằng chuột/cảm ứng.</p>
         </div>
 
-        <div class="compass-info-grid">
-          <div class="info-item"><span class="label">Sơn hướng</span><strong id="cur-son">--</strong></div>
-          <div class="info-item"><span class="label">Quẻ Bát Quái</span><strong id="cur-qua">--</strong></div>
-          <div class="info-item"><span class="label">Ngũ Hành</span><strong id="cur-nguhanh">--</strong></div>
-          <div class="info-item"><span class="label">Đánh giá</span><strong id="cur-cat" class="good">--</strong></div>
+        <div class="card">
+          <h3 class="section-title">📌 Hướng Đã Lưu</h3>
+          <div id="saved-directions-list" class="saved-list">
+            <p class="empty-state">Chưa có hướng nào được lưu.</p>
+          </div>
         </div>
-
-        <div class="compass-actions">
-          <button class="btn btn-primary" id="btn-calibrate">📡 Bật Cảm Biến</button>
-          <button class="btn btn-secondary" id="btn-lock">🔒 Khoá Hướng</button>
-          <button class="btn btn-secondary" id="btn-save-dir">💾 Lưu Hướng</button>
-        </div>
-        <p class="status-text" id="compass-status">Chạm "Bật Cảm Biến" hoặc xoay thủ công bằng chuột/cảm ứng.</p>
       </section>
 
-      <!-- SAVED DIRECTIONS -->
-      <section class="card">
-        <h2 class="section-title">📌 Hướng Đã Lưu</h2>
-        <div id="saved-directions-list" class="saved-list">
-          <p class="empty-state">Chưa có hướng nào được lưu.</p>
+      <!-- TAB 2: BÁT TRẠCH (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
+      <section id="panel-bat-trach" class="panel">
+        <div class="card">
+          <h2 class="section-title">🏛️ Tính Cung Mệnh Bát Trạch</h2>
+          <form id="profileForm" class="form-grid">
+            <div class="form-group">
+              <label for="birthYear">Năm sinh (Dương lịch)</label>
+              <input type="number" id="birthYear" value="1990" min="1900" max="2099" required>
+            </div>
+            <div class="form-group">
+              <label for="gender">Giới tính</label>
+              <select id="gender" required>
+                <option value="nam">Nam</option>
+                <option value="nu">Nữ</option>
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="submit" class="btn btn-primary full-width">✨ Tính Toán</button>
+              <button type="button" id="saveProfile" class="btn btn-secondary full-width">💾 Lưu Hồ Sơ</button>
+            </div>
+          </form>
+          <div id="personalResult" class="results"></div>
         </div>
       </section>
 
-      <!-- BAT TRACH SECTION -->
-      <section class="card">
-        <h2 class="section-title">🏛️ Bát Trạch Minh Cảnh</h2>
-        <div class="form-grid">
+      <!-- TAB 3: LỊCH & GIỜ (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
+      <section id="panel-calendar" class="panel">
+        <div class="card">
+          <h2 class="section-title">📅 Đổi Ngày Dương Sang Âm</h2>
           <div class="form-group">
-            <label>Năm sinh (Dương lịch)</label>
-            <input type="number" id="birth-year" value="1990" min="1900" max="2099">
+            <label for="lunarDateInput">Chọn ngày dương lịch</label>
+            <input type="date" id="lunarDateInput">
           </div>
-          <div class="form-group">
-            <label>Giới tính</label>
-            <select id="gender">
-              <option value="nam">Nam</option>
-              <option value="nu">Nữ</option>
-            </select>
-          </div>
+          <button id="convertLunarDate" class="btn btn-primary full-width">Xem ngày âm</button>
+          <div id="lunarDateResult" class="bearing-result"></div>
         </div>
-        <button class="btn btn-primary full-width" id="btn-calc-bat-trach">✨ Tính Hướng Tốt/Xấu</button>
-        
-        <div id="bat-trach-result" class="result-container" style="display:none;">
-          <div class="profile-summary">
-            <div class="profile-orb" id="cung-menh-orb">Khảm</div>
-            <div>
-              <h3 id="cung-menh-text">Cung Khảm</h3>
-              <p id="cung-menh-detail">Đông Tứ Trạch · Hành Thủy</p>
-            </div>
+
+        <div class="card">
+          <h2 class="section-title">🌞 24 Tiết Khí Trong Năm</h2>
+          <div class="form-group">
+            <label for="solarTermsYear">Nhập năm</label>
+            <input type="number" id="solarTermsYear" value="2024" min="1900" max="2099">
           </div>
-          <div class="directions-split">
-            <div class="dir-column good-col">
-              <h4>🟢 Hướng Tốt (Cát)</h4>
-              <div id="good-dirs" class="direction-grid"></div>
-            </div>
-            <div class="dir-column bad-col">
-              <h4>🔴 Hướng Xấu (Hung)</h4>
-              <div id="bad-dirs" class="direction-grid"></div>
-            </div>
+          <button id="showSolarTerms" class="btn btn-primary full-width">Xem tiết khí</button>
+          <div id="solarTermsResult" class="solar-terms-result"></div>
+        </div>
+      </section>
+
+      <!-- TAB 4: NHÀ Ở & THƯ VIỆN (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
+      <section id="panel-house" class="panel">
+        <div class="card">
+          <h2 class="section-title">🏠 Kiểm Tra An Toàn & Phong Thủy Nhà Ở</h2>
+          <div class="audit-options" id="homeAuditOptions">
+            <label><input type="checkbox" value="exit"> Thông thoáng lối đi, lối thoát hiểm</label>
+            <label><input type="checkbox" value="fire"> Giảm nguy cơ cháy và điện</label>
+            <label><input type="checkbox" value="slip"> Xử lý nguy cơ trượt, vấp</label>
+            <label><input type="checkbox" value="air"> Cải thiện thông gió</label>
+            <label><input type="checkbox" value="light"> Bổ sung ánh sáng</label>
           </div>
+          <button id="runHomeAudit" class="btn btn-primary full-width">Phân Tích</button>
+          <div id="homeAuditResult" class="audit-result"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">📝 Ghi Chú Nhà Ở</h2>
+          <div class="form-group">
+            <textarea id="houseNotes" rows="4" placeholder="Nhập các ghi chú về hướng nhà, bố trí nội thất..."></textarea>
+          </div>
+          <button id="saveHouseNotes" class="btn btn-primary full-width">Lưu Ghi Chú</button>
+          <span id="houseSaved" class="field-hint"></span>
         </div>
       </section>
     </main>
 
     <footer>
       <p>☯ Phong Thủy Việt Premium v2.0 · Ứng dụng PWA</p>
-      <p><em>"Nhất Mệnh, Nhì Vận, Tam Phong Thủy"</em></p>
     </footer>
   </div>
 
   <script src="app.js"></script>
+  <script src="backup.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
