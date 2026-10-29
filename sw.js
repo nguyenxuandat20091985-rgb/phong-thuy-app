@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v23-compass-polish';
+const CACHE_NAME = 'phong-thuy-v24-index-cleanup';
 const ASSETS = [
   './',
   './index.html',
