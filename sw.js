@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v35-house-profile-room-guides';
+const CACHE_NAME = 'phong-thuy-v36-house-bearing-check';
 const ASSETS = [
   './',
   './index.html',
