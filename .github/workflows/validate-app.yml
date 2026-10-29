@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check backup.js && node --check sw.js && node --check bat-trach.js && node --check ngay-xay-dung.js && node --check huyen-khong.js && node --check hoa-giai-sat-khi.js
+        run: node --check app.js && node --check backup.js && node --check sw.js && node --check bat-trach.js && node --check ngay-xay-dung.js && node --check huyen-khong.js && node --check hoa-giai-sat-khi.js && node --check ngay-lam-nha.js
       - name: Check advanced house tool JavaScript syntax
         run: |
           node <<'NODE'
@@ -22,7 +22,7 @@ jobs:
           const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
           if (!scripts.length) throw new Error('Advanced house tool has no inline JavaScript');
           fs.writeFileSync('/tmp/advanced-house.js', scripts[scripts.length - 1][1]);
-          for (const id of ['birth','gender','built','facing','bearing','annualStars','palaceGrid','landAudit','roomTips','saveEvent']) {
+          for (const id of ['birth','gender','built','facing','bearing','annualStars','palaceGrid','landAudit','roomTips','saveEvent','buildDatePlanner','plannerBirthLunarYear','plannerActivity','plannerWindow','generateBuildDates']) {
             if (!html.includes('id="' + id + '"')) throw new Error('Missing advanced house feature: ' + id);
           }
           console.log('Advanced house UI entry points found');
@@ -30,6 +30,8 @@ jobs:
           node --check /tmp/advanced-house.js
       - name: Run Bát Trạch unit tests
         run: node tests/bat-trach.test.js
+      - name: Run build-date planner tests
+        run: node tests/ngay-lam-nha.test.js
       - name: Run Kim Lâu, Hoang Ốc, Tam Tai unit tests
         run: node tests/ngay-xay-dung.test.js
       - name: Run Huyền Không Phi Tinh unit tests

@@ -22,3 +22,14 @@
 - PR #14: https://github.com/nguyenxuandat20091985-rgb/phong-thuy-app/pull/14 — cần kiểm tra trạng thái, head SHA và CI hiện tại.
 - PR #15: https://github.com/nguyenxuandat20091985-rgb/phong-thuy-app/pull/15 — đề xuất thêm quy tắc AI và nhật ký; cần kiểm tra trạng thái, CI và việc merge.
 - Trước khi báo hoàn thành, xác minh commit/CI trực tiếp; phân biệt đã sửa, đã kiểm thử, đã merge, đã triển khai và đã xác minh thiết bị.
+
+
+## 2026-10-29 — Bước 1/5: bộ lọc ngày làm nhà (PR #14)
+
+- Trạng thái: mã nguồn trên nhánh tính năng; chờ GitHub Actions xác nhận test sau commit. Chưa merge, chưa kiểm tra trực tiếp trên điện thoại/Preview.
+- File thay đổi: `phong-thuy-nha-nang-cao.html` (giao diện mobile-first: năm sinh âm lịch, việc, 30/60/90 ngày, kết quả và danh sách bị loại); `ngay-lam-nha.js` (tính âm lịch Việt Nam UTC+7 qua `bat-trach.js`, can chi, ngày xung tuổi, Tam Nương, Nguyệt Kỵ, Sát Chủ/Thọ Tử theo bảng dân gian, lưu cấu hình); `sw.js` (cache-bust/precache offline); `backup.js` (sao lưu/khôi phục cấu hình, validate); `.github/workflows/validate-app.yml` và `tests/ngay-lam-nha.test.js`.
+- Trường phái: lịch âm Việt Nam UTC+7; Tam Nương ngày âm 3,7,13,18,22,27; Nguyệt Kỵ 5,14,23; Sát Chủ/Thọ Tử theo bảng dân gian phổ biến; ngày xung theo địa chi năm sinh âm lịch.
+- Đối chiếu 5 ngày với lịch vạn niên: 02/11/2026 = 24/9 âm, Canh Thìn; 03/11 = 25/9, Tân Tỵ; 07/11 = 29/9, Ất Dậu; 09/11 = 1/10, Đinh Hợi; 11/11 = 3/10, Kỷ Sửu. Nguồn: https://lichngaytot.com/lich-thang/11-2026.html và https://amlich.vn/lich-am.
+- Giới hạn: Sát Chủ/Thọ Tử có dị bản giữa lịch vạn niên. Đây là bộ lọc ngày kiêng, chưa tính giờ hoàng đạo/cát tinh hoặc quy tắc chọn ngày chuyên biệt theo từng nghi lễ; ngày qua bộ lọc không được quảng bá là đại cát.
+- Kết quả test: chờ Actions sau commit. Cần kiểm tra thêm trên Vercel Preview và đối chiếu với lịch vạn niên gia đình sử dụng.
+- Không merge vào `main`; chỉ sang Bước 2 sau khi báo cáo kết quả Bước 1.

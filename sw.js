@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v48-backup-seo-security';
+const CACHE_NAME = 'phong-thuy-v49-build-date-planner';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './phong-thuy-nha-nang-cao.html',
   './bat-trach.js',
   './ngay-xay-dung.js',
+  './ngay-lam-nha.js',
   './huyen-khong.js',
   './hoa-giai-sat-khi.js',
   './style.css',

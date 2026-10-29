@@ -2,7 +2,8 @@
   'use strict';
   const ADVANCED_PROFILE_KEY = 'pt_advanced_house_profile_v1';
   const ADVANCED_EVENT_KEY = 'pt_advanced_house_profile_v1_event';
-  const keys = ['pt_profile_v2', 'pt_house_notes_v2', 'pt_events_v2', 'pt_theme_v2', ADVANCED_PROFILE_KEY, ADVANCED_EVENT_KEY];
+  const BUILD_DATE_PLANNER_KEY = 'pt_build_date_planner_v1';
+  const keys = ['pt_profile_v2', 'pt_house_notes_v2', 'pt_events_v2', 'pt_theme_v2', ADVANCED_PROFILE_KEY, ADVANCED_EVENT_KEY, BUILD_DATE_PLANNER_KEY];
   const advancedProfileFields = ['birth', 'gender', 'built', 'facing', 'bearing', 'year', 'yearToCheck', 'housePeriod', 'facingMountain', 'eventType', 'eventDate', 'eventNote'];
   const allowedFacings = new Set(['', 'Bắc', 'Đông Bắc', 'Đông', 'Đông Nam', 'Nam', 'Tây Nam', 'Tây', 'Tây Bắc']);
   const allowedMountains = new Set(['', 'N1','N2','N3','NE1','NE2','NE3','E1','E2','E3','SE1','SE2','SE3','S1','S2','S3','SW1','SW2','SW3','W1','W2','W3','NW1','NW2','NW3']);
@@ -60,6 +61,12 @@
         events.some((e) => !e || typeof e.title !== 'string' || !e.title.trim() || e.title.length > 80 ||
           !validDate(e.date) || typeof (e.note || '') !== 'string' || (e.note || '').length > 300 ||
           (e.id !== undefined && !Number.isFinite(e.id))))) return false;
+
+    const planner = d.pt_build_date_planner_v1;
+    if (planner !== undefined && (!planner || typeof planner !== 'object' || Array.isArray(planner) ||
+        !Number.isInteger(planner.birthLunarYear) || planner.birthLunarYear < 1900 || planner.birthLunarYear > 2099 ||
+        ![30, 60, 90].includes(planner.windowDays) ||
+        !['Động thổ', 'Đổ mái', 'Nhập trạch', 'An vị bàn thờ'].includes(planner.activity))) return false;
 
     // Validate the advanced-house profile and saved event before restoring any values.
     const advancedProfile = d[ADVANCED_PROFILE_KEY];
