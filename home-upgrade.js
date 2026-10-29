@@ -1,4 +1,4 @@
-/* Nâng cấp Nhà ở 2026-10-29 — modal sơ đồ + checklist trấn trạch */
+/* Nâng cấp Nhà ở + hero live compass 2026-10-29 */
 (function(){
 'use strict';
 const $ = (id) => document.getElementById(id);
@@ -43,6 +43,80 @@ function initLayoutDetails(){
   document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',closeRoomDetail));
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeRoomDetail(); });
 }
-function boot(){ initLayoutDetails(); initProtectChecklist(); }
+
+/* Hero live mini-compass */
+const HERO_DIRS=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
+function heroDirName(deg){return HERO_DIRS[Math.round((((deg%360)+360)%360)/45)%8];}
+function normalizeDeg(v){return ((v%360)+360)%360;}
+let heroListening=false,heroHandler=null,heroRaf=0,heroPending=null;
+
+function renderHero(raw){
+  heroPending=raw;
+  if(heroRaf) return;
+  heroRaf=requestAnimationFrame(()=>{
+    heroRaf=0;
+    if(heroPending===null) return;
+    const h=normalizeDeg(heroPending); heroPending=null;
+    const d=$('heroCompassDeg'),dir=$('heroCompassDir'),st=$('heroCompassStatus'),needle=$('heroCompassNeedle');
+    if(d) d.textContent=Math.round(h)+'°';
+    if(dir) dir.textContent=heroDirName(h);
+    if(st) st.textContent='Hướng từ tính · tham khảo';
+    if(needle) needle.style.transform='rotate('+h+'deg)';
+  });
+}
+function stopHeroCompass(){
+  if(heroHandler){
+    window.removeEventListener('deviceorientationabsolute', heroHandler, true);
+    window.removeEventListener('deviceorientation', heroHandler, true);
+    heroHandler=null;
+  }
+  heroListening=false;
+  const btn=$('heroCompassStart');
+  if(btn){ btn.textContent='Bật la bàn'; btn.classList.remove('running'); }
+  const st=$('heroCompassStatus');
+  if(st) st.textContent='Đã tắt · chạm Bật để đo lại';
+}
+function startHeroCompass(){
+  const btn=$('heroCompassStart');
+  const st=$('heroCompassStatus');
+  if(!window.DeviceOrientationEvent){
+    if(st) st.textContent='Trình duyệt không hỗ trợ cảm biến hướng';
+    return;
+  }
+  const onOrient=function(e){
+    let heading=null;
+    if(typeof e.webkitCompassHeading==='number' && !isNaN(e.webkitCompassHeading)){
+      heading=e.webkitCompassHeading;
+    }else if(typeof e.alpha==='number' && e.alpha!==null){
+      heading=normalizeDeg(360-e.alpha);
+    }
+    if(heading!==null) renderHero(heading);
+  };
+  const bind=function(){
+    heroHandler=onOrient;
+    window.addEventListener('deviceorientationabsolute', onOrient, true);
+    window.addEventListener('deviceorientation', onOrient, true);
+    heroListening=true;
+    if(btn){ btn.textContent='Tắt la bàn'; btn.classList.add('running'); }
+    if(st) st.textContent='Đang đo · giữ máy nằm ngang';
+  };
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(function(state){
+      if(state==='granted') bind();
+      else if(st) st.textContent='Cần cấp quyền cảm biến hướng';
+    }).catch(function(){ if(st) st.textContent='Không xin được quyền cảm biến'; });
+  }else{
+    bind();
+  }
+}
+function initHeroCompass(){
+  const btn=$('heroCompassStart');
+  if(!btn) return;
+  btn.addEventListener('click',function(){
+    if(heroListening) stopHeroCompass(); else startHeroCompass();
+  });
+}
+
+function boot(){ initLayoutDetails(); initProtectChecklist(); initHeroCompass(); }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
