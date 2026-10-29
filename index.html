@@ -2,161 +2,87 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#123f35"><meta name="description" content="Phong Thủy Việt — công cụ tra cứu Bát Trạch, Ngũ hành và bố trí không gian sống.">
+<meta name="theme-color" content="#123f35"><meta name="description" content="Phong Thuy Viet">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="home-upgrade.css">
-<title>Phong Thủy Việt</title>
+<title>Phong Thuy Viet</title>
 </head>
 <body>
 <div class="app-shell">
-<header class="topbar"><a class="brand" href="#" aria-label="Phong Thủy Việt trang chủ"><span class="brand-mark">☯</span><span><strong>Phong Thủy Việt</strong><small>Sống hài hòa cùng không gian</small></span></a><button id="themeToggle" class="icon-button" aria-label="Đổi giao diện" title="Đổi giao diện">◐</button></header>
+<header class="topbar"><a class="brand" href="#" aria-label="Phong Thuy Viet"><span class="brand-mark">☯</span><span><strong>Phong Thuy Viet</strong><small>Song hai hoa cung khong gian</small></span></a><button id="themeToggle" class="icon-button" aria-label="Doi giao dien">◐</button></header>
 <section class="hero hero-compass-only">
 <div class="hero-symbol">
   <div class="hero-live-compass hero-lakinh" id="heroCompass">
     <div class="hero-lakinh-stage">
       <div class="hero-fixed-pointer" aria-hidden="true"><span></span></div>
-      <div class="hero-lakinh-rotator" id="heroCompassDial">
-        <img class="hero-lakinh-img" src="./hero-lakinh.svg" alt="La Kinh phong thủy" width="400" height="400" draggable="false"/>
-      </div>
+      <div class="hero-lakinh-rotator" id="heroCompassDial" aria-label="La Kinh"></div>
     </div>
     <div class="hero-compass-readout">
       <strong id="heroCompassDeg">--°</strong>
-      <span id="heroCompassDir">Chạm để bật la bàn</span>
-      <small id="heroCompassStatus">Đặt máy nằm ngang · tránh kim loại</small>
-      <button type="button" class="hero-compass-btn" id="heroCompassStart">Bật la bàn</button>
+      <span id="heroCompassDir">Cham de bat la ban</span>
+      <small id="heroCompassStatus">Dat may nam ngang</small>
+      <button type="button" class="hero-compass-btn" id="heroCompassStart">Bat la ban</button>
     </div>
   </div>
 </div>
 </section>
-<nav class="tabs" id="tools" aria-label="Công cụ"><button class="tab active" data-tab="personal">✦ Cá nhân</button><button class="tab" data-tab="home">⌂ Nhà ở</button><button class="tab" data-tab="calendar">◷ Ngày tháng</button><button class="tab" data-tab="library">▤ Kiến thức</button></nav>
+<nav class="tabs" id="tools" aria-label="Cong cu"><button class="tab active" data-tab="personal">Ca nhan</button><button class="tab" data-tab="home">Nha o</button><button class="tab" data-tab="calendar">Ngay thang</button><button class="tab" data-tab="library">Kien thuc</button></nav>
 <main>
 <section class="panel active" id="panel-personal">
 <div class="card premium-compass-card" id="compassCard">
-<h3>La Bàn Phong Thủy Cao Cấp</h3>
-<p class="muted">La kinh đa tầng, Bát Quái và các lớp hướng. Đặt điện thoại nằm ngang và tránh xa kim loại hoặc nam châm.</p>
-<iframe class="premium-compass-frame" src="./la-ban-cao-cap.html" title="La Bàn Phong Thủy Cao Cấp" loading="eager" allow="accelerometer; gyroscope; magnetometer; device-orientation" referrerpolicy="same-origin"></iframe>
-<p class="field-hint">Cảm biến cần trình duyệt hỗ trợ và quyền truy cập. Kết quả la bàn chỉ mang tính tham khảo; hãy đối chiếu thiết bị chuẩn khi cần độ chính xác cao.</p>
+<h3>La Ban Phong Thuy Cao Cap</h3>
+<p class="muted">La kinh da tang. Dat dien thoai nam ngang.</p>
+<iframe class="premium-compass-frame" src="./la-ban-cao-cap.html" title="La Ban" loading="eager" allow="accelerometer; gyroscope; magnetometer; device-orientation" referrerpolicy="same-origin"></iframe>
 </div>
-<div class="section-heading"><div><span class="eyebrow">01 / HỒ SƠ CÁ NHÂN</span><h2>Tra cứu Bát Trạch</h2><p>Nhập năm sinh và giới tính theo cách tính Bát Trạch phổ biến.</p></div></div>
-<div class="card form-card"><form id="profileForm"><div class="form-grid"><label>Năm sinh dương lịch<input id="birthYear" type="number" inputmode="numeric" min="1900" max="2099" placeholder="Ví dụ 1990" required></label><label>Giới tính dùng trong phép tính<select id="gender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label></div><div class="form-actions"><button class="primary-button" type="submit">Xem bản đồ cá nhân <span>→</span></button><button class="secondary-button" id="saveProfile" type="button">Lưu hồ sơ</button></div><p class="field-hint">Lưu hồ sơ chỉ trên thiết bị này, không gửi lên máy chủ.</p></form></div>
-<div id="personalResult" class="results" aria-live="polite"><div class="empty-state"><span>✧</span><h3>Bản đồ của bạn sẽ hiện ở đây</h3><p>Kết quả gồm cung phi, nhóm trạch và bốn hướng tốt / bốn hướng cần cân nhắc.</p></div></div>
-<div class="section-heading compact"><div><span class="eyebrow">LỐI TẮT</span><h2>Tiếp tục khám phá</h2></div></div><div class="quick-grid"><button class="quick-card" data-go="home"><span>⌂</span><strong>Bố trí nhà ở</strong><small>Phòng ngủ, bếp, bàn làm việc</small></button><button class="quick-card" data-go="calendar"><span>◷</span><strong>Ngày tháng</strong><small>Ghi chú và lưu ngày quan trọng</small></button><button class="quick-card" data-go="library"><span>▤</span><strong>Thư viện</strong><small>Giải thích thuật ngữ cơ bản</small></button></div>
+<div class="section-heading"><div><span class="eyebrow">01</span><h2>Tra cuu Bat Trach</h2></div></div>
+<div class="card form-card"><form id="profileForm"><div class="form-grid"><label>Nam sinh<input id="birthYear" type="number" inputmode="numeric" min="1900" max="2099" required></label><label>Gioi tinh<select id="gender"><option value="nam">Nam</option><option value="nu">Nu</option></select></label></div><div class="form-actions"><button class="primary-button" type="submit">Xem</button><button class="secondary-button" id="saveProfile" type="button">Luu</button></div></form></div>
+<div id="personalResult" class="results" aria-live="polite"></div>
 </section>
 <section class="panel" id="panel-home">
-<div class="section-heading"><div><span class="eyebrow">02 / KHÔNG GIAN SỐNG</span><h2>Gợi ý bố trí nhà ở</h2><p>Chọn khu vực để xem danh sách kiểm tra thực tế.</p></div></div>
-<div class="card"><label for="roomType">Khu vực cần xem</label><select id="roomType"><option value="living">Phòng khách</option><option value="bedroom">Phòng ngủ chính</option><option value="children">Phòng trẻ em</option><option value="desk">Bàn làm việc / học tập</option><option value="kitchen">Nhà bếp</option><option value="entrance">Cửa chính / lối vào</option><option value="altar">Bàn thờ</option><option value="bathroom">Nhà vệ sinh / phòng tắm</option><option value="stairs">Cầu thang / hành lang</option></select><div id="roomGuidance" class="guidance"></div></div>
+<div class="section-heading"><div><span class="eyebrow">02</span><h2>Bo tri nha o</h2></div></div>
+<div class="card"><label for="roomType">Khu vuc</label><select id="roomType"><option value="living">Phong khach</option><option value="bedroom">Phong ngu</option><option value="desk">Ban lam viec</option><option value="kitchen">Nha bep</option><option value="entrance">Cua chinh</option></select><div id="roomGuidance" class="guidance"></div></div>
 <div class="card home-guide-card" id="homeGuide">
-  <span class="eyebrow">HƯỚNG DẪN TRỰC QUAN</span><h3>Bố trí nhà ở theo công năng, tuổi và hướng</h3>
-  <p class="muted">Sơ đồ minh họa để anh dễ hình dung, không phải bản vẽ thi công. Hãy ưu tiên an toàn, thông gió và lối đi trước; phong thủy là lớp tham khảo bổ sung.</p>
-  <div class="home-guide-tabs" role="tablist" aria-label="Nhóm hướng dẫn nhà ở">
-    <button type="button" class="home-guide-tab active" data-guide="layout">Sơ đồ bố trí</button>
-    <button type="button" class="home-guide-tab" data-guide="age">Theo tuổi & hướng</button>
-    <button type="button" class="home-guide-tab" data-guide="protect">Trấn trạch an toàn</button>
+  <div class="home-guide-tabs" role="tablist">
+    <button type="button" class="home-guide-tab active" data-guide="layout">So do</button>
+    <button type="button" class="home-guide-tab" data-guide="age">Theo tuoi</button>
+    <button type="button" class="home-guide-tab" data-guide="protect">Tran trach</button>
   </div>
   <section class="home-guide-panel active" data-guide-panel="layout">
-    <p class="field-hint layout-hint">Chạm vào từng khu vực để xem chi tiết: sơ đồ lớn, checklist Nên / Tránh và lưu ý an toàn.</p>
     <div class="home-diagram-grid" id="layoutDiagramGrid">
-      <button type="button" class="home-diagram interactive" data-room="bedroom" aria-label="Xem chi tiết phòng ngủ">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="3"/><rect x="29" y="25" width="44" height="12" rx="2" fill="#90caf9"/><rect x="83" y="36" width="74" height="72" rx="5" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/><rect x="90" y="42" width="28" height="18" rx="3" fill="#fff"/><rect x="122" y="42" width="28" height="18" rx="3" fill="#fff"/><path d="M18 105 H43 M43 105 A24 24 0 0 1 67 129" fill="none" stroke="#c62828" stroke-width="3"/><path d="M52 119 L67 129 L66 111" fill="none" stroke="#c62828" stroke-width="3"/><circle cx="200" cy="40" r="14" fill="#43a047" opacity="0.9"/><text x="200" y="44" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Phòng ngủ</strong>
-        <p>Giường vững · lối ra thông · chạm để xem chi tiết</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
-      <button type="button" class="home-diagram interactive" data-room="desk" aria-label="Xem chi tiết bàn làm việc">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="3"/><rect x="30" y="24" width="55" height="13" rx="2" fill="#90caf9"/><rect x="82" y="54" width="91" height="38" rx="4" fill="#ffb74d" stroke="#ef6c00" stroke-width="2"/><rect x="105" y="60" width="45" height="24" rx="2" fill="#0d47a1"/><circle cx="126" cy="72" r="5" fill="#fff"/><path d="M191 35 L205 49 L191 63" fill="none" stroke="#2e7d32" stroke-width="3"/><circle cx="200" cy="100" r="14" fill="#43a047"/><text x="200" y="104" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Bàn làm việc</strong>
-        <p>Ánh sáng · tầm nhìn · công thái học</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
-      <button type="button" class="home-diagram interactive" data-room="kitchen" aria-label="Xem chi tiết nhà bếp">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/><rect x="29" y="25" width="58" height="29" rx="4" fill="#b2dfdb"/><rect x="149" y="25" width="58" height="29" rx="4" fill="#ffccbc"/><path d="M101 32 C91 52 91 72 101 93" stroke="#e65100" stroke-width="3" stroke-dasharray="4 4" fill="none"/><text x="58" y="69" text-anchor="middle" font-size="10" fill="#29493c">Bồn rửa</text><text x="178" y="69" text-anchor="middle" font-size="10" fill="#29493c">Bếp nấu</text><circle cx="120" cy="110" r="14" fill="#43a047"/><text x="120" y="114" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Nhà bếp</strong>
-        <p>Tách nước–lửa · thông gió · an toàn cháy</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
-      <button type="button" class="home-diagram interactive" data-room="entrance" aria-label="Xem chi tiết cửa chính">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="3"/><path d="M88 15 V76 A61 61 0 0 0 149 15" fill="none" stroke="#c62828" stroke-width="3"/><path d="M120 115 V82 M111 91 L120 82 L129 91" stroke="#2e7d32" stroke-width="4" fill="none"/><rect x="33" y="34" width="35" height="24" rx="3" fill="#ce93d8"/><rect x="173" y="34" width="35" height="24" rx="3" fill="#ce93d8"/><circle cx="200" cy="110" r="14" fill="#43a047"/><text x="200" y="114" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Cửa chính</strong>
-        <p>Lối vào thoáng · đo hướng đúng · thoát hiểm</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
-      <button type="button" class="home-diagram interactive" data-room="living" aria-label="Xem chi tiết phòng khách">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#e8eaf6" stroke="#3949ab" stroke-width="3"/><rect x="40" y="70" width="90" height="40" rx="4" fill="#9fa8da"/><rect x="150" y="40" width="50" height="70" rx="3" fill="#c5cae9"/><circle cx="55" cy="45" r="14" fill="#43a047"/><text x="55" y="49" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Phòng khách</strong>
-        <p>Giao tiếp · lối đi · sofa ổn định</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
-      <button type="button" class="home-diagram interactive" data-room="bathroom" aria-label="Xem chi tiết nhà vệ sinh">
-        <svg viewBox="0 0 240 150" role="img" aria-hidden="true"><rect x="18" y="14" width="204" height="122" rx="8" fill="#e0f7fa" stroke="#00838f" stroke-width="3"/><rect x="50" y="40" width="50" height="60" rx="4" fill="#80deea"/><circle cx="160" cy="70" r="28" fill="#b2ebf2"/><circle cx="200" cy="40" r="14" fill="#43a047"/><text x="200" y="44" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">✓</text></svg>
-        <strong>Nhà vệ sinh</strong>
-        <p>Chống trượt · thông gió · xử lý ẩm</p>
-        <span class="diagram-cta">Xem chi tiết →</span>
-      </button>
+      <button type="button" class="home-diagram interactive" data-room="bedroom"><strong>Phong ngu</strong><span class="diagram-cta">Chi tiet</span></button>
+      <button type="button" class="home-diagram interactive" data-room="desk"><strong>Ban lam viec</strong><span class="diagram-cta">Chi tiet</span></button>
+      <button type="button" class="home-diagram interactive" data-room="kitchen"><strong>Nha bep</strong><span class="diagram-cta">Chi tiet</span></button>
+      <button type="button" class="home-diagram interactive" data-room="entrance"><strong>Cua chinh</strong><span class="diagram-cta">Chi tiet</span></button>
+      <button type="button" class="home-diagram interactive" data-room="living"><strong>Phong khach</strong><span class="diagram-cta">Chi tiet</span></button>
+      <button type="button" class="home-diagram interactive" data-room="bath"><strong>Nha ve sinh</strong><span class="diagram-cta">Chi tiet</span></button>
     </div>
   </section>
   <section class="home-guide-panel" data-guide-panel="age" hidden>
-    <div class="card age-direction-card">
-      <span class="eyebrow">TRA CỨU CÁ NHÂN HÓA</span>
-      <h3>Tính hướng theo ngày sinh nam / nữ</h3>
-      <p class="muted">Nhập ngày sinh dương lịch, chọn giới tính dùng trong phép tính và hướng cửa chính đã đo thực tế để nhận gợi ý Bát Trạch cùng cách bố trí cơ bản.</p>
-      <form id="houseAgeForm">
-        <div class="form-grid">
-          <label class="birth-date-field" for="houseBirthDate">Ngày sinh dương lịch<input id="houseBirthDate" type="text" inputmode="text" autocomplete="bday" autocapitalize="off" spellcheck="false" maxlength="10" placeholder="DD/MM/YYYY" aria-label="Nhập ngày sinh theo định dạng DD/MM/YYYY, ví dụ 25/12/1990" required><small class="field-hint">Nhập ngày/tháng/năm.</small></label>
-          <label for="houseBirthGender">Giới tính dùng trong phép tính<select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
-          <label for="houseMeasuredFacing">Hướng cửa chính đã đo<select id="houseMeasuredFacing"><option value="">Chưa đo / chưa rõ</option><option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option><option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option></select></label>
-        </div>
-        <div class="form-actions"><button class="primary-button" type="submit">Tính hướng & bố trí</button><button class="secondary-button" type="button" id="clearHouseAgeForm">Xóa thông tin nhập</button></div>
-      </form>
-      <div id="houseAgeResult" class="age-direction-result" aria-live="polite"><p class="empty-state small">Nhập thông tin để xem cung phi, nhóm trạch, hướng hợp theo bảng tra và gợi ý bố trí phòng.</p></div>
-      <p class="field-hint">Đây là cách tra cứu Bát Trạch truyền thống để tham khảo, không phải kết luận khoa học. Người sinh sát thời điểm Tết âm lịch có thể cần xác định lại năm quy đổi theo trường phái đang dùng. Hướng cửa chính không tự động đồng nghĩa với hướng đặt giường hoặc bàn.</p>
-    </div>
-    <ol class="guide-steps"><li><strong>Đo hướng nhà riêng:</strong> dùng la bàn ở vài vị trí thoáng, tránh kim loại/loa/nam châm; ghi rõ đang đo mặt cửa, mặt nhà hay hướng nhìn.</li><li><strong>Áp dụng có chọn lọc:</strong> cân nhắc hướng khi sắp xếp bàn/giường nếu thuận tiện; không phá tường, chuyển bếp hoặc sửa kết cấu chỉ vì một bảng tra.</li></ol>
-    <button type="button" class="secondary-button" id="goPersonalGuide">Mở tra cứu cung phi ở tab Cá nhân</button>
+    <form id="houseAgeForm"><div class="form-grid"><label>Ngay sinh<input id="houseBirthDate" type="text" placeholder="DD/MM/YYYY"></label><label>Gioi tinh<select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nu</option></select></label></div><button class="primary-button" type="submit">Tinh</button></form>
+    <div id="houseAgeResult"></div>
   </section>
   <section class="home-guide-panel" data-guide-panel="protect" hidden>
-    <div class="protect-callout"><strong>“Trấn trạch” theo hướng an toàn, ít tốn kém</strong><p>Trước hết xử lý nguyên nhân thực tế: sửa cửa/khóa hỏng, chống thấm, thông gió, ánh sáng, tiếng ồn và điểm nguy hiểm. Nếu gia đình có nghi lễ truyền thống, có thể thực hiện theo tập tục riêng nhưng không cần mua vật phẩm đắt tiền hay đặt vật cản lối đi.</p></div>
-    <p class="field-hint">Tick các mục đã xử lý. Tiến độ được lưu trên máy anh (không gửi lên mạng).</p>
-    <div class="protect-checklist" id="protectChecklist">
-      <label class="protect-item"><input type="checkbox" data-protect="survey"><span><strong>1. Khảo sát hiện trạng</strong><small>Ghi hướng cửa, vị trí phòng, điểm ẩm/nứt, tiếng ồn, ánh sáng và lối thoát.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="fix-structure"><span><strong>2. Sửa kết cấu & an toàn</strong><small>Xử lý rò điện/gas, nứt, mốc, cửa khó đóng; gọi thợ nếu cần.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="exit"><span><strong>3. Lối thoát & lối vào</strong><small>Dọn thông thoáng cửa chính, hành lang; không chắn lối thoát hiểm.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="fire"><span><strong>4. Phòng cháy</strong><small>Tách vật dễ cháy khỏi bếp; kiểm tra dây/ổ điện; thiết bị gas an toàn.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="slip"><span><strong>5. Chống trượt / vấp</strong><small>Lau khô sàn ẩm, cố định thảm, chống trượt nhà tắm và cầu thang.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="air-light"><span><strong>6. Thông gió & ánh sáng</strong><small>Mở cửa hợp lý, hút mùi bếp/WC, bổ sung đèn lối đi và khu làm việc.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="stable"><span><strong>7. Đồ nặng cố định</strong><small>Neo tủ/kệ vào tường; bàn thờ/bếp ổn định, xa vật dễ cháy.</small></span></label>
-      <label class="protect-item"><input type="checkbox" data-protect="no-danger"><span><strong>8. Không dùng cách nguy hiểm</strong><small>Không đốt lửa/nhang thiếu giám sát, không khoan phá kết cấu hay đặt vật nặng nơi dễ rơi để “hóa giải”.</small></span></label>
-    </div>
-    <div class="protect-progress" id="protectProgress" aria-live="polite">Đã hoàn thành 0/8 mục</div>
-    <p class="field-hint">Phong thủy và nghi lễ là thực hành văn hóa/truyền thống; không thay thế việc sửa chữa kỹ thuật và phòng cháy chữa cháy.</p>
+    <div class="protect-checklist" id="protectChecklist"></div>
+    <div class="protect-progress" id="protectProgress">0/8</div>
   </section>
 </div>
-<div class="legacy-compass-runtime" aria-hidden="true" inert></div>
 </section>
 <section class="panel" id="panel-calendar">
-<div class="section-heading"><div><span class="eyebrow">03 / LỊCH & GHI CHÚ</span><h2>Ngày tháng & sự kiện</h2><p>Đối chiếu dương lịch – âm lịch và lưu ngày quan trọng trên máy.</p></div></div>
-<div class="card form-card"><label for="lunarDateInput">Chọn ngày dương lịch</label><input id="lunarDateInput" type="date"><button class="primary-button" type="button" id="convertLunar">Đổi sang âm lịch</button><p id="lunarDateResult" class="field-hint">Hãy chọn ngày dương lịch</p></div>
-<div class="card form-card"><label for="solarTermsYear">Năm xem tiết khí</label><input id="solarTermsYear" type="number" min="1900" max="2099" placeholder="2026"><button class="primary-button" type="button" id="showSolarTerms">Xem 24 tiết khí</button><div id="solarTermsResult" class="guidance"></div></div>
-<div class="card"><h3>Ghi chú sự kiện</h3><form id="eventForm"><div class="form-grid"><label>Ngày<input id="eventDate" type="date" required></label><label>Tiêu đề<input id="eventTitle" type="text" maxlength="80" placeholder="Ví dụ: cúng nhà mới" required></label></div><button class="primary-button" type="submit">Lưu sự kiện</button></form><div id="eventList" class="event-list"></div></div>
+<div class="section-heading"><div><span class="eyebrow">03</span><h2>Ngay thang</h2></div></div>
+<div class="card form-card"><label>Ngay duong<input id="lunarDateInput" type="date"><button class="primary-button" type="button" id="convertLunar">Doi am lich</button><p id="lunarDateResult" class="field-hint"></p></div>
 </section>
 <section class="panel" id="panel-library">
-<div class="section-heading"><div><span class="eyebrow">04 / THƯ VIỆN</span><h2>Kiến thức nền tảng</h2><p>Thuật ngữ phổ biến và cách hiểu thận trọng.</p></div></div>
-<div class="library-list">
-<details class="card" open><summary>Bát Trạch và cung phi</summary><p>Bát Trạch phân nhóm cung phi thành Đông Tứ Trạch và Tây Tứ Trạch, sau đó đối chiếu tám phương với các tên gọi như Sinh Khí, Thiên Y, Diên Niên, Phục Vị. Các trường phái và cách xác định năm sinh có thể khác nhau.</p></details>
-<details class="card"><summary>Ngũ hành</summary><p>Kim, Mộc, Thủy, Hỏa, Thổ là hệ phân loại trong triết học phương Đông. Ngũ hành của cung phi không đồng nghĩa với nạp âm năm sinh; ứng dụng này hiển thị riêng cung phi và hành của cung để tránh nhầm lẫn.</p></details>
-<details class="card"><summary>Đo hướng nhà</summary><p>Đo nhiều lần tại vị trí thoáng, tránh sát loa, nam châm, khung thép hoặc thiết bị điện. Phân biệt hướng mặt cửa, hướng mặt nhà và hướng nhìn khi ngồi; đây không phải lúc nào cũng là một hướng.</p></details>
-<details class="card"><summary>Ưu tiên thực tế</summary><p>Ánh sáng, thông gió, chống trượt, lối thoát hiểm, kết cấu an toàn và nhu cầu của người sử dụng nên được ưu tiên. Không thay đổi kết cấu hoặc quyết định tài chính lớn chỉ dựa vào một kết quả phong thủy.</p></details>
-<details class="card"><summary>Về lịch âm và ngày tốt</summary><p>Bộ chuyển đổi dùng thuật toán thiên văn phổ biến cho lịch âm Việt Nam theo múi giờ UTC+7. Đây là công cụ đối chiếu ngày, không thay thế lịch vạn niên được thẩm định và không tự kết luận ngày tốt/xấu hoặc giờ hoàng đạo.</p></details>
-</div>
-<div class="card"><h3>Chia sẻ ứng dụng</h3><p class="muted">Gửi đường dẫn ứng dụng cho người thân.</p><button class="primary-button" id="shareApp" type="button">Chia sẻ / sao chép liên kết <span>↗</span></button><p id="shareStatus" class="field-hint" aria-live="polite"></p></div>
+<div class="section-heading"><div><span class="eyebrow">04</span><h2>Kien thuc</h2></div></div>
+<div class="library-list"><details class="card" open><summary>Bat Trach</summary><p>Phan nhom cung phi Dong/Tay Tu Trach.</p></details></div>
 </section>
 </main>
-<footer class="site-footer"><p>© Nguyễn Xuân Đạt · Phong Thủy Việt · Tham khảo</p></footer>
+<footer class="site-footer"><p>Nguyen Xuan Dat · Phong Thuy Viet</p></footer>
 </div>
 <div id="roomDetailModal" class="room-modal" hidden>
   <div class="room-modal-backdrop" data-close-modal></div>
-  <div class="room-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="roomModalTitle">
-    <button type="button" class="room-modal-close" data-close-modal aria-label="Đóng">×</button>
+  <div class="room-modal-sheet" role="dialog" aria-modal="true">
+    <button type="button" class="room-modal-close" data-close-modal aria-label="Dong">×</button>
     <div id="roomModalBody"></div>
   </div>
 </div>
