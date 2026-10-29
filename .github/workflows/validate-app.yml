@@ -53,13 +53,23 @@ jobs:
             screen:{orientation:{angle:0}}, navigator:{}, setTimeout(){}, URL, Blob
           };
           vm.createContext(context);
-          vm.runInContext(js + ';globalThis.__lunar=convertSolarToLunar;globalThis.__cung=calcCung;globalThis.__terms=calculateSolarTerms;globalThis.__normalize=normalizeDegrees;', context);
+          vm.runInContext(js + ';globalThis.__lunar=convertSolarToLunar;globalThis.__cung=calcCung;globalThis.__terms=calculateSolarTerms;globalThis.__normalize=normalizeDegrees;globalThis.__validEvent=isValidEvent;', context);
           for (const [solar, expected] of [
             [[10,2,2024],[1,1,2024]], [[29,1,2025],[1,1,2025]], [[17,2,2026],[1,1,2026]]
           ]) {
             const actual = context.__lunar(...solar,7);
             if (!actual || actual.day!==expected[0] || actual.month!==expected[1] || actual.year!==expected[2]) throw new Error('Lunar reference date failed: '+solar.join('-')+' -> '+JSON.stringify(actual));
           }
+          if (context.__lunar(31,2,2025,7)!==null) throw new Error('Invalid calendar date must be rejected');
+          if (context.__lunar(29,2,2024,7)===null) throw new Error('Valid leap day must be accepted');
+          if (!context.__validEvent({title:'Chuyển nhà',date:'2026-10-29',note:'',id:1})) throw new Error('Valid event was rejected');
+          for (const event of [
+            {title:'   ',date:'2026-10-29',note:'',id:1},
+            {title:'Sai ngày',date:'2025-02-31',note:'',id:1},
+            {title:'Sai định dạng',date:'29/10/2026',note:'',id:1},
+            {title:'',date:'2026-10-29',note:'',id:1}
+          ]) if (context.__validEvent(event)) throw new Error('Invalid event was accepted: '+JSON.stringify(event));
+          if (context.__terms(1899)!==null || context.__terms(2100)!==null) throw new Error('Solar-term year range validation failed');
           for (const year of [1990,2000,2001,2026]) for (const gender of ['nam','nu']) {
             const result=context.__cung(year,gender);
             if(!result || !result.name || !result.group) throw new Error('Ba Trach failed: '+year+' '+gender);
