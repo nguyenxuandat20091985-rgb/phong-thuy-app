@@ -4,8 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#123f35"><meta name="description" content="Phong Thủy Việt — công cụ tra cứu Bát Trạch, Ngũ hành và bố trí không gian sống.">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css?v=54">
-<link rel="stylesheet" href="home-upgrade.css?v=54">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css?v=55">
+<link rel="stylesheet" href="home-upgrade.css?v=55">
 <title>Phong Thủy Việt</title>
 </head>
 <body>
@@ -62,12 +62,48 @@
     </div>
   </section>
   <section class="home-guide-panel" data-guide-panel="age" hidden>
-    <form id="houseAgeForm"><div class="form-grid"><label>Ngày sinh<input id="houseBirthDate" type="text" placeholder="DD/MM/YYYY"></label><label>Giới tính<select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label></div><button class="primary-button" type="submit">Tính hướng</button></form>
-    <div id="houseAgeResult"></div>
+    <div class="card age-direction-card">
+      <span class="eyebrow">TRA CỨU CÁ NHÂN HÓA</span>
+      <h3>Tính hướng theo ngày sinh nam / nữ</h3>
+      <p class="muted">Nhập ngày sinh dương lịch, chọn giới tính dùng trong phép tính và hướng cửa chính đã đo thực tế để nhận gợi ý Bát Trạch cùng cách bố trí cơ bản.</p>
+      <form id="houseAgeForm">
+        <div class="form-grid">
+          <label class="birth-date-field" for="houseBirthDate">Ngày sinh dương lịch
+            <input id="houseBirthDate" type="text" inputmode="text" autocomplete="bday" maxlength="10" placeholder="DD/MM/YYYY" aria-label="Nhập ngày sinh DD/MM/YYYY" required>
+            <small class="field-hint">Nhập ngày/tháng/năm.</small>
+          </label>
+          <label for="houseBirthGender">Giới tính dùng trong phép tính
+            <select id="houseBirthGender"><option value="nam">Nam</option><option value="nu">Nữ</option></select>
+          </label>
+          <label for="houseMeasuredFacing">Hướng cửa chính đã đo
+            <select id="houseMeasuredFacing">
+              <option value="">Chưa đo / chưa rõ</option>
+              <option>Bắc</option><option>Đông Bắc</option><option>Đông</option><option>Đông Nam</option>
+              <option>Nam</option><option>Tây Nam</option><option>Tây</option><option>Tây Bắc</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button class="primary-button" type="submit">Tính hướng & bố trí</button>
+          <button class="secondary-button" type="button" id="clearHouseAgeForm">Xóa thông tin nhập</button>
+        </div>
+      </form>
+      <div id="houseAgeResult" class="age-direction-result" aria-live="polite">
+        <p class="empty-state small">Nhập thông tin để xem cung phi, nhóm trạch, hướng hợp theo bảng tra và gợi ý bố trí phòng.</p>
+      </div>
+      <p class="field-hint">Đây là cách tra cứu Bát Trạch truyền thống để tham khảo, không phải kết luận khoa học. Hướng cửa chính không tự động đồng nghĩa với hướng đặt giường hoặc bàn.</p>
+    </div>
+    <button type="button" class="secondary-button" id="goPersonalGuide">Mở tra cứu cung phi ở tab Cá nhân</button>
   </section>
   <section class="home-guide-panel" data-guide-panel="protect" hidden>
+    <div class="protect-callout">
+      <strong>“Trấn trạch” theo hướng an toàn, ít tốn kém</strong>
+      <p>Trước hết xử lý nguyên nhân thực tế: sửa cửa/khóa hỏng, chống thấm, thông gió, ánh sáng, tiếng ồn và điểm nguy hiểm. Nếu gia đình có nghi lễ truyền thống, có thể thực hiện theo tập tục riêng nhưng không cần mua vật phẩm đắt tiền hay đặt vật cản lối đi.</p>
+    </div>
+    <p class="field-hint">Tick các mục đã xử lý. Tiến độ được lưu trên máy anh (không gửi lên mạng).</p>
     <div class="protect-checklist" id="protectChecklist"></div>
-    <div class="protect-progress" id="protectProgress">Đã hoàn thành 0/8 mục</div>
+    <div class="protect-progress" id="protectProgress" aria-live="polite">Đã hoàn thành 0/8 mục</div>
+    <p class="field-hint">Phong thủy và nghi lễ là thực hành văn hóa/truyền thống; không thay thế việc sửa chữa kỹ thuật và phòng cháy chữa cháy.</p>
   </section>
 </div>
 </section>
@@ -89,8 +125,8 @@
     <div id="roomModalBody"></div>
   </div>
 </div>
-<script src="app.js?v=54"></script>
-<script src="home-upgrade.js?v=54"></script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=54').catch(()=>{});}</script>
+<script src="app.js?v=55"></script>
+<script src="home-upgrade.js?v=55"></script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=55').catch(()=>{});}</script>
 </body>
 </html>
