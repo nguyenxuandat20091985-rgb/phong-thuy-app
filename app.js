@@ -293,12 +293,15 @@ document.addEventListener('DOMContentLoaded',()=>{
  
  
  const birthDateInput=$('houseBirthDate');
+ // Let mobile keyboards enter the whole date naturally; format only after typing ends.
+ birthDateInput.removeAttribute('readonly');
+ birthDateInput.removeAttribute('disabled');
  birthDateInput.addEventListener('input',()=>{
+  birthDateInput.value=birthDateInput.value.replace(/[^0-9/]/g,'').slice(0,10);
+ });
+ birthDateInput.addEventListener('blur',()=>{
   const digits=birthDateInput.value.replace(/\D/g,'').slice(0,8);
-  let formatted=digits;
-  if(digits.length>4)formatted=digits.slice(0,2)+'/'+digits.slice(2,4)+'/'+digits.slice(4);
-  else if(digits.length>2)formatted=digits.slice(0,2)+'/'+digits.slice(2);
-  birthDateInput.value=formatted;
+  if(digits.length===8)birthDateInput.value=digits.slice(0,2)+'/'+digits.slice(2,4)+'/'+digits.slice(4);
  });
  $('houseAgeForm').addEventListener('submit',e=>{
   e.preventDefault();
