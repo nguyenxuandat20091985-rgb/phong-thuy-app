@@ -285,6 +285,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('profileForm').addEventListener('submit',e=>{e.preventDefault();const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Vui lòng nhập năm từ 1900 đến 2099.');return;}showProfile(year,$('gender').value);});
  $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
  const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
+ document.querySelectorAll('.home-guide-tab').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.guide;document.querySelectorAll('.home-guide-tab').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('[data-guide-panel]').forEach(panel=>{const active=panel.dataset.guidePanel===name;panel.hidden=!active;panel.classList.toggle('active',active);});}));
+ $('goPersonalGuide').addEventListener('click',()=>{goTab('personal');window.setTimeout(()=>$('profileForm').scrollIntoView({behavior:'smooth',block:'center'}),80);});
  $('roomType').addEventListener('change',renderRoom);renderRoom();$('runHomeAudit').addEventListener('click',runHomeAudit);
  $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
  const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
