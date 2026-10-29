@@ -21,22 +21,20 @@
       </div>
     </header>
 
-    <!-- TAB NAVIGATION -->
     <nav class="tabs">
       <button class="tab active" data-tab="compass">🧭 La Bàn</button>
-      <button class="tab" data-tab="bat-trach">🏛️ Bát Trạch</button>
-      <button class="tab" data-tab="calendar">📅 Lịch & Giờ</button>
-      <button class="tab" data-tab="house">🏠 Nhà Ở</button>
+      <button class="tab" data-tab="personal">🏛️ Cá nhân</button>
+      <button class="tab" data-tab="calendar">📅 Lịch</button>
+      <button class="tab" data-tab="home">🏠 Nhà ở</button>
+      <button class="tab" data-tab="library">📚 Thư viện</button>
     </nav>
 
     <main>
-      <!-- TAB 1: LA BÀN (PREMIUM) -->
       <section id="panel-compass" class="panel active">
         <div class="card compass-card">
           <div class="datetime-bar">
             <span id="duong-lich">--</span> • <span id="am-lich">--</span>
           </div>
-          
           <div class="compass-container">
             <div class="north-marker">▼</div>
             <div class="feng-compass" id="fengCompass">
@@ -47,14 +45,12 @@
               </div>
             </div>
           </div>
-
           <div class="compass-info-grid">
             <div class="info-item"><span class="label">Sơn hướng</span><strong id="cur-son">--</strong></div>
             <div class="info-item"><span class="label">Quẻ Bát Quái</span><strong id="cur-qua">--</strong></div>
             <div class="info-item"><span class="label">Ngũ Hành</span><strong id="cur-nguhanh">--</strong></div>
             <div class="info-item"><span class="label">Đánh giá</span><strong id="cur-cat" class="good">--</strong></div>
           </div>
-
           <div class="compass-actions">
             <button class="btn btn-primary" id="btn-calibrate">📡 Bật Cảm Biến</button>
             <button class="btn btn-secondary" id="btn-lock">🔒 Khoá Hướng</button>
@@ -62,7 +58,6 @@
           </div>
           <p class="status-text" id="compass-status">Chạm "Bật Cảm Biến" hoặc xoay thủ công bằng chuột/cảm ứng.</p>
         </div>
-
         <div class="card">
           <h3 class="section-title">📌 Hướng Đã Lưu</h3>
           <div id="saved-directions-list" class="saved-list">
@@ -71,8 +66,7 @@
         </div>
       </section>
 
-      <!-- TAB 2: BÁT TRẠCH (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
-      <section id="panel-bat-trach" class="panel">
+      <section id="panel-personal" class="panel">
         <div class="card">
           <h2 class="section-title">🏛️ Tính Cung Mệnh Bát Trạch</h2>
           <form id="profileForm" class="form-grid">
@@ -96,7 +90,6 @@
         </div>
       </section>
 
-      <!-- TAB 3: LỊCH & GIỜ (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
       <section id="panel-calendar" class="panel">
         <div class="card">
           <h2 class="section-title">📅 Đổi Ngày Dương Sang Âm</h2>
@@ -107,7 +100,6 @@
           <button id="convertLunarDate" class="btn btn-primary full-width">Xem ngày âm</button>
           <div id="lunarDateResult" class="bearing-result"></div>
         </div>
-
         <div class="card">
           <h2 class="section-title">🌞 24 Tiết Khí Trong Năm</h2>
           <div class="form-group">
@@ -119,8 +111,7 @@
         </div>
       </section>
 
-      <!-- TAB 4: NHÀ Ở & THƯ VIỆN (GIỮ NGUYÊN ID ĐỂ PASS TEST) -->
-      <section id="panel-house" class="panel">
+      <section id="panel-home" class="panel">
         <div class="card">
           <h2 class="section-title">🏠 Kiểm Tra An Toàn & Phong Thủy Nhà Ở</h2>
           <div class="audit-options" id="homeAuditOptions">
@@ -133,7 +124,6 @@
           <button id="runHomeAudit" class="btn btn-primary full-width">Phân Tích</button>
           <div id="homeAuditResult" class="audit-result"></div>
         </div>
-
         <div class="card">
           <h2 class="section-title">📝 Ghi Chú Nhà Ở</h2>
           <div class="form-group">
@@ -141,6 +131,17 @@
           </div>
           <button id="saveHouseNotes" class="btn btn-primary full-width">Lưu Ghi Chú</button>
           <span id="houseSaved" class="field-hint"></span>
+        </div>
+      </section>
+
+      <section id="panel-library" class="panel">
+        <div class="card">
+          <h2 class="section-title">📚 Thư Viện Kiến Thức Phong Thủy</h2>
+          <div class="library-list">
+            <details><summary>Nguyên lý Âm Dương</summary><p>Âm Dương là hai mặt đối lập nhưng thống nhất, luôn vận động và chuyển hóa lẫn nhau. Trong phong thủy, sự cân bằng Âm Dương là yếu tố tiên quyết để mang lại sinh khí.</p></details>
+            <details><summary>Ngũ Hành Tương Sinh - Tương Khắc</summary><p><strong>Tương sinh:</strong> Mộc sinh Hỏa, Hỏa sinh Thổ, Thổ sinh Kim, Kim sinh Thủy, Thủy sinh Mộc.<br><strong>Tương khắc:</strong> Mộc khắc Thổ, Thổ khắc Thủy, Thủy khắc Hỏa, Hỏa khắc Kim, Kim khắc Mộc.</p></details>
+            <details><summary>Hậu Thiên Bát Quái</summary><p>Là sơ đồ bát quái do vua Văn Vương sắp xếp, dùng để ứng dụng trong phong thủy nhà ở, xác định hướng tốt xấu (Bát Trạch) và phi tinh (Huyền Không).</p></details>
+          </div>
         </div>
       </section>
     </main>
