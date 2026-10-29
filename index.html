@@ -5,6 +5,7 @@
 <meta name="theme-color" content="#123f35"><meta name="description" content="Phong Thủy Việt — công cụ tra cứu Bát Trạch, Ngũ hành và bố trí không gian sống.">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="home-upgrade.css">
 <title>Phong Thủy Việt</title>
 </head>
 <body>
@@ -116,6 +117,26 @@
 
 <div class="legacy-compass-runtime" aria-hidden="true" inert></div>
 </section>
+
+<section class="panel" id="panel-calendar">
+<div class="section-heading"><div><span class="eyebrow">03 / LỊCH & GHI CHÚ</span><h2>Ngày tháng & sự kiện</h2><p>Đối chiếu dương lịch – âm lịch và lưu ngày quan trọng trên máy.</p></div></div>
+<div class="card form-card"><label for="lunarDateInput">Chọn ngày dương lịch</label><input id="lunarDateInput" type="date"><button class="primary-button" type="button" id="convertLunar">Đổi sang âm lịch</button><p id="lunarDateResult" class="field-hint">Hãy chọn ngày dương lịch</p></div>
+<div class="card form-card"><label for="solarTermsYear">Năm xem tiết khí</label><input id="solarTermsYear" type="number" min="1900" max="2099" placeholder="Ví dụ 2026"><button class="secondary-button" type="button" id="showSolarTerms">Xem 24 tiết khí</button><div id="solarTermsResult" class="guidance"></div></div>
+<div class="card"><h3>Sự kiện / ghi chú cá nhân</h3><form id="eventForm" class="form-grid"><label>Tiêu đề<input id="eventTitle" required maxlength="80" placeholder="Ví dụ: Sửa cửa chính"></label><label>Ngày<input id="eventDate" type="date" required></label><label>Ghi chú<textarea id="eventNote" rows="2" maxlength="200" placeholder="Tùy chọn"></textarea></label><div class="form-actions"><button class="primary-button" type="submit">Lưu sự kiện</button></div></form><div id="eventList" class="event-list"></div></div>
+</section>
+
+<section class="panel" id="panel-library">
+<div class="section-heading"><div><span class="eyebrow">04 / THƯ VIỆN</span><h2>Kiến thức nền tảng</h2><p>Thuật ngữ phổ biến và cách hiểu thận trọng.</p></div></div>
+<div class="library-list">
+<details class="card" open><summary>Bát Trạch và cung phi</summary><p>Bát Trạch phân nhóm cung phi thành Đông Tứ Trạch và Tây Tứ Trạch, sau đó đối chiếu tám phương với các tên gọi như Sinh Khí, Thiên Y, Diên Niên, Phục Vị. Các trường phái và cách xác định năm sinh có thể khác nhau.</p></details>
+<details class="card"><summary>Ngũ hành</summary><p>Kim, Mộc, Thủy, Hỏa, Thổ là hệ phân loại trong triết học phương Đông. Ngũ hành của cung phi không đồng nghĩa với nạp âm năm sinh; ứng dụng này hiển thị riêng cung phi và hành của cung để tránh nhầm lẫn.</p></details>
+<details class="card"><summary>Đo hướng nhà</summary><p>Đo nhiều lần tại vị trí thoáng, tránh sát loa, nam châm, khung thép hoặc thiết bị điện. Phân biệt hướng mặt cửa, hướng mặt nhà và hướng nhìn khi ngồi; đây không phải lúc nào cũng là một hướng.</p></details>
+<details class="card"><summary>Ưu tiên thực tế</summary><p>Ánh sáng, thông gió, chống trượt, lối thoát hiểm, kết cấu an toàn và nhu cầu của người sử dụng nên được ưu tiên. Không thay đổi kết cấu hoặc quyết định tài chính lớn chỉ dựa vào một kết quả phong thủy.</p></details>
+<details class="card"><summary>Về lịch âm và ngày tốt</summary><p>Bộ chuyển đổi dùng thuật toán thiên văn phổ biến cho lịch âm Việt Nam theo múi giờ UTC+7. Đây là công cụ đối chiếu ngày, không thay thế lịch vạn niên được thẩm định và không tự kết luận ngày tốt/xấu hoặc giờ hoàng đạo.</p></details>
+</div>
+<div class="card"><h3>Chia sẻ ứng dụng</h3><p class="muted">Gửi đường dẫn ứng dụng cho người thân.</p><button class="primary-button" id="shareApp" type="button">Chia sẻ / sao chép liên kết <span>↗</span></button><p id="shareStatus" class="field-hint" aria-live="polite"></p></div>
+</section>
+
 </main>
 <footer class="site-footer"><p>© Nguyễn Xuân Đạt · Phong Thủy Việt · Tham khảo</p></footer>
 </div>
@@ -127,6 +148,7 @@
   </div>
 </div>
 <script src="app.js"></script>
+<script src="home-upgrade.js"></script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}</script>
 </body>
 </html>
