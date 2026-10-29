@@ -67,7 +67,9 @@ function getLeapMonthOffset(a11,tz){
  return i-1;
 }
 function convertSolarToLunar(dd,mm,yy,tz=7){
- if(!Number.isInteger(dd)||!Number.isInteger(mm)||!Number.isInteger(yy)||yy<1900||yy>2099||mm<1||mm>12||dd<1||dd>31)return null;
+ if(!Number.isInteger(dd)||!Number.isInteger(mm)||!Number.isInteger(yy)||yy<1900||yy>2099||mm<1||mm>12||dd<1)return null;
+ const calendarDate=new Date(Date.UTC(yy,mm-1,dd));
+ if(calendarDate.getUTCFullYear()!==yy||calendarDate.getUTCMonth()!==mm-1||calendarDate.getUTCDate()!==dd)return null;
  const dayNumber=jdFromDate(dd,mm,yy),k=Math.floor((dayNumber-2415021.076998695)/29.530588853);
  let monthStart=getNewMoonDay(k+1,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k,tz);
  let a11=getLunarMonth11(yy,tz),b11=a11,lunarYear;
@@ -125,7 +127,8 @@ function calculateSolarTerms(year){
  return found.length===24?found:null;
 }
 function renderSolarTerms(){
- const year=Number($('solarTermsYear').value),items=calculateSolarTerms(year),out=$('solarTermsResult');
+ const rawYear=$('solarTermsYear').value;
+ const year=rawYear.trim()===''?NaN:Number(rawYear),items=calculateSolarTerms(year),out=$('solarTermsResult');
  if(!items){out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
  out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+' · '+item.date.toISOString().slice(11,16)+'</span></li>').join('')+'</ol>';
 }
@@ -259,7 +262,19 @@ function stopLiveCompass(){
 }
 
 function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
-function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
+function isValidEvent(event){
+ if(!event||typeof event!=='object'||typeof event.title!=='string'||!event.title.trim()||event.title.length>80||typeof event.date!=='string'||!/^\\d{4}-\\d{2}-\\d{2}$/.test(event.date))return false;
+ const [year,month,day]=event.date.split('-').map(Number),date=new Date(Date.UTC(year,month-1,day));
+ return date.getUTCFullYear()===year&&date.getUTCMonth()===month-1&&date.getUTCDate()===day&&typeof (event.note||'')==='string'&&(event.note||'').length<=300;
+}
+function getValidEvents(){
+ const raw=safeGet(STORE.events,[]);
+ return Array.isArray(raw)?raw.filter(isValidEvent):[];
+}
+function renderEvents(){
+ const events=getValidEvents().sort((a,b)=>a.date.localeCompare(b.date));
+ $('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';
+}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 async function shareText(text){if(navigator.share){try{await navigator.share({title:'Phong Thủy Việt',text});return;}catch(e){if(e.name==='AbortError')return;}}try{await navigator.clipboard.writeText(text);alert('Đã sao chép nội dung để chia sẻ.');}catch{prompt('Sao chép nội dung này:',text);}}
 function goTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));window.scrollTo({top:0,behavior:'smooth'});}
@@ -327,8 +342,21 @@ document.addEventListener('DOMContentLoaded',()=>{
  });
  $('resetCompassCalibration').addEventListener('click',()=>{if(confirm('Đặt độ lệch hiệu chỉnh thiết bị về 0°?')){$('compassOffset').value='0';if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);$('compassStatus').textContent='Đã đặt hiệu chỉnh thiết bị về 0°.';}});
  $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}const dir=compassDirection(n);$('bearingResult').innerHTML='<strong>'+dir+' · '+n.toFixed(1)+'°</strong><small>Quy đổi 16 phương; độ chính xác tùy thiết bị và cách đo.</small>';});
- $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
- $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
+ $('eventForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const title=$('eventTitle').value.trim(),date=$('eventDate').value,note=$('eventNote').value.trim();
+  const item={title,date,note,id:Date.now()};
+  if(!isValidEvent(item)){alert('Vui lòng nhập tên sự kiện và ngày hợp lệ.');return;}
+  const events=getValidEvents();events.push(item);
+  if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}
+ });
+ $('eventList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-index]');if(!b)return;
+  const events=getValidEvents().sort((a,b)=>a.date.localeCompare(b.date));
+  const index=Number(b.dataset.index);
+  if(!Number.isInteger(index)||index<0||index>=events.length)return;
+  events.splice(index,1);if(safeSet(STORE.events,events))renderEvents();
+ });
  $('clearEvents').addEventListener('click',()=>{if(confirm('Xóa toàn bộ sự kiện đã lưu trên thiết bị này?')){safeSet(STORE.events,[]);renderEvents();}});renderEvents();
  $('themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';safeSet(STORE.theme,dark?'dark':'light');});
  const theme=safeGet(STORE.theme,'light');document.documentElement.dataset.theme=theme;
