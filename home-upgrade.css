@@ -35,7 +35,9 @@
 .hero.hero-compass-only{min-height:unset;padding:18px 0 8px;display:flex;justify-content:center;grid-template-columns:1fr}
 .hero.hero-compass-only .hero-symbol{min-height:unset;width:100%;max-width:420px;margin:0 auto;background:none}
 .hero-lakinh{max-width:100%;width:100%}
-.hero-lakinh-wrap{width:min(92vw,380px);margin:0 auto;aspect-ratio:1;filter:drop-shadow(0 8px 24px rgba(24,56,47,.14))}
+.hero-lakinh-wrap{position:relative;width:min(92vw,380px);margin:0 auto;aspect-ratio:1;filter:drop-shadow(0 8px 24px rgba(24,56,47,.14))}
+.hero-needle-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-lakinh-wrap img.hero-lakinh-svg{width:100%;height:auto;display:block}
 .hero-lakinh-svg{width:100%;height:100%;display:block}
 #heroCompassNeedle{transform-box:fill-box;transform-origin:center;transition:transform .08s linear}
 .hero-compass-readout{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;margin-top:10px}
