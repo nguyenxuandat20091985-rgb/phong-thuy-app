@@ -102,3 +102,25 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .house-profile-card .form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
 .house-profile-card .form-actions button{flex:1 1 150px}
 @media(max-width:420px){.house-profile-card .form-grid{grid-template-columns:1fr}.house-profile-card .form-actions button{width:100%}}
+
+
+/* Birth-date and gender based house direction guidance */
+.age-direction-card>h3{margin:7px 0 8px;font-size:clamp(18px,4vw,23px)}
+.age-direction-card form .form-grid{margin:15px 0}
+.age-direction-card label{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:13px;font-weight:700}
+.age-direction-card input,.age-direction-card select{width:100%;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface);color:var(--text);font:inherit}
+.age-direction-result{display:grid;gap:15px;margin-top:18px}
+.age-direction-result .profile-summary{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.age-direction-result .profile-summary h3{margin:3px 0;font-size:19px}
+.age-direction-result .profile-summary p{margin:4px 0;font-size:12px;color:var(--muted)}
+.age-direction-result .profile-summary small{font-size:11px;color:var(--muted)}
+.age-result-section h4{margin:0 0 10px;font-size:14px}
+.age-facing-check{padding:12px;border-radius:10px;border:1px solid var(--line);font-size:13px}
+.age-facing-check p{margin:5px 0 0;line-height:1.6}
+.age-facing-check.positive{background:#e2f1e5;color:#276643}
+.age-facing-check.caution{background:#f8e8e3;color:#934337}
+.age-placement-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.age-placement-list li{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.age-placement-list strong{font-size:13px}
+.age-placement-list p{font-size:12px;line-height:1.65;color:var(--muted);margin:5px 0 0}
+@media(max-width:520px){.age-direction-card .form-actions{flex-direction:column}.age-direction-card .form-actions button{width:100%}.age-direction-result .profile-summary{align-items:flex-start}}
