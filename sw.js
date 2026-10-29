@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v50-lakinh-clean';
+const CACHE_NAME = 'phong-thuy-v51-lakinh-upright';
 const ASSETS = [
   './',
   './index.html',
