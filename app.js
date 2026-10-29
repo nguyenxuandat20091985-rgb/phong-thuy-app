@@ -1,336 +1,306 @@
-/* Phong Thủy Việt — P0–P5 upgrade. No external dependencies. */
 'use strict';
 const $ = (id) => document.getElementById(id);
-const STORE = { profile:'pt_profile_v2', house:'pt_house_notes_v2', events:'pt_events_v2', theme:'pt_theme_v2' };
+
+// ==================== DỮ LIỆU PHONG THỦY ====================
 const CUNG = {
-  1:{name:'Khảm',hanh:'Thủy',group:'Đông Tứ Trạch'},
-  2:{name:'Khôn',hanh:'Thổ',group:'Tây Tứ Trạch'},
-  3:{name:'Chấn',hanh:'Mộc',group:'Đông Tứ Trạch'},
-  4:{name:'Tốn',hanh:'Mộc',group:'Đông Tứ Trạch'},
-  6:{name:'Càn',hanh:'Kim',group:'Tây Tứ Trạch'},
-  7:{name:'Đoài',hanh:'Kim',group:'Tây Tứ Trạch'},
-  8:{name:'Cấn',hanh:'Thổ',group:'Tây Tứ Trạch'},
-  9:{name:'Ly',hanh:'Hỏa',group:'Đông Tứ Trạch'}
+  1:{name:'Khảm',hanh:'Thủy',group:'Đông'}, 2:{name:'Khôn',hanh:'Thổ',group:'Tây'},
+  3:{name:'Chấn',hanh:'Mộc',group:'Đông'}, 4:{name:'Tốn',hanh:'Mộc',group:'Đông'},
+  6:{name:'Càn',hanh:'Kim',group:'Tây'}, 7:{name:'Đoài',hanh:'Kim',group:'Tây'},
+  8:{name:'Cấn',hanh:'Thổ',group:'Tây'}, 9:{name:'Ly',hanh:'Hỏa',group:'Đông'}
 };
 const DIRECTIONS = {
- Khảm:{good:[['Sinh Khí','Đông Nam'],['Thiên Y','Đông'],['Diên Niên','Nam'],['Phục Vị','Bắc']],bad:[['Tuyệt Mệnh','Tây Nam'],['Ngũ Quỷ','Đông Bắc'],['Lục Sát','Tây'],['Họa Hại','Tây Bắc']]},
- Chấn:{good:[['Sinh Khí','Nam'],['Thiên Y','Bắc'],['Diên Niên','Đông Nam'],['Phục Vị','Đông']],bad:[['Tuyệt Mệnh','Tây'],['Ngũ Quỷ','Tây Bắc'],['Lục Sát','Tây Nam'],['Họa Hại','Đông Bắc']]},
- Tốn:{good:[['Sinh Khí','Bắc'],['Thiên Y','Nam'],['Diên Niên','Đông'],['Phục Vị','Đông Nam']],bad:[['Tuyệt Mệnh','Đông Bắc'],['Ngũ Quỷ','Tây'],['Lục Sát','Tây Bắc'],['Họa Hại','Tây Nam']]},
- Ly:{good:[['Sinh Khí','Đông'],['Thiên Y','Đông Nam'],['Diên Niên','Bắc'],['Phục Vị','Nam']],bad:[['Tuyệt Mệnh','Tây Bắc'],['Ngũ Quỷ','Tây Nam'],['Lục Sát','Đông Bắc'],['Họa Hại','Tây']]},
- Càn:{good:[['Sinh Khí','Tây'],['Thiên Y','Đông Bắc'],['Diên Niên','Tây Nam'],['Phục Vị','Tây Bắc']],bad:[['Tuyệt Mệnh','Nam'],['Ngũ Quỷ','Đông'],['Lục Sát','Bắc'],['Họa Hại','Đông Nam']]},
- Khôn:{good:[['Sinh Khí','Đông Bắc'],['Thiên Y','Tây'],['Diên Niên','Tây Bắc'],['Phục Vị','Tây Nam']],bad:[['Tuyệt Mệnh','Đông'],['Ngũ Quỷ','Nam'],['Lục Sát','Đông Nam'],['Họa Hại','Bắc']]},
- Cấn:{good:[['Sinh Khí','Tây Nam'],['Thiên Y','Tây Bắc'],['Diên Niên','Tây'],['Phục Vị','Đông Bắc']],bad:[['Tuyệt Mệnh','Đông Nam'],['Ngũ Quỷ','Bắc'],['Lục Sát','Đông'],['Họa Hại','Nam']]},
- Đoài:{good:[['Sinh Khí','Tây Bắc'],['Thiên Y','Tây Nam'],['Diên Niên','Đông Bắc'],['Phục Vị','Tây']],bad:[['Tuyệt Mệnh','Bắc'],['Ngũ Quỷ','Đông Nam'],['Lục Sát','Nam'],['Họa Hại','Đông']]}
+  Khảm:{good:[['Sinh Khí','Đông Nam'],['Thiên Y','Đông'],['Diên Niên','Nam'],['Phục Vị','Bắc']],bad:[['Tuyệt Mệnh','Tây Nam'],['Ngũ Quỷ','Đông Bắc'],['Lục Sát','Tây'],['Họa Hại','Tây Bắc']]},
+  Chấn:{good:[['Sinh Khí','Nam'],['Thiên Y','Bắc'],['Diên Niên','Đông Nam'],['Phục Vị','Đông']],bad:[['Tuyệt Mệnh','Tây'],['Ngũ Quỷ','Tây Bắc'],['Lục Sát','Tây Nam'],['Họa Hại','Đông Bắc']]},
+  Tốn:{good:[['Sinh Khí','Bắc'],['Thiên Y','Nam'],['Diên Niên','Đông'],['Phục Vị','Đông Nam']],bad:[['Tuyệt Mệnh','Đông Bắc'],['Ngũ Quỷ','Tây'],['Lục Sát','Tây Bắc'],['Họa Hại','Tây Nam']]},
+  Ly:{good:[['Sinh Khí','Đông'],['Thiên Y','Đông Nam'],['Diên Niên','Bắc'],['Phục Vị','Nam']],bad:[['Tuyệt Mệnh','Tây Bắc'],['Ngũ Quỷ','Tây Nam'],['Lục Sát','Đông Bắc'],['Họa Hại','Tây']]},
+  Càn:{good:[['Sinh Khí','Tây'],['Thiên Y','Đông Bắc'],['Diên Niên','Tây Nam'],['Phục Vị','Tây Bắc']],bad:[['Tuyệt Mệnh','Nam'],['Ngũ Quỷ','Đông'],['Lục Sát','Bắc'],['Họa Hại','Đông Nam']]},
+  Khôn:{good:[['Sinh Khí','Đông Bắc'],['Thiên Y','Tây'],['Diên Niên','Tây Bắc'],['Phục Vị','Tây Nam']],bad:[['Tuyệt Mệnh','Đông'],['Ngũ Quỷ','Nam'],['Lục Sát','Đông Nam'],['Họa Hại','Bắc']]},
+  Cấn:{good:[['Sinh Khí','Tây Nam'],['Thiên Y','Tây Bắc'],['Diên Niên','Tây'],['Phục Vị','Đông Bắc']],bad:[['Tuyệt Mệnh','Đông Nam'],['Ngũ Quỷ','Bắc'],['Lục Sát','Đông'],['Họa Hại','Nam']]},
+  Đoài:{good:[['Sinh Khí','Tây Bắc'],['Thiên Y','Tây Nam'],['Diên Niên','Đông Bắc'],['Phục Vị','Tây']],bad:[['Tuyệt Mệnh','Bắc'],['Ngũ Quỷ','Đông Nam'],['Lục Sát','Nam'],['Họa Hại','Đông']]}
 };
-function safeGet(key,fallback){try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw);}catch{return fallback;}}
-function safeSet(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true;}catch{alert('Không lưu được dữ liệu. Hãy kiểm tra dung lượng lưu trữ của trình duyệt.');return false;}}
-/* Vietnamese lunar calendar conversion using new moons and solar longitude, UTC+7. */
-function jdFromDate(dd,mm,yy){
- const a=Math.floor((14-mm)/12),y=yy+4800-a,m=mm+12*a-3;
- let jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
- if(jd<2299161) jd=dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-32083;
- return jd;
-}
-function newMoon(k){
- const T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180;
- let jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
- jd+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
- const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
- const Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
- const F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
- let C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr);
- C-=0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)+0.0004*Math.sin(3*Mp*dr);
- C+=0.0104*Math.sin(2*F*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr);
- C+=0.0004*Math.sin((2*F+M)*dr)-0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mp)*dr)+0.0010*Math.sin((2*F-Mp)*dr)+0.0005*Math.sin((2*Mp+M)*dr);
- const deltaT=T < -11 ? 0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3 : -0.000278+0.000265*T+0.000262*T2;
- return jd+C-deltaT;
-}
-function getNewMoonDay(k,tz){return Math.floor(newMoon(k)+0.5+tz/24);}
-function sunLongitude(jdn){
- const T=(jdn-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
- const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
- const L0=280.46645+36000.76983*T+0.0003032*T2;
- let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
- DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
- let L=(L0+DL)*dr;L-=Math.PI*2*Math.floor(L/(Math.PI*2));
- return Math.floor(L/Math.PI*6);
-}
-function getSunLongitude(dayNumber,tz){return sunLongitude(dayNumber-0.5-tz/24);}
-function getLunarMonth11(yy,tz){
- const off=jdFromDate(31,12,yy)-2415021,k=Math.floor(off/29.530588853);
- let nm=getNewMoonDay(k,tz);if(getSunLongitude(nm,tz)>=9)nm=getNewMoonDay(k-1,tz);return nm;
-}
-function getLeapMonthOffset(a11,tz){
- const k=Math.floor(0.5+(a11-2415021.076998695)/29.530588853);
- let last=0,i=1,arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);
- do{last=arc;i++;arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);}while(arc!==last&&i<14);
- return i-1;
-}
-function convertSolarToLunar(dd,mm,yy,tz=7){
- if(!Number.isInteger(dd)||!Number.isInteger(mm)||!Number.isInteger(yy)||yy<1900||yy>2099||mm<1||mm>12||dd<1||dd>31)return null;
- const dayNumber=jdFromDate(dd,mm,yy),k=Math.floor((dayNumber-2415021.076998695)/29.530588853);
- let monthStart=getNewMoonDay(k+1,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k,tz);
- let a11=getLunarMonth11(yy,tz),b11=a11,lunarYear;
- if(a11>=monthStart){lunarYear=yy;a11=getLunarMonth11(yy-1,tz);}else{lunarYear=yy+1;b11=getLunarMonth11(yy+1,tz);}
- const lunarDay=dayNumber-monthStart+1,diff=Math.floor((monthStart-a11)/29);
- let lunarLeap=0,lunarMonth=diff+11;
- if(b11-a11>365){const leapDiff=getLeapMonthOffset(a11,tz);if(diff>=leapDiff){lunarMonth=diff+10;if(diff===leapDiff)lunarLeap=1;}}
- if(lunarMonth>12)lunarMonth-=12;
- if(lunarMonth>=11&&diff<4)lunarYear--;
- return {day:lunarDay,month:lunarMonth,year:lunarYear,leap:lunarLeap};
-}
-function renderLunarDate(){
- const value=$('lunarDateInput').value;if(!value){$('lunarDateResult').textContent='Hãy chọn ngày dương lịch';return;}
- const [y,m,d]=value.split('-').map(Number),r=convertSolarToLunar(d,m,y,7);
- if(!r){$('lunarDateResult').textContent='Chỉ hỗ trợ ngày hợp lệ trong giai đoạn 1900–2099';return;}
- $('lunarDateResult').innerHTML='<strong>'+r.day+'/'+r.month+'/'+r.year+(r.leap?' (tháng nhuận)':'')+'</strong><small>Âm lịch Việt Nam · UTC+7</small>';
-}
-
-
-const SOLAR_TERMS=[
- ['Lập xuân',315],['Vũ thủy',330],['Kinh trập',345],['Xuân phân',0],
- ['Thanh minh',15],['Cốc vũ',30],['Lập hạ',45],['Tiểu mãn',60],
- ['Mang chủng',75],['Hạ chí',90],['Tiểu thử',105],['Đại thử',120],
- ['Lập thu',135],['Xử thử',150],['Bạch lộ',165],['Thu phân',180],
- ['Hàn lộ',195],['Sương giáng',210],['Lập đông',225],['Tiểu tuyết',240],
- ['Đại tuyết',255],['Đông chí',270],['Tiểu hàn',285],['Đại hàn',300]
+const HAI_MUOI_BON_SON = [
+  {name:'Tý', start:352.5, end:7.5, qua:'Khảm', nguhanh:'Thủy', amduong:'Dương'},
+  {name:'Sửu', start:7.5, end:22.5, qua:'Cấn', nguhanh:'Thổ', amduong:'Âm'},
+  {name:'Cấn', start:22.5, end:37.5, qua:'Cấn', nguhanh:'Thổ', amduong:'Dương'},
+  {name:'Dần', start:37.5, end:52.5, qua:'Cấn', nguhanh:'Mộc', amduong:'Dương'},
+  {name:'Giáp', start:52.5, end:67.5, qua:'Chấn', nguhanh:'Mộc', amduong:'Âm'},
+  {name:'Mão', start:67.5, end:82.5, qua:'Chấn', nguhanh:'Mộc', amduong:'Âm'},
+  {name:'Ất', start:82.5, end:97.5, qua:'Chấn', nguhanh:'Mộc', amduong:'Âm'},
+  {name:'Thìn', start:97.5, end:112.5, qua:'Tốn', nguhanh:'Thổ', amduong:'Dương'},
+  {name:'Tốn', start:112.5, end:127.5, qua:'Tốn', nguhanh:'Mộc', amduong:'Âm'},
+  {name:'Tỵ', start:127.5, end:142.5, qua:'Tốn', nguhanh:'Hỏa', amduong:'Âm'},
+  {name:'Bính', start:142.5, end:157.5, qua:'Ly', nguhanh:'Hỏa', amduong:'Dương'},
+  {name:'Ngọ', start:157.5, end:172.5, qua:'Ly', nguhanh:'Hỏa', amduong:'Âm'},
+  {name:'Đinh', start:172.5, end:187.5, qua:'Ly', nguhanh:'Hỏa', amduong:'Âm'},
+  {name:'Mùi', start:187.5, end:202.5, qua:'Khôn', nguhanh:'Thổ', amduong:'Âm'},
+  {name:'Khôn', start:202.5, end:217.5, qua:'Khôn', nguhanh:'Thổ', amduong:'Âm'},
+  {name:'Thân', start:217.5, end:232.5, qua:'Khôn', nguhanh:'Kim', amduong:'Dương'},
+  {name:'Canh', start:232.5, end:247.5, qua:'Đoài', nguhanh:'Kim', amduong:'Dương'},
+  {name:'Dậu', start:247.5, end:262.5, qua:'Đoài', nguhanh:'Kim', amduong:'Âm'},
+  {name:'Tân', start:262.5, end:277.5, qua:'Đoài', nguhanh:'Kim', amduong:'Âm'},
+  {name:'Tuất', start:277.5, end:292.5, qua:'Càn', nguhanh:'Thổ', amduong:'Dương'},
+  {name:'Càn', start:292.5, end:307.5, qua:'Càn', nguhanh:'Kim', amduong:'Dương'},
+  {name:'Hợi', start:307.5, end:322.5, qua:'Càn', nguhanh:'Thủy', amduong:'Âm'},
+  {name:'Nhâm', start:322.5, end:337.5, qua:'Khảm', nguhanh:'Thủy', amduong:'Dương'},
+  {name:'Quý', start:337.5, end:352.5, qua:'Khảm', nguhanh:'Thủy', amduong:'Âm'}
 ];
-function solarLongitudeDegrees(jd){
- const T=(jd-2451545.0)/36525,T2=T*T,dr=Math.PI/180;
- const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
- const L0=280.46645+36000.76983*T+0.0003032*T2;
- let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
- DL+=(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.000290*Math.sin(3*dr*M);
- let L=(L0+DL)%360;return (L+360)%360;
-}
-function calculateSolarTerms(year){
- if(!Number.isInteger(year)||year<1900||year>2099)return null;
- const start=jdFromDate(1,1,year),end=jdFromDate(1,1,year+1),found=[];
- for(let day=start;day<end;day++){
-  const prev=solarLongitudeDegrees(day),curr=solarLongitudeDegrees(day+1);
-  const delta=(curr-prev+360)%360;
-  for(const [name,target] of SOLAR_TERMS){
-   const progress=(target-prev+360)%360;
-   if(progress>delta+0.00001)continue;
-   let lo=day,hi=day+1;
-   for(let i=0;i<28;i++){
-    const mid=(lo+hi)/2,passed=(solarLongitudeDegrees(mid)-prev+360)%360;
-    if(passed<progress)lo=mid;else hi=mid;
-   }
-   const localDate=new Date(((lo+hi)/2-2440587.5)*86400000+7*3600000);
-   found.push({name,date:localDate});
-  }
- }
- found.sort((a,b)=>a.date-b.date);
- return found.length===24?found:null;
-}
-function renderSolarTerms(){
- const year=Number($('solarTermsYear').value),items=calculateSolarTerms(year),out=$('solarTermsResult');
- if(!items){out.textContent='Nhập năm hợp lệ từ 1900 đến 2099.';return;}
- out.innerHTML='<ol>'+items.map(item=>'<li><strong>'+item.name+'</strong><span>'+item.date.toLocaleDateString('vi-VN',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})+' · '+item.date.toISOString().slice(11,16)+'</span></li>').join('')+'</ol>';
+const HAU_THIEN_QUA = [
+  {name:'Khảm', dir:'Bắc', angle:0, symbol:'☵'}, {name:'Cấn', dir:'Đông Bắc', angle:45, symbol:'☶'},
+  {name:'Chấn', dir:'Đông', angle:90, symbol:'☳'}, {name:'Tốn', dir:'Đông Nam', angle:135, symbol:'☴'},
+  {name:'Ly', dir:'Nam', angle:180, symbol:'☲'}, {name:'Khôn', dir:'Tây Nam', angle:225, symbol:'☷'},
+  {name:'Đoài', dir:'Tây', angle:270, symbol:'☱'}, {name:'Càn', dir:'Tây Bắc', angle:315, symbol:'☰'}
+];
+
+// ==================== LOW-PASS FILTER (CHỐNG RUNG) ====================
+let smoothedHeading = null;
+function smoothHeading(newHeading, alpha = 0.85) {
+  if (smoothedHeading === null) { smoothedHeading = newHeading; return newHeading; }
+  let diff = newHeading - smoothedHeading;
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+  smoothedHeading = (smoothedHeading + alpha * diff + 360) % 360;
+  return smoothedHeading;
 }
 
-function digitSum(n){return String(n).split('').reduce((s,d)=>s+Number(d),0);}
-function calcCung(year,gender){
-  // Common Bát Trạch year-digit method; 2000–2099 has a different offset.
-  const lastTwo=year%100;
-  const sum=digitSum(lastTwo);
-  let number;
-  if(year>=2000){number=gender==='nam'?9-sum:6+sum;}
-  else {number=gender==='nam'?10-sum:5+sum;}
-  while(number>9) number=digitSum(number);
-  while(number<1) number+=9;
-  if(number===5) number=gender==='nam'?2:8;
-  return CUNG[number]||null;
-}
-function renderPairs(items,kind){return items.map(([name,dir])=>'<div class="direction-item '+kind+'"><span>'+name+'</span><strong>'+dir+'</strong></div>').join('');}
-function showProfile(year,gender){
- const c=calcCung(year,gender);if(!c)return;
- const d=DIRECTIONS[c.name];
- $('personalResult').innerHTML='<div class="profile-summary card"><div class="profile-orb">'+c.name+'</div><div><span class="eyebrow">KẾT QUẢ BÁT TRẠCH</span><h3>Cung '+c.name+'</h3><p>'+c.group+' · Hành cung: '+c.hanh+'</p><small>Năm sinh: '+year+' · '+(gender==='nam'?'Nam':'Nữ')+'</small></div></div><div class="card"><div class="list-heading"><h3>Hướng tốt theo bảng tra</h3><span class="pill positive">4 hướng</span></div><div class="direction-grid">'+renderPairs(d.good,'good')+'</div></div><div class="card"><div class="list-heading"><h3>Hướng cần cân nhắc</h3><span class="pill caution">4 hướng</span></div><div class="direction-grid">'+renderPairs(d.bad,'bad')+'</div></div><div class="notice subtle"><span>ⓘ</span><p>Kết quả sử dụng cách tính cung phi Bát Trạch phổ biến theo năm dương lịch và giới tính đã chọn. Nếu sinh gần Tết âm lịch, cần xác minh năm quy đổi theo trường phái bạn theo. “Hành cung” không phải nạp âm năm sinh.</p></div><button class="secondary-button" id="shareResult" type="button">Chia sẻ kết quả</button>';
- $('shareResult').addEventListener('click',()=>shareText('Kết quả Bát Trạch: năm '+year+', cung '+c.name+', '+c.group+'. Hướng tốt: '+d.good.map(x=>x[0]+' '+x[1]).join(', ')+'. Tham khảo tại '+location.href));
-}
-const ROOM={
- bedroom:['Phòng ngủ',['Ưu tiên lối đi thông thoáng và lối thoát dễ tiếp cận.','Đặt giường vững chắc, tránh chắn cửa hoặc cửa sổ cần mở.','Giảm ánh sáng xanh và tiếng ồn khi ngủ; ưu tiên thông gió.','Hướng giường theo Bát Trạch chỉ là một tiêu chí tham khảo.']],
- desk:['Bàn làm việc',['Đặt ghế chắc chắn, có ánh sáng đủ và hạn chế phản chiếu màn hình.','Nếu thuận tiện, chọn vị trí nhìn được lối vào mà không cản lối đi.','Đặt màn hình ngang tầm mắt, giữ khoảng trống thao tác.','Không hy sinh công thái học chỉ để khớp một hướng phong thủy.']],
- kitchen:['Nhà bếp',['Bảo đảm thông gió và khoảng cách an toàn quanh bếp nóng.','Không đặt vật dễ cháy sát nguồn nhiệt; kiểm tra thiết bị gas/điện.','Giữ lối đi khô, sáng và không bị cản trở.','Các quy tắc “tọa/hướng” khác nhau theo trường phái; kiểm tra hiện trạng trước.']],
- entrance:['Cửa chính / lối vào',['Giữ lối vào sáng, khô, dễ đi lại và không bị chắn.','Dùng thảm chống trượt và bảo đảm cửa mở không va vào người.','Không để đồ che lối thoát hiểm hoặc tủ điện.','Hướng cửa cần đo đúng và phân biệt với hướng mặt nhà.']],
- altar:['Bàn thờ',['Chọn vị trí ổn định, trang nghiêm và ít bị va chạm.','Bảo đảm thông gió, phòng cháy; tránh gần vật liệu dễ cháy.','Bố trí an toàn cho trẻ nhỏ và người cao tuổi.','Tập tục khác nhau theo gia đình, vùng miền và tín ngưỡng.']]
-};
+// ==================== LOGIC LA BÀN ====================
+let currentHeading = 0, lockedHeading = null, hasSensor = false, compassListening = false;
 
-const HOME_AUDIT = {
- exit:{title:'Thông thoáng lối đi và lối thoát hiểm',detail:'Dọn vật cản ở cửa, hành lang và lối ra trước tiên; không khóa hoặc che lối thoát.'},
- fire:{title:'Giảm nguy cơ cháy và điện',detail:'Tách vật dễ cháy khỏi bếp, kiểm tra dây/ổ điện hỏng và giữ thiết bị nấu trong tầm quan sát.'},
- slip:{title:'Xử lý nguy cơ trượt, vấp',detail:'Lau khô sàn, cố định thảm/dây điện và bổ sung chống trượt tại khu vực ẩm.'},
- air:{title:'Cải thiện thông gió',detail:'Mở cửa khi điều kiện bên ngoài phù hợp, dùng quạt hút ở bếp/phòng tắm và xử lý nguồn ẩm/mùi.'},
- light:{title:'Bổ sung ánh sáng',detail:'Ưu tiên ánh sáng ban ngày; bổ sung đèn đủ sáng ở cầu thang, lối đi và khu làm việc.'},
- sleep:{title:'Giảm tiếng ồn và ánh sáng khu ngủ',detail:'Dùng rèm phù hợp, đặt nguồn ồn xa giường và tạo lịch nghỉ ổn định.'},
- clutter:{title:'Giảm đồ đạc gây cản trở',detail:'Chia đồ theo nhóm, giữ mặt bàn/lối đi thông thoáng và cất đồ vệ sinh dễ tiếp cận.'},
- privacy:{title:'Tăng sự riêng tư',detail:'Cân nhắc rèm/vách nhẹ hoặc đổi góc nhìn; không làm hẹp lối đi hay cản cửa thoát hiểm.'}
-};
-function runHomeAudit(){
- const selected=Array.from(document.querySelectorAll('#homeAuditOptions input:checked')).map(el=>el.value);
- const out=$('homeAuditResult');
- if(!selected.length){out.innerHTML='<p>Chưa chọn vấn đề nào. Đánh dấu những điểm anh muốn cải thiện rồi phân tích lại.</p>';return;}
- const priority=['exit','fire','slip','air','light','sleep','clutter','privacy'];
- const list=selected.sort((a,b)=>priority.indexOf(a)-priority.indexOf(b)).map((key,i)=>'<li><strong>'+(i+1)+'. '+HOME_AUDIT[key].title+'</strong><p>'+HOME_AUDIT[key].detail+'</p></li>').join('');
- out.innerHTML='<p><strong>Đã ghi nhận '+selected.length+' nhóm vấn đề.</strong> Nên xử lý theo thứ tự ưu tiên dưới đây:</p><ol>'+list+'</ol><p class="field-hint">Đây là gợi ý thực hành dựa trên các lựa chọn của anh, không phải đánh giá kết cấu hay kết luận phong thủy tuyệt đối.</p>';
+function normalizeDegrees(value) { return ((value % 360) + 360) % 360; }
+
+function updateCompassDisplay(heading) {
+  const normalized = normalizeDegrees(heading);
+  $('fengCompass').style.transform = `rotate(${-normalized}deg)`;
+  $('deg-text').textContent = normalized.toFixed(1) + '°';
+  
+  const son = HAI_MUOI_BON_SON.find(s => {
+    if (s.start < s.end) return normalized >= s.start && normalized < s.end;
+    return normalized >= s.start || normalized < s.end;
+  }) || HAI_MUOI_BON_SON[0];
+
+  let quaFound = HAU_THIEN_QUA.find(q => {
+    let diff = Math.abs(q.angle - normalized);
+    if (diff > 180) diff = 360 - diff;
+    return diff <= 22.5;
+  }) || HAU_THIEN_QUA[0];
+
+  $('dir-text').textContent = quaFound.dir.toUpperCase();
+  $('cur-son').textContent = son.name;
+  $('cur-qua').textContent = `${quaFound.symbol} ${quaFound.name}`;
+  $('cur-nguhanh').textContent = son.nguhanh;
+  
+  const catSon = ['Tý','Bính','Ngọ','Đinh','Mão','Dậu','Tốn','Càn','Cấn','Khôn'];
+  const isCat = catSon.includes(son.name);
+  $('cur-cat').textContent = isCat ? '✓ Vượng Khí' : '⚠ Bình Thường';
+  $('cur-cat').className = isCat ? 'good' : 'bad';
 }
 
-function renderRoom(){const data=ROOM[$('roomType').value];$('roomGuidance').innerHTML='<ul class="checklist">'+data[1].map(x=>'<li><span>✓</span>'+x+'</li>').join('')+'</ul>';}
-function bearingName(deg){return ['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][Math.round(deg/45)%8];}
-const COMPASS_DIRECTIONS=['Bắc','Bắc Đông Bắc','Đông Bắc','Đông Đông Bắc','Đông','Đông Đông Nam','Đông Nam','Nam Đông Nam','Nam','Nam Tây Nam','Tây Nam','Tây Tây Nam','Tây','Tây Tây Bắc','Tây Bắc','Bắc Tây Bắc'];
-let compassListening=false,compassLastHeading=null,compassSensorHandler=null,compassSource='';
-function normalizeDegrees(value){return ((value%360)+360)%360;}
-function compassDirection(degrees){return COMPASS_DIRECTIONS[Math.round(normalizeDegrees(degrees)/22.5)%16];}
-let compassRenderFrame=0,compassPendingHeading=null,lastRenderedHeading=null;
-function renderCompassHeading(raw){
- compassPendingHeading=raw;
- if(compassRenderFrame)return;
- compassRenderFrame=requestAnimationFrame(()=>{
-  compassRenderFrame=0;
-  if(compassPendingHeading===null)return;
-  const heading=compassPendingHeading;compassPendingHeading=null;
-  const offset=Number($('compassOffset').value)||0;
-  const magnetic=normalizeDegrees(heading+offset);
-  $('compassHeading').textContent=magnetic.toFixed(0)+'°';
-  $('compassDirection').textContent=compassDirection(magnetic);
- 
-  const counter=magnetic+'deg';
-  document.querySelectorAll('.feng-ring-ticks,.feng-ring-degree,.feng-bagua').forEach(ring=>ring.style.transform='rotate('+(-magnetic)+'deg)');
-  document.querySelectorAll('.bagua-label,.degree-label').forEach(label=>label.style.setProperty('--label-counter-rotation',counter));
-  if(lastRenderedHeading===null||Math.abs(((magnetic-lastRenderedHeading+540)%360)-180)>=0.5){
-   lastRenderedHeading=magnetic;
-   const declinationText=$('magneticDeclination').value.trim();
-   if(declinationText===''){
-    $('compassTrueBearing').innerHTML='<strong>Hướng từ tính: '+magnetic.toFixed(1)+'° · '+compassDirection(magnetic)+'</strong><small>Chưa nhập độ lệch từ nên chưa thể ước tính Bắc thực.</small>';
-   }else{
-    const declination=Number(declinationText);
-    if(!Number.isFinite(declination)||declination < -30||declination>30){
-     $('compassTrueBearing').innerHTML='<strong>Độ lệch từ không hợp lệ</strong><small>Nhập giá trị từ -30° đến +30° theo nguồn tham chiếu.</small>';
-    }else{
-     const truth=normalizeDegrees(magnetic+declination);
-     $('compassTrueBearing').innerHTML='<strong>Bắc thực ước tính: '+truth.toFixed(1)+'° · '+compassDirection(truth)+'</strong><small>Hướng từ tính '+magnetic.toFixed(1)+'° + độ lệch từ '+(declination>=0?'+':'')+declination+'°.</small>';
+function handleOrientation(e) {
+  let heading = null;
+  if (Number.isFinite(e.webkitCompassHeading)) heading = e.webkitCompassHeading;
+  else if (e.absolute === true && Number.isFinite(e.alpha)) heading = 360 - e.alpha;
+  else if (Number.isFinite(e.alpha)) heading = 360 - e.alpha;
+  
+  if (heading === null) return;
+  const screenAngle = (screen.orientation && Number.isFinite(screen.orientation.angle)) ? screen.orientation.angle : 0;
+  if (!Number.isFinite(e.webkitCompassHeading)) heading += screenAngle;
+  
+  const raw = normalizeDegrees(heading);
+  const final = smoothHeading(raw); // Áp dụng bộ lọc mượt
+  currentHeading = final;
+  if (lockedHeading === null) updateCompassDisplay(currentHeading);
+}
+
+async function startCompass() {
+  if (!window.isSecureContext) { $('compass-status').textContent = 'Cần HTTPS để dùng cảm biến.'; return; }
+  try {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm !== 'granted') { $('compass-status').textContent = 'Vui lòng cấp quyền cảm biến.'; return; }
     }
-   }
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    compassListening = true;
+    $('btn-calibrate').textContent = '🟢 Đang đo...';
+    $('compass-status').textContent = 'Đặt điện thoại nằm ngang, tránh xa kim loại.';
+  } catch (err) {
+    $('compass-status').textContent = 'Lỗi cảm biến: ' + err.message;
   }
- });
-}
-function handleCompassEvent(event){
- let heading=null;
- if(Number.isFinite(event.webkitCompassHeading)){heading=event.webkitCompassHeading;compassSource='Cảm biến la bàn của thiết bị';}
- else if(event.absolute===true&&Number.isFinite(event.alpha)){heading=360-event.alpha;compassSource='Cảm biến hướng tuyệt đối';}
- else if(Number.isFinite(event.alpha)){
-  heading=360-event.alpha;
-  compassSource='Dữ liệu hướng chưa xác nhận Bắc tuyệt đối';
- }
- if(heading===null)return;
- const screenAngle=(screen.orientation&&Number.isFinite(screen.orientation.angle))?screen.orientation.angle:(Number.isFinite(window.orientation)?window.orientation:0);
- if(!Number.isFinite(event.webkitCompassHeading))heading+=screenAngle;
- compassLastHeading=normalizeDegrees(heading);
- renderCompassHeading(compassLastHeading);
- if(!$('compassStatus').dataset.sensorReady){$('compassStatus').textContent=(event.absolute===true||Number.isFinite(event.webkitCompassHeading))?'Đang đo trực tiếp từ cảm biến. Tránh vật kim loại và nam châm.':'Đang đo; cảm biến này có thể không xác định chính xác hướng Bắc.';$('compassStatus').dataset.sensorReady='1';}
-}
-async function startLiveCompass(){
- if(!window.isSecureContext){$('compassStatus').textContent='La bàn cảm biến cần trang HTTPS hoặc ngữ cảnh bảo mật.';return;}
- if(!('DeviceOrientationEvent' in window)){$('compassStatus').textContent='Trình duyệt này không hỗ trợ cảm biến hướng. Hãy nhập số đo thủ công.';return;}
- try{
-  if(typeof DeviceOrientationEvent.requestPermission==='function'){
-   let permission;
-   try{permission=await DeviceOrientationEvent.requestPermission(true);}
-   catch{permission=await DeviceOrientationEvent.requestPermission();}
-   if(permission!=='granted'){$('compassStatus').textContent='Chưa được cấp quyền cảm biến. Hãy cho phép trong trình duyệt rồi thử lại.';return;}
-  }
-  if(compassListening)return;
-  compassSensorHandler=handleCompassEvent;
-  window.addEventListener('deviceorientation',compassSensorHandler,true);
-  window.addEventListener('deviceorientationabsolute',compassSensorHandler,true);
-  compassListening=true;
-  $('startCompass').disabled=true;$('startCompass').textContent='Đang đo…';$('stopCompass').hidden=false;$('stopCompass').disabled=false;
-  $('compassStatus').dataset.sensorReady='';$('compassStatus').textContent='Đang chờ dữ liệu cảm biến…';
-  window.setTimeout(()=>{if(compassListening&&compassLastHeading===null)$('compassStatus').textContent='Chưa nhận được dữ liệu cảm biến. Trình duyệt/thiết bị có thể không hỗ trợ; nhập số đo thủ công bên dưới.';},3500);
- }catch(error){$('compassStatus').textContent='Không bật được cảm biến: '+(error&&error.message?error.message:'hãy kiểm tra quyền trình duyệt.');}
-}
-function stopLiveCompass(){
- if(compassSensorHandler){window.removeEventListener('deviceorientation',compassSensorHandler,true);window.removeEventListener('deviceorientationabsolute',compassSensorHandler,true);}
- compassListening=false;compassSensorHandler=null;$('compassStatus').dataset.sensorReady='';
- $('startCompass').disabled=false;$('startCompass').textContent='Bật la bàn';$('stopCompass').hidden=true;$('stopCompass').disabled=true;
- $('compassStatus').textContent='Đã tắt cảm biến. Số đo cuối cùng chỉ để tham khảo.';
 }
 
-function fmtDate(value){if(!value)return '';const [y,m,d]=value.split('-');return d+'/'+m+'/'+y;}
-function renderEvents(){const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));$('eventList').innerHTML=events.length?events.map((e,i)=>'<article class="event-item"><div class="event-date"><strong>'+e.date.slice(8,10)+'</strong><span>'+e.date.slice(5,7)+'/'+e.date.slice(0,4)+'</span></div><div class="event-content"><strong>'+escapeHtml(e.title)+'</strong>'+(e.note?'<p>'+escapeHtml(e.note)+'</p>':'')+'</div><button class="delete-event" data-index="'+i+'" aria-label="Xóa '+escapeHtml(e.title)+'">×</button></article>').join(''):'<div class="empty-state small"><span>◷</span><p>Chưa có sự kiện. Thêm ngày quan trọng để bắt đầu.</p></div>';}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-async function shareText(text){if(navigator.share){try{await navigator.share({title:'Phong Thủy Việt',text});return;}catch(e){if(e.name==='AbortError')return;}}try{await navigator.clipboard.writeText(text);alert('Đã sao chép nội dung để chia sẻ.');}catch{prompt('Sao chép nội dung này:',text);}}
-function goTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));window.scrollTo({top:0,behavior:'smooth'});}
-document.addEventListener('DOMContentLoaded',()=>{
- document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.tab)));
- document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.go)));
- $('openCompassHero').addEventListener('click',e=>{e.preventDefault();goTab('home');window.setTimeout(()=>{$('compassCard').scrollIntoView({behavior:'smooth',block:'start'});},80);});
- $('profileForm').addEventListener('submit',e=>{e.preventDefault();const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Vui lòng nhập năm từ 1900 đến 2099.');return;}showProfile(year,$('gender').value);});
- $('saveProfile').addEventListener('click',()=>{const year=Number($('birthYear').value);if(!Number.isInteger(year)||year<1900||year>2099){alert('Nhập năm sinh hợp lệ trước khi lưu.');return;}if(safeSet(STORE.profile,{year,gender:$('gender').value}))alert('Đã lưu hồ sơ trên thiết bị này.');});
- const profile=safeGet(STORE.profile,null);if(profile){$('birthYear').value=profile.year;$('gender').value=profile.gender;showProfile(profile.year,profile.gender);}
- $('roomType').addEventListener('change',renderRoom);renderRoom();$('runHomeAudit').addEventListener('click',runHomeAudit);
- $('convertLunarDate').addEventListener('click',renderLunarDate);$('lunarDateInput').addEventListener('change',renderLunarDate);renderLunarDate();$('showSolarTerms').addEventListener('click',renderSolarTerms);renderSolarTerms();
- const notes=safeGet(STORE.house,'');$('houseNotes').value=notes;
- $('saveHouseNotes').addEventListener('click',()=>{if(safeSet(STORE.house,$('houseNotes').value))$('houseSaved').textContent='Đã lưu trên thiết bị này.';});
- $('startCompass').addEventListener('click',startLiveCompass);
- const dragDial=$('liveCompassDial');
- let dragState=null;
- const pointerAngle=(event)=>{const rect=dragDial.getBoundingClientRect();return Math.atan2(event.clientY-(rect.top+rect.height/2),event.clientX-(rect.left+rect.width/2))*180/Math.PI;};
- dragDial.addEventListener('pointerdown',event=>{
-  if(event.pointerType==='mouse'&&event.button!==0)return;
-  const shown=compassLastHeading===null?0:normalizeDegrees(compassLastHeading+(Number($('compassOffset').value)||0));
-  dragState={pointerId:event.pointerId,startAngle:pointerAngle(event),startHeading:shown};
-  dragDial.setPointerCapture(event.pointerId);
-  dragDial.classList.add('is-dragging');
-  event.preventDefault();
- });
- dragDial.addEventListener('pointermove',event=>{
-  if(!dragState||event.pointerId!==dragState.pointerId)return;
-  let delta=pointerAngle(event)-dragState.startAngle;
-  if(delta>180)delta-=360;if(delta < -180)delta+=360;
-  const desired=normalizeDegrees(dragState.startHeading-delta);
-  const offset=Number($('compassOffset').value)||0;
-  compassLastHeading=normalizeDegrees(desired-offset);
-  renderCompassHeading(compassLastHeading);
-  $('compassStatus').textContent='Đang xoay thử thủ công; số độ này không phải số đo cảm biến.';
- });
- const endDialDrag=event=>{if(dragState&&event.pointerId===dragState.pointerId){dragState=null;dragDial.classList.remove('is-dragging');}};
- dragDial.addEventListener('pointerup',endDialDrag);
- dragDial.addEventListener('pointercancel',endDialDrag);
- dragDial.addEventListener('lostpointercapture',()=>{dragState=null;dragDial.classList.remove('is-dragging');});
- dragDial.addEventListener('keydown',event=>{
-  if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
-  event.preventDefault();
-  const offset=Number($('compassOffset').value)||0;
-  const shown=compassLastHeading===null?0:normalizeDegrees(compassLastHeading+offset);
-  compassLastHeading=normalizeDegrees(shown+(event.key==='ArrowRight'?5:-5)-offset);
-  renderCompassHeading(compassLastHeading);
-  $('compassStatus').textContent='Đang xoay thử thủ công bằng bàn phím; không phải số đo cảm biến.';
- });
-
- $('stopCompass').addEventListener('click',stopLiveCompass);
- $('magneticDeclination').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
- $('compassOffset').addEventListener('input',()=>{if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);});
- $('calibrateCompass').addEventListener('click',()=>{
-  if(compassLastHeading===null){$('compassStatus').textContent='Bật la bàn trước, đặt cạnh một la bàn chuẩn rồi mới hiệu chuẩn.';return;}
-  const input=prompt('Nhập góc từ tính đang chỉ trên la bàn chuẩn (0–359°). Đặt hai thiết bị cạnh nhau và cùng hướng:',String(Math.round(normalizeDegrees(compassLastHeading+(Number($('compassOffset').value)||0)))));
-  if(input===null)return;
-  const known=Number(input);
-  if(input.trim()===''||!Number.isFinite(known)||known<0||known>=360){$('compassStatus').textContent='Góc tham chiếu không hợp lệ; nhập từ 0 đến dưới 360°.';return;}
-  let offset=normalizeDegrees(known-compassLastHeading);
-  if(offset>180)offset-=360;
-  $('compassOffset').value=String(Math.round(offset*10)/10);
-  renderCompassHeading(compassLastHeading);
-  $('compassStatus').textContent='Đã áp dụng hiệu chỉnh '+$('compassOffset').value+'°. Chỉ hiệu chỉnh khi la bàn chuẩn và điện thoại ở cùng vị trí/hướng; sai số cảm biến vẫn có thể tồn tại.';
- });
- $('resetCompassCalibration').addEventListener('click',()=>{if(confirm('Đặt độ lệch hiệu chỉnh thiết bị về 0°?')){$('compassOffset').value='0';if(compassLastHeading!==null)renderCompassHeading(compassLastHeading);$('compassStatus').textContent='Đã đặt hiệu chỉnh thiết bị về 0°.';}});
- $('convertBearing').addEventListener('click',()=>{const n=Number($('bearing').value);if($('bearing').value.trim()===''||!Number.isFinite(n)||n<0||n>359){$('bearingResult').textContent='Nhập góc từ 0 đến 359°';return;}const dir=compassDirection(n);$('bearingResult').innerHTML='<strong>'+dir+' · '+n.toFixed(1)+'°</strong><small>Quy đổi 16 phương; độ chính xác tùy thiết bị và cách đo.</small>';});
- $('eventForm').addEventListener('submit',e=>{e.preventDefault();const events=safeGet(STORE.events,[]);events.push({title:$('eventTitle').value.trim(),date:$('eventDate').value,note:$('eventNote').value.trim(),id:Date.now()});if(safeSet(STORE.events,events)){e.target.reset();renderEvents();}});
- $('eventList').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;const events=safeGet(STORE.events,[]).sort((a,b)=>a.date.localeCompare(b.date));events.splice(Number(b.dataset.index),1);safeSet(STORE.events,events);renderEvents();});
- $('clearEvents').addEventListener('click',()=>{if(confirm('Xóa toàn bộ sự kiện đã lưu trên thiết bị này?')){safeSet(STORE.events,[]);renderEvents();}});renderEvents();
- $('themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';safeSet(STORE.theme,dark?'dark':'light');});
- const theme=safeGet(STORE.theme,'light');document.documentElement.dataset.theme=theme;
- $('shareApp').addEventListener('click',async()=>{await shareText(location.href);$('shareStatus').textContent='Nếu hộp chia sẻ không mở, liên kết đã được sao chép hoặc hiển thị để sao chép.';});
+$('btn-calibrate').addEventListener('click', () => {
+  if (!compassListening) startCompass();
 });
+
+$('btn-lock').addEventListener('click', function() {
+  if (lockedHeading === null) {
+    lockedHeading = currentHeading;
+    this.textContent = '🔓 Mở Khoá';
+    this.style.background = 'var(--bad)';
+    this.style.color = 'white';
+    $('compass-status').textContent = `Đã khoá hướng: ${lockedHeading.toFixed(1)}°`;
+  } else {
+    lockedHeading = null;
+    this.textContent = '🔒 Khoá Hướng';
+    this.style.background = '';
+    this.style.color = '';
+    updateCompassDisplay(currentHeading);
+    $('compass-status').textContent = 'Đã mở khoá, la bàn quay theo cảm biến.';
+  }
+});
+
+// Xoay thủ công bằng chuột/cảm ứng
+let isDragging = false, lastAngle = 0;
+$('fengCompass').addEventListener('pointerdown', e => {
+  isDragging = true;
+  const rect = $('fengCompass').getBoundingClientRect();
+  lastAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
+  $('fengCompass').setPointerCapture(e.pointerId);
+});
+$('fengCompass').addEventListener('pointermove', e => {
+  if (!isDragging) return;
+  const rect = $('fengCompass').getBoundingClientRect();
+  const newAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2)) * 180 / Math.PI;
+  const delta = newAngle - lastAngle;
+  lastAngle = newAngle;
+  currentHeading = normalizeDegrees(currentHeading - delta);
+  lockedHeading = null; // Mở khoá khi xoay thủ công
+  $('btn-lock').textContent = '🔒 Khoá Hướng';
+  $('btn-lock').style.background = '';
+  updateCompassDisplay(currentHeading);
+});
+$('fengCompass').addEventListener('pointerup', () => isDragging = false);
+
+// ==================== TÍNH NĂNG LƯU HƯỚNG ====================
+function saveDirection() {
+  if (currentHeading === 0 && !compassListening) { alert('Vui lòng đo hướng trước khi lưu!'); return; }
+  const note = prompt('Nhập ghi chú (VD: Cửa chính, Ban thờ...):', 'Hướng đo');
+  if (!note) return;
+  
+  const saved = JSON.parse(localStorage.getItem('pt_saved_dirs') || '[]');
+  saved.push({ id: Date.now(), heading: currentHeading.toFixed(1), note, date: new Date().toLocaleString('vi-VN') });
+  localStorage.setItem('pt_saved_dirs', JSON.stringify(saved));
+  renderSavedDirections();
+  alert('✅ Đã lưu hướng thành công!');
+}
+
+function renderSavedDirections() {
+  const saved = JSON.parse(localStorage.getItem('pt_saved_dirs') || '[]');
+  const container = $('saved-directions-list');
+  if (saved.length === 0) { container.innerHTML = '<p class="empty-state" style="text-align:center;color:var(--text-secondary);padding:20px;">Chưa có hướng nào được lưu.</p>'; return; }
+  
+  container.innerHTML = saved.map(item => `
+    <div class="saved-item">
+      <div class="dir-info">
+        <strong>${item.heading}°</strong>
+        <small>📝 ${item.note} | 🕐 ${item.date}</small>
+      </div>
+      <button class="btn-delete" onclick="deleteDir(${item.id})">🗑️</button>
+    </div>
+  `).join('');
+}
+
+window.deleteDir = (id) => {
+  if (!confirm('Xóa hướng này?')) return;
+  const saved = JSON.parse(localStorage.getItem('pt_saved_dirs') || '[]').filter(i => i.id !== id);
+  localStorage.setItem('pt_saved_dirs', JSON.stringify(saved));
+  renderSavedDirections();
+};
+
+$('btn-save-dir').addEventListener('click', saveDirection);
+
+// ==================== BÁT TRẠCH ====================
+function calcCung(year, gender) {
+  const lastTwo = year % 100;
+  const sum = String(lastTwo).split('').reduce((s, d) => s + Number(d), 0);
+  let number = (year >= 2000) ? (gender === 'nam' ? 9 - sum : 6 + sum) : (gender === 'nam' ? 10 - sum : 5 + sum);
+  while (number > 9) number = String(number).split('').reduce((s, d) => s + Number(d), 0);
+  while (number < 1) number += 9;
+  if (number === 5) number = gender === 'nam' ? 2 : 8;
+  return CUNG[number];
+}
+
+$('btn-calc-bat-trach').addEventListener('click', () => {
+  const year = parseInt($('birth-year').value);
+  const gender = $('gender').value;
+  if (year < 1900 || year > 2099) { alert('Năm sinh không hợp lệ!'); return; }
+  
+  const cung = calcCung(year, gender);
+  const dirs = DIRECTIONS[cung.name];
+  
+  $('cung-menh-orb').textContent = cung.name;
+  $('cung-menh-text').textContent = `Cung ${cung.name}`;
+  $('cung-menh-detail').textContent = `${cung.group} Tứ Trạch · Hành ${cung.hanh}`;
+  
+  $('good-dirs').innerHTML = dirs.good.map(d => `<div class="dir-item good"><strong>${d[1]}</strong>${d[0]}</div>`).join('');
+  $('bad-dirs').innerHTML = dirs.bad.map(d => `<div class="dir-item bad"><strong>${d[1]}</strong>${d[0]}</div>`).join('');
+  
+  $('bat-trach-result').style.display = 'block';
+});
+
+// ==================== VẼ SVG LA BÀN ====================
+function drawCompass() {
+  const svg = $('compass-svg');
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (let k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const polar = (r, angle) => { const rad = (angle - 90) * Math.PI / 180; return [r * Math.cos(rad), r * Math.sin(rad)]; };
+  
+  // Nền
+  svg.appendChild(el('circle', {cx:0, cy:0, r:295, fill:'#1a0f08', stroke:'#d4af37', 'stroke-width':3}));
+  
+  // Vòng 360 độ
+  for (let i = 0; i < 360; i++) {
+    const r2 = (i % 15 === 0) ? 275 : (i % 5 === 0) ? 282 : 286;
+    const [x1, y1] = polar(290, i), [x2, y2] = polar(r2, i);
+    svg.appendChild(el('line', {x1, y1, x2, y2, stroke: (i%15===0)?'#f4d03f':'#9c7a1a', 'stroke-width': (i%15===0)?1.5:0.5}));
+    if (i % 30 === 0) {
+      const [tx, ty] = polar(265, i);
+      const t = el('text', {x:tx, y:ty, fill:'#f4d03f', 'font-size':10, 'text-anchor':'middle', 'dominant-baseline':'middle', transform:`rotate(${i}, ${tx}, ${ty})`});
+      t.textContent = i + '°'; svg.appendChild(t);
+    }
+  }
+  
+  // Vòng 24 Sơn
+  HAI_MUOI_BON_SON.forEach((son, i) => {
+    const angle = i * 15;
+    const [x1, y1] = polar(230, angle), [x2, y2] = polar(260, angle);
+    svg.appendChild(el('line', {x1, y1, x2, y2, stroke:'#9c7a1a', 'stroke-width':0.5}));
+    const [tx, ty] = polar(245, angle + 7.5);
+    const color = son.nguhanh === 'Kim' ? '#f4d03f' : son.nguhanh === 'Mộc' ? '#27ae60' : son.nguhanh === 'Thủy' ? '#3498db' : son.nguhanh === 'Hỏa' ? '#e74c3c' : '#d4af37';
+    const t = el('text', {x:tx, y:ty, fill:color, 'font-size':14, 'font-weight':'bold', 'text-anchor':'middle', 'dominant-baseline':'middle', transform:`rotate(${angle+7.5}, ${tx}, ${ty})`});
+    t.textContent = son.name; svg.appendChild(t);
+  });
+
+  // Vòng Bát Quái
+  HAU_THIEN_QUA.forEach(q => {
+    const [tx, ty] = polar(160, q.angle);
+    const t1 = el('text', {x:tx, y:ty-10, fill:'#f4d03f', 'font-size':24, 'text-anchor':'middle', 'dominant-baseline':'middle'});
+    t1.textContent = q.symbol; svg.appendChild(t1);
+    const t2 = el('text', {x:tx, y:ty+15, fill:'#f5f0e1', 'font-size':12, 'text-anchor':'middle', 'dominant-baseline':'middle'});
+    t2.textContent = q.name; svg.appendChild(t2);
+  });
+
+  // Âm Dương
+  svg.innerHTML += `<circle cx="0" cy="0" r="70" fill="#f5f0e1"/>
+    <path d="M 0 -70 A 70 70 0 0 1 0 70 A 35 35 0 0 0 0 0 A 35 35 0 0 1 0 -70 Z" fill="#0a0505"/>
+    <circle cx="0" cy="-35" r="10" fill="#f5f0e1"/><circle cx="0" cy="35" r="10" fill="#0a0505"/>`;
+    
+  // Kim la bàn
+  svg.innerHTML += `<polygon points="0,-130 -8,0 8,0" fill="#c0392b"/><polygon points="0,130 -8,0 8,0" fill="#ecf0f1"/>
+    <circle cx="0" cy="0" r="12" fill="#d4af37" stroke="#7b1e13" stroke-width="2"/>`;
+}
+
+// ==================== KHỞI ĐỘNG ====================
+drawCompass();
+updateCompassDisplay(0);
+renderSavedDirections();
+
+// Cập nhật ngày giờ
+function updateDateTime() {
+  const now = new Date();
+  $('duong-lich').textContent = now.toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'numeric', year:'numeric'});
+  // Âm lịch xấp xỉ (giữ nguyên logic đơn giản để nhẹ)
+  $('am-lich').textContent = `Năm ${now.getFullYear()}`; 
+}
+updateDateTime();
+setInterval(updateDateTime, 60000);
