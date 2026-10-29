@@ -36,7 +36,18 @@
     <button type="button" class="home-guide-tab active" data-guide="layout">Sơ đồ bố trí</button>
     <button type="button" class="home-guide-tab" data-guide="age">Theo tuổi &amp; hướng</button>
     <button type="button" class="home-guide-tab" data-guide="protect">Trấn trạch an toàn</button>
+    <button type="button" class="home-guide-tab" data-guide="detail">Chi tiết chức năng · Sao chép</button>
   </div>
+  <section class="home-guide-panel" data-guide-panel="detail" hidden>
+    <h3>Danh mục chi tiết chức năng Nhà ở</h3>
+    <p class="muted">Danh sách này mô tả các mục đang có trong mã nguồn của ứng dụng. Anh có thể chỉnh sửa nội dung rồi bấm sao chép để gửi cho AI khác.</p>
+    <textarea id="houseFeatureDetails" rows="22" spellcheck="false" aria-label="Chi tiết các chức năng Nhà ở"></textarea>
+    <div class="form-actions">
+      <button type="button" class="primary-button" id="copyHouseFeatureDetails">Sao chép toàn bộ chi tiết</button>
+      <button type="button" class="secondary-button" id="resetHouseFeatureDetails">Khôi phục nội dung gốc</button>
+    </div>
+    <p id="houseFeatureCopyStatus" class="field-hint" aria-live="polite">Có thể chỉnh sửa nội dung trước khi sao chép.</p>
+  </section>
   <section class="home-guide-panel active" data-guide-panel="layout">
     <div class="home-diagram-grid">
       <article class="home-diagram"><svg viewBox="0 0 240 150" role="img" aria-label="Sơ đồ phòng ngủ: giường đặt chắc chắn, cửa và lối đi thông thoáng"><rect x="18" y="14" width="204" height="122" rx="8" fill="#f4f0e5" stroke="#527565" stroke-width="3"/><rect x="29" y="25" width="44" height="12" rx="2" fill="#b7d8e8" stroke="#527565"/><rect x="83" y="36" width="74" height="72" rx="5" fill="#d6b98b" stroke="#765c3b" stroke-width="2"/><rect x="90" y="42" width="28" height="18" rx="3" fill="#fffaf0"/><rect x="122" y="42" width="28" height="18" rx="3" fill="#fffaf0"/><path d="M18 105 H43 M43 105 A24 24 0 0 1 67 129" fill="none" stroke="#b34a3d" stroke-width="3"/><path d="M52 119 L67 129 L66 111" fill="none" stroke="#b34a3d" stroke-width="3"/><text x="120" y="126" text-anchor="middle" font-size="10" fill="#29493c">Lối đi thông thoáng</text></svg><strong>Phòng ngủ</strong><p>Giường vững, lối ra không bị chặn; tránh đặt đồ khiến cửa khó mở.</p></article>
