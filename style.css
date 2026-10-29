@@ -59,3 +59,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .compass-settings{margin-top:10px}
 @media(max-width:380px){.feng-compass{--dial-size:min(88vw,340px)}.feng-bagua{inset:14%}.feng-inner{inset:31%}.bagua-label small{font-size:8px}.degree-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.feng-compass{transition:none}.yin-yang{animation:none}}
+
+
+/* Compass integration fixes: rotate the full readable dial while the fixed needle stays north. */
+.feng-ring-ticks,.feng-ring-degree,.feng-bagua,.feng-inner{transition:transform .12s linear;transform-origin:50% 50%;}
+.feng-direction{transform:translate(-50%,-50%) rotate(var(--label-counter-rotation,0deg));}
+@media(prefers-reduced-motion:reduce){.feng-ring-ticks,.feng-ring-degree,.feng-bagua,.feng-inner{transition:none;}}
