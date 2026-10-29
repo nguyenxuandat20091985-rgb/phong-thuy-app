@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v29-exact-green-restore';
+const CACHE_NAME = 'phong-thuy-v30-phase1-foundation';
 const ASSETS = [
   './',
   './index.html',
