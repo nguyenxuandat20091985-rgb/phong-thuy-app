@@ -28,6 +28,11 @@
 .protect-item small{display:block;color:#5a6f66;font-size:.85rem;margin-top:2px;line-height:1.35}
 .protect-item:has(input:checked){background:#e8f5e9;border-color:#a5d6a7}
 .protect-progress{margin:10px 0;padding:10px 14px;border-radius:10px;background:#e8f5e9;color:#1b5e20;font-weight:600;text-align:center}
+.protect-callout{background:#fff8e1;border:1px solid #ffe082;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.protect-callout strong{display:block;color:#e65100;margin-bottom:6px}
+.protect-callout p{margin:0;color:#5d4037;font-size:.92rem;line-height:1.45}
+.age-direction-card{margin:0}
+.age-direction-result{margin-top:14px}
 .home-diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.home-diagram-grid{grid-template-columns:1fr}}
 
@@ -60,6 +65,14 @@
   user-select:none;
   -webkit-user-drag:none;
   pointer-events:none;
+}
+.hero-lakinh-rotator > svg{
+  width:100%;
+  height:100%;
+  display:block;
+  border-radius:50%;
+  pointer-events:none;
+  user-select:none;
 }
 .hero-fixed-pointer{
   position:absolute;
