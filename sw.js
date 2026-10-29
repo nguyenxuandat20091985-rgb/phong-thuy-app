@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v54-force-diacritics';
+const CACHE_NAME = 'phong-thuy-v55-age-protect';
 const ASSETS = [
   './',
   './index.html',
@@ -16,9 +16,7 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
 });
 
 self.addEventListener('activate', (event) => {
@@ -36,9 +34,7 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('.js') ||
     url.pathname.endsWith('sw.js');
-
   if (event.request.method !== 'GET') return;
-
   if (isShell) {
     event.respondWith(
       fetch(event.request)
@@ -51,7 +47,6 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
