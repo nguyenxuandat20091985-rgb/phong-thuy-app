@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v46-xuan-kong-chart';
+const CACHE_NAME = 'phong-thuy-v47-sha-remedies';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './bat-trach.js',
   './ngay-xay-dung.js',
   './huyen-khong.js',
+  './hoa-giai-sat-khi.js',
   './style.css',
   './app.js',
   './backup.js',
