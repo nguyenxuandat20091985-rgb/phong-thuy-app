@@ -75,6 +75,32 @@
 <div class="form-grid"><label>Nhập góc thủ công (0–359°)<input type="number" id="bearing" min="0" max="359" placeholder="Ví dụ 135"></label><div class="bearing-result" id="bearingResult">Chưa có số đo</div></div><button class="secondary-button" id="convertBearing" type="button">Quy đổi hướng thủ công</button>
 </details></div>
 </div>
+<div class="card home-guide-card" id="homeGuide">
+<span class="eyebrow">HƯỚNG DẪN TRỰC QUAN</span><h3>Bố trí nhà ở theo công năng, tuổi và hướng</h3>
+<p class="muted">Sơ đồ minh họa để dễ hình dung, không phải bản vẽ thi công. Ưu tiên an toàn và công năng; phong thủy là tham khảo bổ sung.</p>
+<div class="home-guide-tabs" role="tablist" aria-label="Nhóm hướng dẫn nhà ở">
+<button type="button" class="home-guide-tab active" data-guide="layout">Sơ đồ bố trí</button><button type="button" class="home-guide-tab" data-guide="age">Theo tuổi &amp; hướng</button><button type="button" class="home-guide-tab" data-guide="protect">Trấn trạch an toàn</button>
+</div>
+<section class="home-guide-panel active" data-guide-panel="layout">
+<div class="home-diagram-grid">
+<article class="home-diagram"><div class="mini-plan bedroom-plan" role="img" aria-label="Sơ đồ phòng ngủ với giường và lối đi"><span class="plan-window">CỬA SỔ</span><span class="plan-bed">GIƯỜNG</span><span class="plan-path">LỐI ĐI →</span><span class="plan-door">CỬA</span></div><strong>Phòng ngủ</strong><p>Giường vững, lối ra không bị chặn; hạn chế tiếng ồn và ánh sáng khi nghỉ.</p></article>
+<article class="home-diagram"><div class="mini-plan desk-plan" role="img" aria-label="Sơ đồ bàn làm việc gần ánh sáng"><span class="plan-window">ÁNH SÁNG</span><span class="plan-desk">BÀN + MÀN HÌNH</span><span class="plan-chair">GHẾ</span><span class="plan-path">LỐI ĐI</span></div><strong>Bàn làm việc</strong><p>Đủ sáng, màn hình ngang tầm mắt, ghế chắc chắn; không hy sinh tư thế tốt vì hướng.</p></article>
+<article class="home-diagram"><div class="mini-plan kitchen-plan" role="img" aria-label="Sơ đồ bếp tách vùng nấu và bồn rửa"><span class="plan-sink">BỒN RỬA</span><span class="plan-gap">LỐI THAO TÁC</span><span class="plan-stove">BẾP NẤU</span></div><strong>Nhà bếp</strong><p>Giữ vật dễ cháy xa bếp, thông gió tốt và lối đi khô ráo, không vướng.</p></article>
+<article class="home-diagram"><div class="mini-plan entry-plan" role="img" aria-label="Sơ đồ cửa chính với lối vào thông thoáng"><span class="plan-entry">CỬA CHÍNH</span><span class="plan-arrow">↑ LỐI VÀO ↑</span><span class="plan-clear">KHÔNG ĐỂ ĐỒ CHẮN</span></div><strong>Cửa chính</strong><p>Đo đúng hướng cửa/mặt nhà, giữ lối vào sáng và không chắn đường thoát hiểm.</p></article>
+</div></section>
+<section class="home-guide-panel" data-guide-panel="age" hidden><ol class="guide-steps">
+<li><strong>Tra cung phi cá nhân:</strong> vào tab Cá nhân, nhập năm sinh dương lịch và giới tính theo phương pháp Bát Trạch phổ biến.</li>
+<li><strong>Đo hướng nhà riêng:</strong> đo vài lần ở vị trí thoáng, tránh kim loại, loa và nam châm; ghi rõ hướng mặt cửa hay hướng mặt nhà.</li>
+<li><strong>Đối chiếu:</strong> so hướng đo được với bảng hướng ở kết quả cá nhân. Nếu sinh gần Tết âm lịch, xác minh cách quy đổi năm theo trường phái đang dùng.</li>
+<li><strong>Áp dụng có chọn lọc:</strong> cân nhắc hướng khi sắp xếp bàn/giường nếu thuận tiện; không phá tường hoặc chuyển bếp chỉ vì một bảng tra.</li>
+</ol><button type="button" class="secondary-button" id="goPersonalGuide">Mở tra cứu cung phi ở tab Cá nhân</button></section>
+<section class="home-guide-panel" data-guide-panel="protect" hidden><div class="protect-callout"><strong>Trấn trạch theo hướng an toàn, ít tốn kém</strong><p>Trước hết xử lý vấn đề thực tế: cửa hỏng, thấm dột, thông gió, ánh sáng, tiếng ồn và điểm nguy hiểm. Nếu gia đình có nghi lễ truyền thống, có thể theo tập tục riêng nhưng không cần mua vật phẩm đắt tiền hay đặt vật cản lối đi.</p></div><ol class="guide-steps">
+<li><strong>Khảo sát:</strong> ghi hướng cửa, vị trí phòng, điểm ẩm/nứt, tiếng ồn, ánh sáng và lối thoát.</li>
+<li><strong>Khắc phục trước:</strong> xử lý rò điện/gas, nứt kết cấu, mốc và cửa khó đóng; gọi thợ chuyên môn nếu cần.</li>
+<li><strong>Bố trí ổn định:</strong> giữ lối vào thông thoáng, đồ nặng cố định chắc, bếp và bàn thờ an toàn, xa vật dễ cháy.</li>
+<li><strong>Tránh cách nguy hiểm:</strong> không đốt lửa/nhang lớn thiếu giám sát, chôn vật lạ, khoan cắt kết cấu hoặc đặt vật nặng nơi dễ rơi để “hóa giải”.</li>
+</ol><p class="field-hint">Phong thủy và nghi lễ là thực hành truyền thống; vật phẩm trấn trạch không bảo đảm tài lộc, sức khỏe hay ngăn tai họa.</p></section>
+</div>
 <div class="card"><h3>Kiểm tra nhanh bố trí nhà ở</h3><p class="muted">Đánh dấu các vấn đề đang có để nhận danh sách ưu tiên cải thiện. Công cụ dựa trên công năng và an toàn thực tế, không thay thế khảo sát kết cấu.</p><div id="homeAuditOptions" class="audit-options"><label><input type="checkbox" value="exit"> Lối đi hoặc lối thoát hiểm bị vướng</label><label><input type="checkbox" value="light"> Phòng thiếu ánh sáng tự nhiên</label><label><input type="checkbox" value="air"> Không khí bí, thông gió kém</label><label><input type="checkbox" value="slip"> Sàn trơn hoặc dễ vấp ngã</label><label><input type="checkbox" value="fire"> Bếp, ổ điện hoặc vật dễ cháy chưa an toàn</label><label><input type="checkbox" value="sleep"> Khu ngủ ồn hoặc bị ánh sáng làm phiền</label><label><input type="checkbox" value="clutter"> Đồ đạc bừa bộn, khó vệ sinh</label><label><input type="checkbox" value="privacy"> Thiếu riêng tư ở cửa ra vào hoặc khu nghỉ</label></div><button class="secondary-button" id="runHomeAudit" type="button">Phân tích và sắp xếp ưu tiên</button><div id="homeAuditResult" class="audit-result" aria-live="polite"></div></div><div class="card"><h3>Ghi chú ngôi nhà</h3><label for="houseNotes">Mô tả hướng cửa, vị trí phòng hoặc điều cần cải thiện</label><textarea id="houseNotes" rows="4" placeholder="Ghi chú riêng trên thiết bị…"></textarea><button class="secondary-button" id="saveHouseNotes" type="button">Lưu ghi chú</button><p id="houseSaved" class="field-hint" aria-live="polite"></p></div>
 </section>
 <section class="panel" id="panel-calendar">
