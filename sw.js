@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v47-lakinh-fixed-pointer';
+const CACHE_NAME = 'phong-thuy-v48-lakinh-text-fix';
 const ASSETS = [
   './',
   './index.html',
@@ -29,10 +29,6 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-      return res;
-    }).catch(() => cached))
+    caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
