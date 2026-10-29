@@ -14,6 +14,12 @@
 <nav class="tabs" id="tools" aria-label="Công cụ"><button class="tab active" data-tab="personal">✦ Cá nhân</button><button class="tab" data-tab="home">⌂ Nhà ở</button><button class="tab" data-tab="calendar">◷ Ngày tháng</button><button class="tab" data-tab="library">▤ Kiến thức</button></nav>
 <main>
 <section class="panel active" id="panel-personal">
+<div class="card premium-compass-card" id="compassCard">
+<h3>La Bàn Phong Thủy Cao Cấp</h3>
+<p class="muted">La kinh đa tầng, Bát Quái và các lớp hướng. Đặt điện thoại nằm ngang và tránh xa kim loại hoặc nam châm.</p>
+<iframe class="premium-compass-frame" src="./la-ban-cao-cap.html" title="La Bàn Phong Thủy Cao Cấp" loading="eager" allow="accelerometer; gyroscope; magnetometer; device-orientation" referrerpolicy="same-origin"></iframe>
+<p class="field-hint">Cảm biến cần trình duyệt hỗ trợ và quyền truy cập. Kết quả la bàn chỉ mang tính tham khảo; hãy đối chiếu thiết bị chuẩn khi cần độ chính xác cao.</p>
+</div>
 <div class="section-heading"><div><span class="eyebrow">01 / HỒ SƠ CÁ NHÂN</span><h2>Tra cứu Bát Trạch</h2><p>Nhập năm sinh và giới tính theo cách tính Bát Trạch phổ biến.</p></div></div>
 <div class="card form-card"><form id="profileForm"><div class="form-grid"><label>Năm sinh dương lịch<input id="birthYear" type="number" inputmode="numeric" min="1900" max="2099" placeholder="Ví dụ 1990" required></label><label>Giới tính dùng trong phép tính<select id="gender"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label></div><div class="form-actions"><button class="primary-button" type="submit">Xem bản đồ cá nhân <span>→</span></button><button class="secondary-button" id="saveProfile" type="button">Lưu hồ sơ</button></div><p class="field-hint">Lưu hồ sơ chỉ trên thiết bị này, không gửi lên máy chủ.</p></form></div>
 <div id="personalResult" class="results" aria-live="polite"><div class="empty-state"><span>✧</span><h3>Bản đồ của bạn sẽ hiện ở đây</h3><p>Kết quả gồm cung phi, nhóm trạch và bốn hướng tốt / bốn hướng cần cân nhắc.</p></div></div>
@@ -22,12 +28,7 @@
 <section class="panel" id="panel-home">
 <div class="section-heading"><div><span class="eyebrow">02 / KHÔNG GIAN SỐNG</span><h2>Gợi ý bố trí nhà ở</h2><p>Chọn khu vực để xem danh sách kiểm tra thực tế.</p></div></div>
 <div class="card"><label for="roomType">Khu vực cần xem</label><select id="roomType"><option value="bedroom">Phòng ngủ</option><option value="desk">Bàn làm việc</option><option value="kitchen">Nhà bếp</option><option value="entrance">Cửa chính / lối vào</option><option value="altar">Bàn thờ</option></select><div id="roomGuidance" class="guidance"></div></div>
-<div class="card premium-compass-card" id="compassCard">
-<h3>La Bàn Phong Thủy Cao Cấp</h3>
-<p class="muted">La kinh đa tầng, Bát Quái và các lớp hướng. Đặt điện thoại nằm ngang và tránh xa kim loại hoặc nam châm.</p>
-<iframe class="premium-compass-frame" src="./la-ban-cao-cap.html" title="La Bàn Phong Thủy Cao Cấp" loading="eager" allow="accelerometer; gyroscope; magnetometer; device-orientation" referrerpolicy="same-origin"></iframe>
-<p class="field-hint">Cảm biến cần trình duyệt hỗ trợ và quyền truy cập. Kết quả la bàn chỉ mang tính tham khảo; hãy đối chiếu thiết bị chuẩn khi cần độ chính xác cao.</p>
-</div>
+
 <div class="legacy-compass-runtime" aria-hidden="true" inert><div class="card compass-card legacy-compass-runtime" id="legacyCompassRuntime">
 <h3>La bàn phong thủy</h3>
 <p class="muted compass-intro">Đặt điện thoại nằm ngang và tránh xa kim loại hoặc nam châm.</p>
