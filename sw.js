@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phong-thuy-v55-age-protect';
+const CACHE_NAME = 'phong-thuy-v56-restore-home';
 const ASSETS = [
   './',
   './index.html',
