@@ -1,4 +1,4 @@
-/* Nâng cấp Nhà ở + La Kinh hero (giao diện anh cung cấp) 2026-10-30 */
+/* Nâng cấp Nhà ở + La Kinh hero 2026-10-30 */
 (function(){
 'use strict';
 const $ = (id) => document.getElementById(id);
@@ -42,6 +42,19 @@ function initLayoutDetails(){
   document.querySelectorAll('.home-diagram.interactive[data-room]').forEach(btn=>btn.addEventListener('click',()=>openRoomDetail(btn.dataset.room)));
   document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',closeRoomDetail));
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeRoomDetail(); });
+}
+function initHomeGuideTabs(){
+  document.querySelectorAll('.home-guide-tab').forEach(function(button){
+    button.addEventListener('click', function(){
+      var name = button.dataset.guide;
+      document.querySelectorAll('.home-guide-tab').forEach(function(b){ b.classList.toggle('active', b === button); });
+      document.querySelectorAll('[data-guide-panel]').forEach(function(panel){
+        var active = panel.dataset.guidePanel === name;
+        panel.hidden = !active;
+        panel.classList.toggle('active', active);
+      });
+    });
+  });
 }
 function buildLakinhSVG(){
   const NS='http://www.w3.org/2000/svg';
@@ -133,6 +146,6 @@ function initHeroCompass(){
   const btn=$('heroCompassStart'); if(!btn) return;
   btn.addEventListener('click',function(){ if(heroListening) stopHeroCompass(); else startHeroCompass(); });
 }
-function boot(){ initLayoutDetails(); initProtectChecklist(); initHeroCompass(); }
+function boot(){ initLayoutDetails(); initProtectChecklist(); initHomeGuideTabs(); initHeroCompass(); }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
